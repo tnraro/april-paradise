@@ -1,14 +1,30 @@
 import { ID, PASSWORD } from "$lib/shared/schema/auth";
 import { fail, isRedirect, redirect, type Actions } from "@sveltejs/kit";
 import { ErrorCode } from "./lib";
-import { createUser } from "$edgedb/queries";
+import { createHost, isStarted } from "$edgedb/queries";
+import { z } from "zod";
+
+class CustomError extends Error {
+  code;
+  constructor(code: ErrorCode) {
+    super("");
+    this.code = code;
+  }
+}
 
 export const actions = {
   default: async ({ request, locals }) => {
     let id: string | undefined;
+    let name: string | undefined;
     try {
+      const session = locals.auth.session;
+      if (await isStarted(session.client)) {
+        throw new CustomError(ErrorCode.SessionStarted);
+      }
+
       const data = await request.formData();
       id = ID.parse(data.get("id"));
+      name = z.string().parse(data.get("name"));
       const password = PASSWORD.parse(data.get("password"));
       // TODO: use id instead of email only this time
       const email = `${id}@tnraro.com`;
@@ -22,19 +38,25 @@ export const actions = {
         throw "token is null";
       }
 
-      const session = locals.auth.session;
-
       if (!(await session.isSignedIn())) {
         throw "not signed in";
       }
-      await createUser(session.client, {
-        name: `익명${(Math.random() * 1_000_000) | 0}`,
+      await createHost(session.client, {
+        name,
       });
 
       return redirect(303, "/");
     } catch (error) {
       if (isRedirect(error)) {
         throw error;
+      }
+      if (error instanceof CustomError) {
+        const code = error.code;
+        return fail(400, {
+          id,
+          name,
+          code,
+        });
       }
       if (error instanceof Error) {
         try {
@@ -44,6 +66,7 @@ export const actions = {
             case ErrorCode.AlreadyRegistered:
               return fail(400, {
                 id,
+                name,
                 code,
               });
           }
@@ -52,6 +75,7 @@ export const actions = {
       console.error("err(sign-up):", error);
       return fail(400, {
         id,
+        name,
       });
     }
   },
