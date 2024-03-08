@@ -1,5 +1,12 @@
 module default {
-  type Account {
+  global current_user := (
+    assert_single((
+      select User
+      filter .identity = global ext::auth::ClientTokenIdentity
+    ))
+  );
+
+  type User {
     required identity: ext::auth::Identity {
       constraint exclusive;
       on target delete delete source;
@@ -9,7 +16,7 @@ module default {
   }
 
   type Character {
-    required owner: Account {
+    required owner: User {
       on target delete delete source;
     }
     required name: str;
