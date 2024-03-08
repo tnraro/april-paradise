@@ -1,12 +1,9 @@
-import { generatePKCE } from "$lib/app/auth/auth";
-import { registerAuth } from "$lib/app/auth/register";
-import { commonCookieOptions } from "$lib/shared/config/cookie";
 import { ID, PASSWORD } from "$lib/shared/schema/auth";
-import { fail, type Actions, redirect, isRedirect } from "@sveltejs/kit";
+import { fail, isRedirect, redirect, type Actions } from "@sveltejs/kit";
 import { ErrorCode } from "./lib";
 
 export const actions = {
-  default: async ({ request, cookies }) => {
+  default: async ({ request, locals }) => {
     let id: string | undefined;
     try {
       const data = await request.formData();
@@ -15,29 +12,34 @@ export const actions = {
       // TODO: use id instead of email only this time
       const email = `${id}@tnraro.com`;
 
-      const pkce = generatePKCE();
-
-      await registerAuth({
-        challenge: pkce.challenge,
+      const { tokenData } = await locals.auth.emailPasswordSignUp({
         email,
         password,
-        verfiyUrl: `http://localhost:5173/auth/verify`,
       });
 
-      cookies.set("edgedb-pkce-verifier", pkce.verifier, commonCookieOptions);
+      if (tokenData == null) {
+        throw "token is null";
+      }
 
       return redirect(303, "/");
     } catch (error) {
       if (isRedirect(error)) {
         throw error;
       }
-      console.error("err(sign-up):", error);
-      if ((error as any).error?.code === 50331648) {
-        return fail(400, {
-          id,
-          code: ErrorCode.AlreadyRegistered,
-        });
+      if (error instanceof Error) {
+        try {
+          const e = JSON.parse(error.message) as { error?: { code?: number } };
+          const code = e.error?.code;
+          switch (code) {
+            case ErrorCode.AlreadyRegistered:
+              return fail(400, {
+                id,
+                code,
+              });
+          }
+        } catch (_) {}
       }
+      console.error("err(sign-up):", error);
       return fail(400, {
         id,
       });

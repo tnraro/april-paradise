@@ -1,3 +1,3 @@
 export const enum ErrorCode {
-  AlreadyRegistered,
+  AlreadyRegistered = 50331648,
 }

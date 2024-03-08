@@ -1,13 +1,8 @@
-import { env } from "$env/dynamic/private";
-import { generatePKCE } from "$lib/app/auth/auth";
-import { authenticateAuth } from "$lib/app/auth/authenticate";
-import { getAuthToken } from "$lib/app/auth/token";
-import { commonCookieOptions } from "$lib/shared/config/cookie";
 import { ID, PASSWORD } from "$lib/shared/schema/auth.js";
-import { fail, type Actions, redirect, isRedirect } from "@sveltejs/kit";
+import { fail, isRedirect, redirect, type Actions } from "@sveltejs/kit";
 
 export const actions = {
-  default: async ({ request, cookies }) => {
+  default: async ({ request, locals }) => {
     let id: string | undefined;
     try {
       const data = await request.formData();
@@ -16,21 +11,14 @@ export const actions = {
       // TODO: use id instead of email only this time
       const email = `${id}@tnraro.com`;
 
-      const pkce = generatePKCE();
-
-      const { code } = await authenticateAuth({
-        challenge: pkce.challenge,
+      const { tokenData, error } = await locals.auth.emailPasswordSignIn({
         email,
         password,
       });
 
-      const authToken = await getAuthToken({
-        code,
-        verifier: pkce.verifier,
-      });
-
-      cookies.set("edgedb-auth-token", authToken, commonCookieOptions);
-
+      if (tokenData == null) {
+        throw error;
+      }
       return redirect(303, "/");
     } catch (error) {
       if (isRedirect(error)) {

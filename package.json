@@ -36,6 +36,8 @@
   },
   "type": "module",
   "dependencies": {
+    "@edgedb/auth-sveltekit": "^0.1.1",
+    "edgedb": "^1.4.1",
     "zod": "^3.22.4"
   }
 }
