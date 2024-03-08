@@ -1,6 +1,7 @@
 import { ID, PASSWORD } from "$lib/shared/schema/auth";
 import { fail, isRedirect, redirect, type Actions } from "@sveltejs/kit";
 import { ErrorCode } from "./lib";
+import { createUser } from "$edgedb/queries";
 
 export const actions = {
   default: async ({ request, locals }) => {
@@ -20,6 +21,15 @@ export const actions = {
       if (tokenData == null) {
         throw "token is null";
       }
+
+      const session = locals.auth.session;
+
+      if (!(await session.isSignedIn())) {
+        throw "not signed in";
+      }
+      await createUser(session.client, {
+        name: `익명${(Math.random() * 1_000_000) | 0}`,
+      });
 
       return redirect(303, "/");
     } catch (error) {
