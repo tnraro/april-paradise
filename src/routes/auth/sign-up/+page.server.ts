@@ -1,5 +1,5 @@
 import { ID, PASSWORD } from "$lib/shared/schema/auth";
-import { fail, isRedirect, redirect, type Actions } from "@sveltejs/kit";
+import { fail, isRedirect, redirect, type Actions, error } from "@sveltejs/kit";
 import { ErrorCode } from "./lib";
 import { createHost, isStarted } from "$edgedb/queries";
 import { z } from "zod";
@@ -11,6 +11,17 @@ class CustomError extends Error {
     this.code = code;
   }
 }
+
+export const load = async ({ locals }) => {
+  const session = locals.auth.session;
+
+  if (!(await isStarted(session.client))) {
+    // host mode
+    return {};
+  }
+  // access denied
+  error(404, "Not Found");
+};
 
 export const actions = {
   default: async ({ request, locals }) => {
