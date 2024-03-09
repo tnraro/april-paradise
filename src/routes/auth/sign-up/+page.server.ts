@@ -1,4 +1,4 @@
-import { ID, PASSWORD } from "$lib/shared/schema/auth";
+import { ID, NAME, PASSWORD } from "$lib/shared/schema/auth";
 import { fail, isRedirect, redirect, type Actions, error } from "@sveltejs/kit";
 import { ErrorCode } from "./lib";
 import { createHost, isStarted } from "$edgedb/queries";
@@ -35,7 +35,7 @@ export const actions = {
 
       const data = await request.formData();
       id = ID.parse(data.get("id"));
-      name = z.string().parse(data.get("name"));
+      name = NAME.parse(data.get("name"));
       const password = PASSWORD.parse(data.get("password"));
       // TODO: use id instead of email only this time
       const email = `${id}@tnraro.com`;
@@ -49,14 +49,7 @@ export const actions = {
         throw "token is null";
       }
 
-      if (!(await session.isSignedIn())) {
-        throw "not signed in";
-      }
-      await createHost(session.client, {
-        name,
-      });
-
-      return redirect(303, "/");
+      return redirect(303, `/auth/callback?name=${encodeURIComponent(name)}`);
     } catch (error) {
       if (isRedirect(error)) {
         throw error;
