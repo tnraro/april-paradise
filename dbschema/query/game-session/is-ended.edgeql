@@ -1,1 +1,1 @@
-select global game_session.is_started;
+select global game_session.is_ended;
