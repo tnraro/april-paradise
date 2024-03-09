@@ -23,7 +23,6 @@ module default {
       constraint exclusive;
     }
 
-    required is_god := exists [is GginggoTheGod];
     required is_host := exists [is Host];
     required is_runner := exists [is Runner];
 
@@ -31,8 +30,10 @@ module default {
       default := datetime_of_transaction();
     }
   }
-  type GginggoTheGod extending User {}
   type Host extending User {
+    required is_god: bool {
+      default := false;
+    }
     access policy allow_all
       allow all;
     access policy register_until_session_started
