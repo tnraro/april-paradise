@@ -14,7 +14,7 @@ module default {
   );
 
   abstract type User {
-    required identity: ext::auth::Identity{ 
+    identity: ext::auth::Identity{ 
       constraint exclusive;
       on target delete delete source;
       default := global ext::auth::ClientTokenIdentity;
