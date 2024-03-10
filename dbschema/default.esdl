@@ -44,9 +44,7 @@ module default {
     required twitter_id: str {
       constraint exclusive;
     }
-    required character: str {
-      constraint exclusive;
-    }
+    memo: str;
 
     required chips: int64 {
       constraint min_value(0);
