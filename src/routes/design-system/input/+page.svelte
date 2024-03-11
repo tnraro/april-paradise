@@ -58,6 +58,7 @@
     <input type="file" />
     <input type="range" />
     <input type="image" alt="" src="/favicon.png" />
+    <textarea>가나다</textarea>
   </div>
 </div>
 

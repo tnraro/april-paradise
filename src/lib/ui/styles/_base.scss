@@ -291,3 +291,15 @@ input:invalid:focus-visible {
   ---b: var(--red-8) !important;
   ---b-size: 2px;
 }
+
+textarea {
+  appearance: none;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  @include mixin.local-base-setup(slate, 3, 11);
+  outline: var(---b, var(--slate-7)) var(---b-size, 1px) solid;
+  &:focus-visible {
+    outline: var(--blue-8) 2px solid;
+  }
+}
