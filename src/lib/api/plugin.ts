@@ -28,6 +28,6 @@ export const validateBody = <S extends z.ZodTypeAny = z.ZodNever>(schema: S) => 
 export const logError =
   (id: string) =>
   <T>(e: T) => {
-    console.error(`err(${id}}):`, e);
+    console.error(`err(${id}):`, e);
     throw e;
   };

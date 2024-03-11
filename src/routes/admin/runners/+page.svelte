@@ -1,6 +1,6 @@
 <script lang="ts">
-  import NewRunner from "$lib/ui/mod/new-runner.svelte";
-  import RunnerSummary from "$lib/ui/mod/runner-summary.svelte";
+  import NewRunner from "$lib/ui/admin/new-runner.svelte";
+  import RunnerSummary from "$lib/ui/admin/runner-summary.svelte";
 
   let { data } = $props();
 

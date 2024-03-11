@@ -1,7 +1,7 @@
 import { getAllRunners } from "$edgedb/queries.js";
 
 export const load = async ({ locals, depends }) => {
-  depends("mod:runners");
+  depends("admin:runners");
 
   const session = locals.auth.session;
   const runners = await getAllRunners(session.client);

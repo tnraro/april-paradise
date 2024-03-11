@@ -8,7 +8,7 @@ import { error } from "@sveltejs/kit";
 import { EdgeDBError } from "edgedb";
 import { z } from "zod";
 
-export interface PostModRunners {
+export interface PostAdminRunners {
   body: z.infer<typeof postBodySchema>;
   response: Awaited<ReturnType<typeof post>>;
 }
@@ -37,6 +37,6 @@ const post = async (event: RequestEvent, set: ResponseInit) =>
       }
       throw e;
     })
-    .catch(logError("post /api/mod/runners"));
+    .catch(logError("post /api/admin/runners"));
 
 export const POST = handle(post);

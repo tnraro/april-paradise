@@ -1,7 +1,7 @@
 <script lang="ts">
   import { invalidate } from "$app/navigation";
   import { req } from "$lib/api/client";
-  import type { PostModRunners } from "../../../routes/api/mod/runners/+server";
+  import type { PostAdminRunners } from "../../../routes/api/admin/runners/+server";
 
   interface State {
     name: string;
@@ -13,10 +13,10 @@
   let { onclose } = $props<Props>();
 
   const onsubmit = async () => {
-    const res = await req<PostModRunners>("POST", "/api/mod/runners", currentState);
+    const res = await req<PostAdminRunners>("POST", "/api/admin/runners", currentState);
     if (res.ok) {
       if (res.data.created) {
-        invalidate("mod:runners");
+        invalidate("admin:runners");
         onclose?.();
       }
     } else {
