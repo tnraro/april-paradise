@@ -1,7 +1,7 @@
 import { ID, NAME, PASSWORD } from "$lib/shared/schema/auth";
 import { fail, isRedirect, redirect, type Actions, error } from "@sveltejs/kit";
 import { ErrorCode } from "./lib";
-import { createHost, isStarted } from "$edgedb/queries";
+import { createAdmin, isStarted } from "$edgedb/queries";
 import { z } from "zod";
 
 class CustomError extends Error {
@@ -16,7 +16,7 @@ export const load = async ({ locals }) => {
   const session = locals.auth.session;
 
   if (!(await isStarted(session.client))) {
-    // host mode
+    // admin mode
     return {};
   }
   // access denied

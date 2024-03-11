@@ -1,6 +1,6 @@
 import { createRunner } from "$edgedb/queries";
 import { handle } from "$lib/api/handle";
-import { guardHost, logError, validateBody } from "$lib/api/plugin";
+import { guardAdmin, logError, validateBody } from "$lib/api/plugin";
 import { NAME } from "$lib/shared/schema/auth";
 import { TWITTER_ID } from "$lib/shared/schema/runner";
 import type { RequestEvent } from "@sveltejs/kit";
@@ -14,7 +14,7 @@ export interface PostModRunners {
 }
 const postBodySchema = z.object({ name: NAME, twitterId: TWITTER_ID });
 const post = async (event: RequestEvent, set: ResponseInit) =>
-  guardHost(event)
+  guardAdmin(event)
     .then(validateBody(postBodySchema))
     .then(async ({ locals, body }) => {
       const session = locals.auth.session;

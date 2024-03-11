@@ -5,10 +5,10 @@
 <header>
   <div>관리 페이지</div>
   <div>
-    {#if data.host.is_god}
+    {#if data.admin.is_god}
       <span title={`"신"`}>💛</span>
     {/if}
-    <span>{data.host.name}</span>
+    <span>{data.admin.name}</span>
   </div>
 </header>
 {@render children()}

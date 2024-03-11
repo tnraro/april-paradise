@@ -1,4 +1,4 @@
-import { createHost, currentUserExists } from "$edgedb/queries";
+import { createAdmin, currentUserExists } from "$edgedb/queries";
 import { NAME } from "$lib/shared/schema/auth.js";
 import { error, redirect } from "@sveltejs/kit";
 
@@ -12,7 +12,7 @@ export const GET = async ({ locals, url }) => {
   }
   const name = NAME.parse(url.searchParams.get("name"));
 
-  await createHost(session.client, {
+  await createAdmin(session.client, {
     name,
   });
 

@@ -23,14 +23,14 @@ module default {
       constraint exclusive;
     }
 
-    required is_host := exists [is Host];
+    required is_admin := exists [is Admin];
     required is_runner := exists [is Runner];
 
     required created_at: datetime {
       default := datetime_of_transaction();
     }
   }
-  type Host extending User {
+  type Admin extending User {
     required is_god: bool {
       default := false;
     }

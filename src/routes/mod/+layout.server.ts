@@ -1,4 +1,4 @@
-import { getCurrentHostProfile } from "$edgedb/queries.js";
+import { getCurrentAdminProfile } from "$edgedb/queries.js";
 import { error } from "@sveltejs/kit";
 
 export const load = async ({ locals }) => {
@@ -7,13 +7,13 @@ export const load = async ({ locals }) => {
     return error(401, "권한이 없습니다");
   }
 
-  const host = await getCurrentHostProfile(session.client);
+  const admin = await getCurrentAdminProfile(session.client);
 
-  if (host == null) {
+  if (admin == null) {
     return error(401, "권한이 없습니다");
   }
 
   return {
-    host,
+    admin,
   };
 };

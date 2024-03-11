@@ -1,11 +1,11 @@
-import { getCurrentHostProfile } from "$edgedb/queries";
+import { getCurrentAdminProfile } from "$edgedb/queries";
 import { error } from "@sveltejs/kit";
 import type { z } from "zod";
 
-export const guardHost = async <T extends { locals: App.Locals }>(event: T) => {
+export const guardAdmin = async <T extends { locals: App.Locals }>(event: T) => {
   const session = event.locals.auth.session;
-  const host = await getCurrentHostProfile(session.client);
-  if (host == null) {
+  const admin = await getCurrentAdminProfile(session.client);
+  if (admin == null) {
     error(401, "Unauthorized");
   }
   return event;
