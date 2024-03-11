@@ -1,8 +1,7 @@
+import { isStarted } from "$edgedb/queries";
 import { ID, NAME, PASSWORD } from "$lib/shared/schema/auth";
-import { fail, isRedirect, redirect, type Actions, error } from "@sveltejs/kit";
+import { error, fail, isRedirect, redirect, type Actions } from "@sveltejs/kit";
 import { ErrorCode } from "./lib";
-import { createAdmin, isStarted } from "$edgedb/queries";
-import { z } from "zod";
 
 class CustomError extends Error {
   code;
