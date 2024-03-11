@@ -11,13 +11,13 @@
           role="tab"
           class="tab"
           aria-selected={runner.selected}
-          aria-controls="penal"
+          aria-controls="panel"
           href="/admin/runners/{runner.name}">{runner.name}</a
         >
       {/each}
     </div>
   </div>
-  <div id="penal" role="tabpanel" class="tabpanel">
+  <div id="panel" role="tabpanel" class="tabpanel">
     {#key data.selected}
       {@render children()}
     {/key}
