@@ -1,0 +1,285 @@
+@use "mixin";
+@use "sass:math";
+
+body {
+  font-family:
+    "Pretendard Variable",
+    Pretendard,
+    -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    Roboto,
+    "Helvetica Neue",
+    "Segoe UI",
+    "Apple SD Gothic Neo",
+    "Noto Sans KR",
+    "Malgun Gothic",
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    sans-serif;
+  color: var(--gray-12);
+}
+
+:where(a[href]) {
+  color: var(--gray-12);
+  border-radius: 0.25rem;
+
+  &:hover {
+    color: var(--blue-10);
+  }
+
+  &:active {
+    color: var(--blue-11);
+  }
+
+  &:focus-visible {
+    outline: var(--blue-8) 2px solid;
+  }
+
+  &[aria-current] {
+    color: var(--blue-10);
+  }
+}
+
+h {
+  @for $i from 1 through 6 {
+    $size: 2rem - math.div($i - 1, 5);
+
+    &#{$i} {
+      font-size: $size;
+      line-height: $size + 0.5rem;
+    }
+  }
+}
+
+:where(abbr[title]) {
+  text-decoration: dotted 1px underline;
+  cursor: help;
+}
+
+:where(kbd) {
+  @include mixin.select-none;
+  font-family: unset;
+  padding: 0 0.25rem;
+  border-radius: 0.25rem;
+  background: var(--slate-3);
+  color: var(--slate-11);
+  box-shadow: 0 0.1rem 0 var(--slate-6);
+}
+
+:where(strong, b, .bold) {
+  all: unset;
+  font-weight: bold;
+}
+
+:where(em, i, cite) {
+  all: unset;
+  font-style: italic;
+}
+
+:where(mark, .highlight) {
+  @include mixin.local-base-setup(yellow, 9, 12);
+
+  &.red {
+    @include mixin.local-base(red, 9, 1);
+  }
+
+  &.blue {
+    @include mixin.local-base(blue, 9, 1);
+  }
+
+  &.green {
+    @include mixin.local-base(green, 9, 1);
+  }
+}
+
+button,
+input:where([type="button"], [type="submit"], [type="reset"], [type="color"]) {
+  @include mixin.select-none;
+  appearance: none;
+  display: flex;
+  cursor: pointer;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  @include mixin.local-base-setup(slate, 3, 11);
+  @include mixin.button(slate);
+
+  &:focus-visible {
+    outline: var(--blue-8) 2px solid;
+  }
+
+  @include mixin.button-variant(red);
+  @include mixin.button-variant(green);
+  @include mixin.button-variant(blue);
+
+  &.emphasis {
+    @include mixin.button(slate, 9, 10, 11, 1);
+
+    @include mixin.button-variant(red, 9, 10, 11, 1);
+    @include mixin.button-variant(green, 9, 10, 11, 1);
+    @include mixin.button-variant(blue, 9, 10, 11, 1);
+  }
+}
+
+input:where(
+    :not([type]),
+    [type="text"],
+    [type^="date"],
+    [type="email"],
+    [type="month"],
+    [type="number"],
+    [type="password"],
+    [type="search"],
+    [type="tel"],
+    [type="time"],
+    [type="url"],
+    [type="week"]
+  ) {
+  appearance: none;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  background: var(---bg, var(--slate-3));
+  color: var(---text, var(--slate-12));
+  outline: var(---b, var(--slate-7)) 1px solid;
+
+  &::placeholder {
+    color: var(--slate-11);
+  }
+
+  &:focus-visible {
+    outline: var(--blue-8) 2px solid;
+  }
+}
+
+input:where([type="checkbox"], [type="radio"]) {
+  appearance: none;
+  border: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &::before {
+    content: "";
+    width: 1rem;
+    aspect-ratio: 1/1;
+    border-radius: 0.25rem;
+    background: var(--slate-3);
+    outline: var(--slate-7) 1px solid;
+  }
+
+  &:checked::after {
+    content: "";
+    position: absolute;
+    width: 0.7rem;
+    height: 0.7rem;
+    background: var(--blue-8);
+    border-radius: 0.2rem;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &:hover::after {
+    background: var(--blue-9);
+  }
+
+  &:active::after {
+    background: var(--blue-10);
+  }
+
+  &:focus-visible {
+    outline: none;
+
+    &::before {
+      outline: var(--blue-8) 2px solid;
+    }
+  }
+}
+
+input[type="radio"] {
+  &::before {
+    border-radius: 99999rem;
+  }
+
+  &::after {
+    border-radius: 99999rem;
+  }
+}
+
+input[type="checkbox"][role="switch"] {
+  &::before {
+    content: "";
+    width: 1.875rem;
+    height: 1.125rem;
+    border-radius: 99999rem;
+    background: var(--slate-9);
+    outline: none;
+    transition: background linear 0.1s;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 99999rem;
+    background: var(--slate-1);
+    left: 0.5625rem;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: left cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+  }
+
+  &:checked {
+    &::before {
+      background: var(--blue-9);
+    }
+
+    &:after {
+      left: calc(100% - 0.5625rem);
+    }
+  }
+
+  &:focus-visible::before {
+    outline: var(--blue-8) 2px solid;
+  }
+
+  &:disabled {
+    &::before {
+      background: var(--gray-6) !important;
+    }
+  }
+}
+
+select {
+  // appearance: none;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  background: var(--slate-3);
+  color: var(--slate-12);
+  outline: var(--slate-7) 1px solid;
+  position: relative;
+
+  &:focus-visible {
+    outline: var(--blue-8) 2px solid;
+  }
+}
+
+[disabled] {
+  cursor: not-allowed !important;
+  ---bg: var(--gray-3) !important;
+  ---text: var(--gray-8) !important;
+  ---b: var(--gray-6) !important;
+
+  &:hover {
+    ---bg: var(--gray-3) !important;
+  }
+
+  &:active {
+    ---bg: var(--gray-3) !important;
+  }
+}
