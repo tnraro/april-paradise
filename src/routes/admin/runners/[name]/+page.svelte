@@ -8,7 +8,7 @@
   };
   const submit = () => {
     console.log(current);
-  }
+  };
 
   let { data } = $props();
 

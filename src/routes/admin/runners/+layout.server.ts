@@ -13,5 +13,6 @@ export const load = async ({ locals, depends, params }) => {
       name: runner.name,
       selected: params.name === runner.name,
     })),
+    selected: params.name,
   };
 };

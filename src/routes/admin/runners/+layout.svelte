@@ -18,7 +18,9 @@
     </div>
   </div>
   <div id="penal" role="tabpanel" class="tabpanel">
-    {@render children()}
+    {#key data.selected}
+      {@render children()}
+    {/key}
   </div>
 </div>
 
