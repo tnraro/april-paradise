@@ -1,6 +1,1 @@
-<script lang="ts">
-  
-  let { data } = $props();
-
-  let isOpenNewRunner = $state(false);
-</script>
+러너 벌크 수정

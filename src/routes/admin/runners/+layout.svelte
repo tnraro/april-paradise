@@ -6,6 +6,15 @@
   <div class="_left">
     <button>+ 러너 추가</button>
     <div role="tablist" class="tablist">
+      <a
+        role="tab"
+        class="tab"
+        aria-selected={data.selected == null}
+        aria-controls="panel"
+        href="/admin/runners"
+      >
+        전체 보기
+      </a>
       {#each data.runners as runner (runner.id)}
         <a
           role="tab"
