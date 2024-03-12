@@ -11,17 +11,17 @@ for item in items union (
   with
     id := <uuid>item["id"],
     reason := <str>item["reason"],
-    is_banned := <bool>item["isBanned"],
+    isBanned := <bool>item["isBanned"],
     penalty := (select Penalty filter .id = id)
   select (update Penalty
          filter .id = id
          set {
-           is_banned := is_banned,
+           isBanned := isBanned,
            reason := reason,
          })
   if exists penalty
   else (insert Penalty {
-    is_banned := is_banned,
+    isBanned := isBanned,
     reason := reason,
     user := runner,
   })

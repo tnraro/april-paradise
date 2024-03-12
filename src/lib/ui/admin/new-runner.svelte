@@ -50,7 +50,7 @@
   <input bind:value={currentState.name} name="name" required placeholder="캐릭터 이름" />
   @<input
     bind:value={currentState.twitterId}
-    name="twitter_id"
+    name="twitterId"
     minlength={4}
     maxlength={15}
     pattern="^[\w_]+$"

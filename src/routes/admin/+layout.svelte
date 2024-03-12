@@ -9,7 +9,7 @@
     {/each}
   </nav>
   <div>
-    {#if data.admin.is_god}
+    {#if data.admin.isGod}
       <span title={`"신"`}>💛</span>
     {/if}
     <span>{data.admin.name}</span>

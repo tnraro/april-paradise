@@ -1,1 +1,1 @@
-select exists global current_user;
+select exists global currentUser;
