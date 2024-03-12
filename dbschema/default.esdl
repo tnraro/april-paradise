@@ -1,13 +1,13 @@
 using extension auth;
 
 module default {
-  global current_user := (
+  global currentUser := (
     assert_single((
       select User
       filter .identity = global ext::auth::ClientTokenIdentity
     ))
   );
-  global game_session := (
+  global gameSession := (
     assert_single((
       select GameSession
     ))
@@ -23,25 +23,25 @@ module default {
       constraint exclusive;
     }
 
-    required is_admin := exists [is Admin];
-    required is_runner := exists [is Runner];
+    required isAdmin := exists [is Admin];
+    required isRunner := exists [is Runner];
 
-    required created_at: datetime {
+    required createdAt: datetime {
       default := datetime_of_transaction();
     }
   }
   type Admin extending User {
-    required is_god: bool {
+    required isGod: bool {
       default := false;
     }
     access policy allow_all
       allow all;
     access policy register_until_session_started
       deny insert
-      using (global game_session.is_started ?? false);
+      using (global gameSession.isStarted ?? false);
   }
   type Runner extending User {
-    required twitter_id: str {
+    required twitterId: str {
       constraint exclusive;
     }
     memo: str;
@@ -56,10 +56,10 @@ module default {
     }
 
     multi penalties := .<user[is Penalty];
-    banneds := count((select .penalties filter .is_banned));
-    warnings := count((select .penalties filter not .is_banned));
-    required is_banned := count(.banneds) > 0;
-    required is_active := not .is_banned;
+    banneds := count((select .penalties filter .isBanned));
+    warnings := count((select .penalties filter not .isBanned));
+    required isBanned := count(.banneds) > 0;
+    required isActive := not .isBanned;
 
     multi achievements := .<runner[is RunnerAchievement];
     multi inventory := .<owner[is Item];
@@ -68,23 +68,23 @@ module default {
   abstract type Event {
     required name: str;
     description: str;
-    required start_time: datetime;
-    required end_time: datetime;
+    required startTime: datetime;
+    required endTime: datetime;
     constraint expression on (
-      .start_time < .end_time
+      .startTime < .endTime
     );
 
-    required is_started := (
-      datetime_of_transaction() >= .start_time
+    required isStarted := (
+      datetime_of_transaction() >= .startTime
     );
-    required is_ended := (
-      datetime_of_transaction() > .end_time
+    required isEnded := (
+      datetime_of_transaction() > .endTime
     );
-    required is_running := (
-      .is_started and not .is_ended
+    required isRunning := (
+      .isStarted and not .isEnded
     );
 
-    required created_at: datetime {
+    required createdAt: datetime {
       default := datetime_of_transaction();
     }
   }
@@ -99,7 +99,7 @@ module default {
       on target delete delete source;
     }
 
-    required created_at: datetime {
+    required createdAt: datetime {
       default := datetime_of_transaction();
     }
   }
@@ -114,12 +114,12 @@ module default {
     required reward: str {
       annotation title := "보상";
     }
-    required is_hidden: bool {
+    required isHidden: bool {
       annotation title := "히든";
       default := false;
     }
 
-    required created_at: datetime {
+    required createdAt: datetime {
       default := datetime_of_transaction();
     }
   }
@@ -140,7 +140,7 @@ module default {
       on target delete delete source;
     }
     reason: str;
-    required is_banned: bool {
+    required isBanned: bool {
       default := false;
     };
   }

@@ -1,1 +1,1 @@
-select global game_session.is_running;
+select global gameSession.isRunning;

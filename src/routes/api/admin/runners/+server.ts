@@ -27,7 +27,7 @@ const post = async (event: RequestEvent, set: ResponseInit) =>
         if (e.name === "ConstraintViolationError") {
           if (e.message.startsWith("name violates exclusivity constraint")) {
             return error(409, "conflict name");
-          } else if (e.message.startsWith("twitter_id violates exclusivity constraint")) {
+          } else if (e.message.startsWith("twitterId violates exclusivity constraint")) {
             return error(409, "conflict twitter id");
           }
         }

@@ -2,14 +2,14 @@ select Runner {
   name,
   memo,
   id,
-  isBanned := .is_banned,
-  isActive := .is_active,
+  isBanned,
+  isActive,
   chips,
   tokens,
-  twitterId := .twitter_id,
+  twitterId,
   penalties: {
     reason,
-    isBanned := .is_banned,
+    isBanned,
     id
   },
   hasIdentity := exists .identity

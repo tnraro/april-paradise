@@ -1,5 +1,5 @@
 insert Runner {
   name := <str>$name,
-  twitter_id := <str>$twitterId,
+  twitterId := <str>$twitterId,
   identity := {},
 }

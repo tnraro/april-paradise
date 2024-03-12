@@ -3,7 +3,7 @@ select Runner {
   penalties: {
     reason,
     id,
-    isBanned := .is_banned,
+    isBanned,
   }
 }
 filter .id = <std::uuid>$id

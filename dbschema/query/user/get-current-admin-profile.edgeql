@@ -1,4 +1,4 @@
-select assert_single((global current_user[is Admin])) {
+select assert_single((global currentUser[is Admin])) {
   name,
-  isGod := .is_god,
+  isGod,
 }
