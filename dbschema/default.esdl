@@ -14,7 +14,7 @@ module default {
   );
 
   abstract type User {
-    required identity: ext::auth::Identity{ 
+    identity: ext::auth::Identity{ 
       constraint exclusive;
       on target delete delete source;
       default := global ext::auth::ClientTokenIdentity;
@@ -23,16 +23,17 @@ module default {
       constraint exclusive;
     }
 
-    required is_god := exists [is GginggoTheGod];
-    required is_host := exists [is Host];
+    required is_admin := exists [is Admin];
     required is_runner := exists [is Runner];
 
     required created_at: datetime {
       default := datetime_of_transaction();
     }
   }
-  type GginggoTheGod extending User {}
-  type Host extending User {
+  type Admin extending User {
+    required is_god: bool {
+      default := false;
+    }
     access policy allow_all
       allow all;
     access policy register_until_session_started
@@ -43,9 +44,7 @@ module default {
     required twitter_id: str {
       constraint exclusive;
     }
-    required character: str {
-      constraint exclusive;
-    }
+    memo: str;
 
     required chips: int64 {
       constraint min_value(0);
@@ -57,7 +56,9 @@ module default {
     }
 
     multi penalties := .<user[is Penalty];
-    required is_banned := count(.penalties[is Banned]) > 0;
+    banneds := count((select .penalties filter .is_banned));
+    warnings := count((select .penalties filter not .is_banned));
+    required is_banned := count(.banneds) > 0;
     required is_active := not .is_banned;
 
     multi achievements := .<runner[is RunnerAchievement];
@@ -134,14 +135,13 @@ module default {
     }
   }
 
-  abstract type Penalty {
+  type Penalty {
     required user: User {
       on target delete delete source;
     }
     reason: str;
-    required is_warning := exists [is Warning];
-    required is_banned := exists [is Banned];
+    required is_banned: bool {
+      default := false;
+    };
   }
-  type Warning extending Penalty {}
-  type Banned extending Penalty {}
 }

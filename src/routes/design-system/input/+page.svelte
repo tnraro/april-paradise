@@ -43,11 +43,22 @@
     <input type="radio" disabled />
     <input type="checkbox" role="switch" disabled />
   </div>
+  <div>invalid</div>
+  <form class="elements">
+    <input required />
+    <input type="date" required />
+    <input type="password" required />
+    <input type="button" value="입력" required />
+    <input type="checkbox" required />
+    <input type="radio" required />
+    <input type="checkbox" role="switch" required />
+  </form>
   <div>기타</div>
   <div class="elements">
     <input type="file" />
     <input type="range" />
     <input type="image" alt="" src="/favicon.png" />
+    <textarea>가나다</textarea>
   </div>
 </div>
 

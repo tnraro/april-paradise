@@ -16,3 +16,4 @@ export const PASSWORD = z
   .string()
   .trim()
   .min(8, { message: "password must be 8 characters or more" });
+export const NAME = z.string().trim();

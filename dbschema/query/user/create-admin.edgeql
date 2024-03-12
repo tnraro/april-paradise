@@ -1,3 +1,3 @@
-insert Host {
+insert Admin {
   name := <str>$name,
 }

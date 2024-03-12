@@ -14,5 +14,5 @@
   <a href="/auth/sign-out">sign-out</a>
 {:else}
   <a href="/auth/sign-in">sign-in</a>
-  <a href="/auth/host/sign-up">sign-up (host)</a>
+  <a href="/auth/sign-up">sign-up (admin)</a>
 {/if}

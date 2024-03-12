@@ -1,8 +1,7 @@
-import { ID, PASSWORD } from "$lib/shared/schema/auth";
-import { fail, isRedirect, redirect, type Actions } from "@sveltejs/kit";
+import { isStarted } from "$edgedb/queries";
+import { ID, NAME, PASSWORD } from "$lib/shared/schema/auth";
+import { error, fail, isRedirect, redirect, type Actions } from "@sveltejs/kit";
 import { ErrorCode } from "./lib";
-import { createHost, isStarted } from "$edgedb/queries";
-import { z } from "zod";
 
 class CustomError extends Error {
   code;
@@ -11,6 +10,17 @@ class CustomError extends Error {
     this.code = code;
   }
 }
+
+export const load = async ({ locals }) => {
+  const session = locals.auth.session;
+
+  if (!(await isStarted(session.client))) {
+    // admin mode
+    return {};
+  }
+  // access denied
+  error(404, "Not Found");
+};
 
 export const actions = {
   default: async ({ request, locals }) => {
@@ -24,7 +34,7 @@ export const actions = {
 
       const data = await request.formData();
       id = ID.parse(data.get("id"));
-      name = z.string().parse(data.get("name"));
+      name = NAME.parse(data.get("name"));
       const password = PASSWORD.parse(data.get("password"));
       // TODO: use id instead of email only this time
       const email = `${id}@tnraro.com`;
@@ -38,14 +48,7 @@ export const actions = {
         throw "token is null";
       }
 
-      if (!(await session.isSignedIn())) {
-        throw "not signed in";
-      }
-      await createHost(session.client, {
-        name,
-      });
-
-      return redirect(303, "/");
+      return redirect(303, `/auth/callback?name=${encodeURIComponent(name)}`);
     } catch (error) {
       if (isRedirect(error)) {
         throw error;
