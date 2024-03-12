@@ -6,6 +6,7 @@ export const load = ({ url }) => {
     { href: "/design-system/input", title: "입력" },
     { href: "/design-system/anchor", title: "연결" },
     { href: "/design-system/select", title: "선택" },
+    { href: "/design-system/floating", title: "떠 있는 거" },
   ].map((page) =>
     page.href === url.pathname ? { ...page, current: true } : { ...page, current: false },
   );
