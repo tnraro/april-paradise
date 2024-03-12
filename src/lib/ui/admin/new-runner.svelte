@@ -1,7 +1,6 @@
 <script lang="ts">
   import { invalidate } from "$app/navigation";
-  import { req } from "$lib/api/client";
-  import type { POST } from "$routes/api/runners/+server";
+  import { api } from "$lib/api/api.gen";
 
   interface State {
     name: string;
@@ -13,7 +12,7 @@
   let { onclose } = $props<Props>();
 
   const onsubmit = async () => {
-    const res = await req<POST>("POST", "/api/runners", {}, currentState);
+    const res = await api.runners.post(currentState);
     if (res.ok) {
       if (res.data.created) {
         invalidate("admin:runners");

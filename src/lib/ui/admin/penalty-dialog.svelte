@@ -1,9 +1,8 @@
 <script lang="ts">
   import { invalidate } from "$app/navigation";
-  import { req } from "$lib/api/client";
+  import { api } from "$lib/api/api.gen";
   import { deepEqual } from "$lib/shared/util/deep-equal";
   import Dialog from "$lib/ui/floating/dialog.svelte";
-  import { GET, POST } from "$routes/api/runners/[id]/penalties/+server";
 
   const addPenalty = () => {
     current = [
@@ -20,7 +19,7 @@
   };
   const apply = async () => {
     isLoading = true;
-    const res = await req<POST>("POST", "/api/runners/[id]/penalties", { id }, current);
+    const res = await api.runners.id.penalties.post({ id }, current);
     isLoading = false;
     if (res.ok) {
       console.log(res.data);
@@ -51,7 +50,7 @@
   let isEdited = $derived(!deepEqual(current, data));
 
   $effect(() => {
-    req<GET>("GET", `/api/runners/[id]/penalties`, { id }).then((res) => {
+    api.runners.id.penalties.get({ id }).then((res) => {
       if (res.ok) {
         console.log(res.data);
         data = [...res.data.penalties];
