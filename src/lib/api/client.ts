@@ -1,9 +1,19 @@
-export const req = async <Entry extends { body: unknown; response: unknown }>(
-  method: "GET" | "POST" | "PUT" | "DELETE",
-  path: string,
-  body?: Entry["body"],
-): Promise<{ ok: true; data: Entry["response"] } | { ok: false; error: { message: string } }> => {
-  const res = await fetch(path, {
+export const req = async <
+  Entry extends {
+    returns: unknown;
+    params: Record<string, string>;
+    route: string;
+    method: "GET" | "POST" | "PUT" | "DELETE";
+    body: unknown;
+  },
+>(
+  method: Entry["method"],
+  path: Entry["route"],
+  params: Entry["params"],
+  body?: Entry["body"] | Readonly<Entry["body"]>,
+): Promise<{ ok: true; data: Entry["returns"] } | { ok: false; error: { message: string } }> => {
+  const url = path.replaceAll(/(?<=\/)\[([^\]]+)\]/g, (_, $1) => params[$1]);
+  const res = await fetch(url, {
     method,
     body: body != null ? JSON.stringify(body) : undefined,
   });
