@@ -8,9 +8,7 @@ export const load = async ({ locals, depends, params }) => {
 
   return {
     runners: runners.map((runner) => ({
-      id: runner.id,
-      isBanned: runner.is_banned,
-      name: runner.name,
+      ...runner,
       selected: params.name === runner.name,
     })),
     selected: params.name,

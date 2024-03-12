@@ -7,11 +7,7 @@ select Runner {
   chips,
   tokens,
   twitterId := .twitter_id,
-  penalties: {
-    reason,
-    isBanned := .is_banned,
-    id
-  },
-  hasIdentity := exists .identity
+  hasIdentity := exists .identity,
+  warnings,
+  banneds,
 }
-filter .name = <str>$name

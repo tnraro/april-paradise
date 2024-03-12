@@ -18,10 +18,7 @@ const post = async (event: RequestEvent, set: ResponseInit) =>
     .then(validateBody(postBodySchema))
     .then(async ({ locals, body }) => {
       const session = locals.auth.session;
-      await createRunner(session.client, {
-        name: body.name,
-        twitter_id: body.twitterId,
-      });
+      await createRunner(session.client, body);
       set.status = 201;
       return { created: true };
     })

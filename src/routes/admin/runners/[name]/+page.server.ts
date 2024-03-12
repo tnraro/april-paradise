@@ -14,22 +14,6 @@ export const load = async ({ locals, depends, params }) => {
   }
 
   return {
-    runner: {
-      id: runner.id,
-      name: runner.name,
-      memo: runner.memo,
-      isBanned: runner.is_banned,
-      isActive: runner.is_active,
-      chips: runner.chips,
-      tokens: runner.tokens,
-      twitterId: runner.twitter_id,
-      hasIdentity: runner.has_identity,
-      penalties: runner.penalties.map((penalty) => ({
-        id: penalty.id,
-        reason: penalty.reason,
-        isBanned: penalty.is_banned,
-        isWarning: penalty.is_warning,
-      })),
-    },
+    runner,
   };
 };

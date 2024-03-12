@@ -1,5 +1,6 @@
 <script lang="ts">
   import { deepEqual } from "$lib/shared/util/deep-equal.js";
+  import Alert from "$lib/ui/floating/alert.svelte";
 
   const reset = () => {
     current = {
@@ -39,8 +40,8 @@
     {#each current.penalties as penalty (penalty.id)}
       <span
         class="penalty"
-        class:penalty--warning={penalty.isWarning}
-        class:penalty--banned={penalty.isBanned}>{penalty.isWarning ? "경고" : "제명"}</span
+        class:penalty--warning={!penalty.isBanned}
+        class:penalty--banned={penalty.isBanned}>{penalty.isBanned ? "제명" : "경고"}</span
       >
       <span>{penalty.reason}</span>
     {/each}
@@ -50,11 +51,11 @@
   </div>
 </main>
 {#if !isEqual}
-  <div class="alert">
+  <Alert>
     <div>수정됨</div>
     <button class="blue" type="reset" onclick={reset}>재설정</button>
     <button class="blue emphasis" onclick={submit}>저장</button>
-  </div>
+  </Alert>
 {/if}
 
 <style lang="scss">

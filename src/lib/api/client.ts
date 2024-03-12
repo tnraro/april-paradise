@@ -1,11 +1,11 @@
 export const req = async <Entry extends { body: unknown; response: unknown }>(
   method: "GET" | "POST" | "PUT" | "DELETE",
   path: string,
-  body: Entry["body"],
+  body?: Entry["body"],
 ): Promise<{ ok: true; data: Entry["response"] } | { ok: false; error: { message: string } }> => {
   const res = await fetch(path, {
     method,
-    body: JSON.stringify(body),
+    body: body != null ? JSON.stringify(body) : undefined,
   });
   if (!res.ok) {
     return { ok: false, error: await res.json() };

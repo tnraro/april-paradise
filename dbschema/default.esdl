@@ -56,7 +56,9 @@ module default {
     }
 
     multi penalties := .<user[is Penalty];
-    required is_banned := count(.penalties[is Banned]) > 0;
+    banneds := count((select .penalties filter .is_banned));
+    warnings := count((select .penalties filter not .is_banned));
+    required is_banned := count(.banneds) > 0;
     required is_active := not .is_banned;
 
     multi achievements := .<runner[is RunnerAchievement];
@@ -133,14 +135,13 @@ module default {
     }
   }
 
-  abstract type Penalty {
+  type Penalty {
     required user: User {
       on target delete delete source;
     }
     reason: str;
-    required is_warning := exists [is Warning];
-    required is_banned := exists [is Banned];
+    required is_banned: bool {
+      default := false;
+    };
   }
-  type Warning extending Penalty {}
-  type Banned extending Penalty {}
 }

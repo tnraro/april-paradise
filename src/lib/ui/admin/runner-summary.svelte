@@ -10,9 +10,11 @@
   let { id, name, twitterId, isBanned, chips, tokens } = $props<Props>();
 </script>
 
-<div>
+<div class="runner-summary">
   <span>{name}</span>
-  <span>@{twitterId}</span>
+  <a class="x-id" href="https://twitter.com/{twitterId}" rel="noreferrer" target="_blank"
+    >@{twitterId}</a
+  >
   <span>
     {#if isBanned}
       <span>제명됨</span>
@@ -21,3 +23,14 @@
   <span>{chips}</span>
   <span>{tokens}</span>
 </div>
+
+<style>
+  .runner-summary {
+    display: grid;
+    grid-template-columns: repeat(5, max-content);
+    gap: 0.5rem;
+  }
+  .x-id {
+    color: var(--slate-11);
+  }
+</style>

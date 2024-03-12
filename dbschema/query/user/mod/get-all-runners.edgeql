@@ -1,5 +1,5 @@
 select Runner {
   id,
   name,
-  is_banned,
+  isBanned := .is_banned,
 }
