@@ -34,6 +34,6 @@ const post = async (event: RequestEvent, set: ResponseInit) =>
       }
       throw e;
     })
-    .catch(logError("post /api/admin/runners"));
+    .catch(logError("post /api/runners"));
 
 export const POST = handle(post);

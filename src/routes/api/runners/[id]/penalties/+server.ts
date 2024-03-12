@@ -1,6 +1,10 @@
-import { getRunnerPenaltiesById, updateRunnerPenalties } from "$edgedb/queries";
+import {
+  getCurrentAdminProfile,
+  getRunnerPenaltiesById,
+  updateRunnerPenalties,
+} from "$edgedb/queries";
 import { handle } from "$lib/api/handle";
-import type { RequestEvent } from "@sveltejs/kit";
+import { error, type RequestEvent } from "@sveltejs/kit";
 import { z } from "zod";
 
 export interface GetRunnerPenaltiesById {
@@ -32,6 +36,9 @@ const post = async ({ locals, params, request }: RequestEvent) => {
   const { id } = params;
   if (id == null) throw "adasadsadsadsadsadspkoadskopasdkpo";
   const { client } = locals.auth.session;
+  if ((await getCurrentAdminProfile(client)) == null) {
+    error(401);
+  }
   const penalties = postBodySchema.parse(await request.json());
   await updateRunnerPenalties(client, {
     id,

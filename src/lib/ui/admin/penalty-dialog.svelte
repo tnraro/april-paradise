@@ -19,7 +19,7 @@
   };
   const apply = async () => {
     isLoading = true;
-    const res = await req("POST", `/api/admin/runners/${id}/penalties`, current);
+    const res = await req("POST", `/api/runners/${id}/penalties`, current);
     isLoading = false;
     if (res.ok) {
       console.log(res.data);
@@ -50,7 +50,7 @@
   let isEdited = $derived(!deepEqual(current, data));
 
   $effect(() => {
-    req("GET", `/api/admin/runners/${id}/penalties`).then((res) => {
+    req("GET", `/api/runners/${id}/penalties`).then((res) => {
       if (res.ok) {
         console.log(res.data);
         data = [...res.data.penalties];
