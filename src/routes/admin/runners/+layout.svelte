@@ -1,10 +1,14 @@
 <script lang="ts">
+  import NewRunnerDialog from "$lib/ui/admin/new-runner-dialog.svelte";
+
   let { data, children } = $props();
+
+  let showNewRunner = $state(false);
 </script>
 
 <div class="_">
   <div class="_left">
-    <button>+ 러너 추가</button>
+    <button onclick={() => (showNewRunner = true)}>+ 러너 추가</button>
     <div role="tablist" class="tablist">
       <a
         role="tab"
@@ -32,6 +36,10 @@
     {/key}
   </div>
 </div>
+
+{#if showNewRunner}
+  <NewRunnerDialog onclose={() => (showNewRunner = false)} />
+{/if}
 
 <style lang="scss">
   ._ {
