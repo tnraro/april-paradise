@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ID, PASSWORD } from "$lib/shared/schema/auth";
+  import { IDz, PASSWORDz } from "$lib/shared/schema/auth";
 
   interface Props {
     id?: string;
@@ -19,7 +19,7 @@
   });
   $effect(() => {
     if (current.id.length > 0) {
-      const res = ID.safeParse(current.id);
+      const res = IDz.safeParse(current.id);
       if (res.success) {
         current.id = res.data;
         errors.id = null;
@@ -30,7 +30,7 @@
   });
   $effect(() => {
     if (current.password.length > 0) {
-      const res = PASSWORD.safeParse(current.password);
+      const res = PASSWORDz.safeParse(current.password);
       if (res.success) {
         current.password = res.data;
         errors.password = null;

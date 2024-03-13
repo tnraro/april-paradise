@@ -1,5 +1,5 @@
 import { isGameSessionStarted } from "$lib/data/query/is-game-session-started.query";
-import { ID, NAME, PASSWORD } from "$lib/shared/schema/auth";
+import { IDz, NAMEz, PASSWORDz } from "$lib/shared/schema/auth";
 import { error, fail, isRedirect, redirect } from "@sveltejs/kit";
 import { ZodError } from "zod";
 
@@ -24,9 +24,9 @@ export const actions = {
         return fail(401);
       }
       const form = await request.formData();
-      id = ID.parse(form.get("id"));
-      name = NAME.parse(form.get("name"));
-      const password = PASSWORD.parse(form.get("password"));
+      id = IDz.parse(form.get("id"));
+      name = NAMEz.parse(form.get("name"));
+      const password = PASSWORDz.parse(form.get("password"));
       const email = `${id}@tnraro.com`;
 
       const { tokenData } = await locals.auth.emailPasswordSignUp({

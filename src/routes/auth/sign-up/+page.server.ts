@@ -1,5 +1,5 @@
 import { isGameSessionStarted } from "$lib/data/query/is-game-session-started.query";
-import { ID, NAME, PASSWORD } from "$lib/shared/schema/auth";
+import { IDz, NAMEz, PASSWORDz } from "$lib/shared/schema/auth";
 import { error, fail, isRedirect, redirect, type Actions } from "@sveltejs/kit";
 import { ErrorCode } from "./lib";
 
@@ -33,9 +33,9 @@ export const actions = {
       }
 
       const data = await request.formData();
-      id = ID.parse(data.get("id"));
-      name = NAME.parse(data.get("name"));
-      const password = PASSWORD.parse(data.get("password"));
+      id = IDz.parse(data.get("id"));
+      name = NAMEz.parse(data.get("name"));
+      const password = PASSWORDz.parse(data.get("password"));
       // TODO: use id instead of email only this time
       const email = `${id}@tnraro.com`;
 

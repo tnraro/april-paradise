@@ -1,4 +1,4 @@
-import { NAME } from "$lib/shared/schema/auth.js";
+import { NAMEz } from "$lib/shared/schema/auth.js";
 import { error, redirect } from "@sveltejs/kit";
 import { EdgeDBError } from "edgedb";
 import { get } from "./get.query";
@@ -8,7 +8,7 @@ export const GET = async ({ locals, url }) => {
   if (!(await session.isSignedIn())) {
     error(401);
   }
-  const name = NAME.parse(url.searchParams.get("name"));
+  const name = NAMEz.parse(url.searchParams.get("name"));
 
   try {
     await get(session.client, {

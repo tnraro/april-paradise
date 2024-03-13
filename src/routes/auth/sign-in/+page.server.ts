@@ -1,4 +1,4 @@
-import { ID, PASSWORD } from "$lib/shared/schema/auth.js";
+import { IDz, PASSWORDz } from "$lib/shared/schema/auth.js";
 import { fail, isRedirect, redirect, type Actions } from "@sveltejs/kit";
 
 export const actions = {
@@ -6,8 +6,8 @@ export const actions = {
     let id: string | undefined;
     try {
       const data = await request.formData();
-      id = ID.parse(data.get("id"));
-      const password = PASSWORD.parse(data.get("password"));
+      id = IDz.parse(data.get("id"));
+      const password = PASSWORDz.parse(data.get("password"));
       // TODO: use id instead of email only this time
       const email = `${id}@tnraro.com`;
 
