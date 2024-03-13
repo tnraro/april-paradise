@@ -1,18 +1,15 @@
-import {
-  getCurrentAdminProfile,
-  getRunnerPenaltiesById,
-  updateRunnerPenalties,
-} from "$edgedb/queries";
+import { getRunnersIdPenalties, postRunnersIdPenalties } from "$edgedb/queries";
 import { route } from "$lib/api/server";
 import { error } from "@sveltejs/kit";
 import { z } from "zod";
 import type { RequestEvent } from "./$types";
+import { AccessPolicyError, EdgeDBError } from "edgedb";
 
 export const GET = route("get", async ({ locals, params }: RequestEvent) => {
   const { id } = params;
   if (id == null) throw "adasadsadsadsadsadspkoadskopasdkpo";
   const { client } = locals.auth.session;
-  const runner = await getRunnerPenaltiesById(client, {
+  const runner = await getRunnersIdPenalties(client, {
     id,
   });
   if (runner == null) error(404);
@@ -26,10 +23,7 @@ export const POST = route(
     const { id } = params;
     if (id == null) throw "adasadsadsadsadsadspkoadskopasdkpo";
     const { client } = locals.auth.session;
-    if ((await getCurrentAdminProfile(client)) == null) {
-      error(401);
-    }
-    await updateRunnerPenalties(client, {
+    await postRunnersIdPenalties(client, {
       id,
       penalties: body,
     });
@@ -43,6 +37,14 @@ export const POST = route(
         reason: z.string().nullish(),
       }),
     ),
+    err(e) {
+      if (e instanceof EdgeDBError) {
+        if (e instanceof AccessPolicyError) {
+          error(401);
+        }
+        return;
+      }
+    },
   },
 );
 

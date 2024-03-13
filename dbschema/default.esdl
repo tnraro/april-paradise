@@ -87,6 +87,13 @@ module default {
     required createdAt: datetime {
       default := datetime_of_transaction();
     }
+
+    access policy admin
+      allow all
+      using (global currentUser.isAdmin ?? false);
+    access policy user_can_select
+      allow select
+      using (exists global currentUser);
   }
 
   type GameSession extending Event {}
@@ -143,5 +150,12 @@ module default {
     required isBanned: bool {
       default := false;
     };
+
+    access policy admin
+      allow all
+      using (global currentUser.isAdmin ?? false);
+    access policy self
+      allow select
+      using (global currentUser ?= .user);
   }
 }
