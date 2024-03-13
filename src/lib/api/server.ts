@@ -15,25 +15,27 @@ export const route = <
   },
 ) => {
   const p = async (re: E) => {
+    let _body: any;
     try {
-      const _body = options?.body?.parse(await re.request.json());
-      try {
-        const set = {} as ResponseInit;
-        const res = await handler(re, _body, set);
-        return json(res, set);
-      } catch (e) {
-        if (e instanceof ZodError) {
-          error(400, e.errors.map((error) => error.message).join("\n"));
-        }
-        options?.err?.(e, re, _body);
-        console.error("err", e);
-        error(500);
-      }
+      _body = options?.body?.parse(await re.request.json());
     } catch (e) {
       if (e instanceof SyntaxError) {
-        console.error("err", e);
         error(400);
       }
+      if (e instanceof ZodError) {
+        error(400, e.errors.map((error) => error.message).join("\n"));
+      }
+      console.error("err", e);
+      error(500);
+    }
+    try {
+      const set = {} as ResponseInit;
+      console.log(3);
+      const res = await handler(re, _body, set);
+      console.log(2);
+      return json(res, set);
+    } catch (e) {
+      options?.err?.(e, re, _body);
       console.error("err", e);
       error(500);
     }
