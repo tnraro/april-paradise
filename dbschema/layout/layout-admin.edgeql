@@ -1,0 +1,1 @@
+select assert_single((global currentUser[is Admin]));
