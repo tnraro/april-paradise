@@ -39,8 +39,17 @@
   "type": "module",
   "dependencies": {
     "@edgedb/auth-sveltekit": "^0.1.1",
+    "@elysiajs/eden": "^0.8.1",
+    "@elysiajs/server-timing": "^0.8.0",
+    "@elysiajs/swagger": "^0.8.5",
     "@radix-ui/colors": "^3.0.0",
     "edgedb": "^1.4.1",
+    "elysia": "^0.8.17",
     "zod": "^3.22.4"
+  },
+  "pnpm": {
+    "overrides": {
+      "@sinclair/typebox": "^0.32.0"
+    }
   }
 }
