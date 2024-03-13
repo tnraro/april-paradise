@@ -1,28 +1,27 @@
-import { createRunner } from "$edgedb/queries";
-import { handle } from "$lib/api/handle";
-import { guardAdmin, logError, validateBody } from "$lib/api/plugin";
+import { createRunner, getCurrentAdminProfile } from "$edgedb/queries";
+import { route } from "$lib/api/server";
 import { NAME } from "$lib/shared/schema/auth";
 import { TWITTER_ID } from "$lib/shared/schema/runner";
-import type { RequestEvent } from "@sveltejs/kit";
 import { error } from "@sveltejs/kit";
 import { EdgeDBError } from "edgedb";
 import { z } from "zod";
+import type { RequestEvent } from "./$types";
 
-export interface PostAdminRunners {
-  body: z.infer<typeof postBodySchema>;
-  response: Awaited<ReturnType<typeof post>>;
-}
-const postBodySchema = z.object({ name: NAME, twitterId: TWITTER_ID });
-const post = async (event: RequestEvent, set: ResponseInit) =>
-  guardAdmin(event)
-    .then(validateBody(postBodySchema))
-    .then(async ({ locals, body }) => {
-      const session = locals.auth.session;
-      await createRunner(session.client, body);
-      set.status = 201;
-      return { created: true };
-    })
-    .catch(async (e) => {
+export const POST = route(
+  "post",
+  async (event: RequestEvent, body, set) => {
+    const session = event.locals.auth.session;
+    const admin = await getCurrentAdminProfile(session.client);
+    if (admin == null) {
+      error(401, "Unauthorized");
+    }
+    await createRunner(session.client, body);
+    set.status = 201;
+    return { created: true };
+  },
+  {
+    body: z.object({ name: NAME, twitterId: TWITTER_ID }),
+    err(e) {
       if (e instanceof EdgeDBError) {
         if (e.name === "ConstraintViolationError") {
           if (e.message.startsWith("name violates exclusivity constraint")) {
@@ -32,8 +31,7 @@ const post = async (event: RequestEvent, set: ResponseInit) =>
           }
         }
       }
-      throw e;
-    })
-    .catch(logError("post /api/runners"));
-
-export const POST = handle(post);
+    },
+  },
+);
+export type POST = typeof POST;

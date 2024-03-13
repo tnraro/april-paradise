@@ -1,6 +1,6 @@
 <script lang="ts">
   import { invalidate } from "$app/navigation";
-  import { req } from "$lib/api/client";
+  import { api } from "$lib/api/api.gen";
   import { deepEqual } from "$lib/shared/util/deep-equal";
   import Dialog from "$lib/ui/floating/dialog.svelte";
 
@@ -19,7 +19,7 @@
   };
   const apply = async () => {
     isLoading = true;
-    const res = await req("POST", `/api/runners/${id}/penalties`, current);
+    const res = await api.runners.id.penalties.post({ id }, current);
     isLoading = false;
     if (res.ok) {
       console.log(res.data);
@@ -41,7 +41,7 @@
   interface Penalty {
     id: string;
     isBanned: boolean;
-    reason: string;
+    reason: string | null;
   }
   let data = $state.frozen<Penalty[]>([]);
   let current = $state.frozen<Penalty[]>([]);
@@ -50,7 +50,7 @@
   let isEdited = $derived(!deepEqual(current, data));
 
   $effect(() => {
-    req("GET", `/api/runners/${id}/penalties`).then((res) => {
+    api.runners.id.penalties.get({ id }).then((res) => {
       if (res.ok) {
         console.log(res.data);
         data = [...res.data.penalties];
