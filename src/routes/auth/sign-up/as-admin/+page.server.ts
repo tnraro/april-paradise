@@ -1,4 +1,4 @@
-import { isStarted } from "$edgedb/queries";
+import { isGameSessionStarted } from "$lib/data/query/is-game-session-started.query";
 import { ID, NAME, PASSWORD } from "$lib/shared/schema/auth";
 import { error, fail, isRedirect, redirect } from "@sveltejs/kit";
 import { ZodError } from "zod";
@@ -6,7 +6,7 @@ import { ZodError } from "zod";
 export const load = async ({ locals }) => {
   const session = locals.auth.session;
 
-  if (!(await isStarted(session.client))) {
+  if (!(await isGameSessionStarted(session.client))) {
     // admin mode
     return {};
   }
@@ -20,7 +20,7 @@ export const actions = {
     let name: string | undefined;
     try {
       const { session } = locals.auth;
-      if (await isStarted(session.client)) {
+      if (await isGameSessionStarted(session.client)) {
         return fail(401);
       }
       const form = await request.formData();

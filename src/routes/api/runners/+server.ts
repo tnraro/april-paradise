@@ -1,4 +1,3 @@
-import { postRunners } from "$edgedb/queries";
 import { route } from "$lib/api/server";
 import { NAME } from "$lib/shared/schema/auth";
 import { TWITTER_ID } from "$lib/shared/schema/runner";
@@ -6,12 +5,13 @@ import { error } from "@sveltejs/kit";
 import { ConstraintViolationError, EdgeDBError } from "edgedb";
 import { z } from "zod";
 import type { RequestEvent } from "./$types";
+import { post } from "./post.query";
 
 export const POST = route(
   "post",
   async (event: RequestEvent, body, set) => {
     const session = event.locals.auth.session;
-    await postRunners(session.client, body);
+    await post(session.client, body);
     set.status = 201;
     return { created: true };
   },

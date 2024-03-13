@@ -1,1 +1,0 @@
-select exists global currentUser;
