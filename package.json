@@ -11,7 +11,7 @@
     "test": "vitest",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
-    "generate:edgeql": "pnpm exec generate queries --file src/lib/shared/queries",
+    "generate:edgeql": "pnpm exec generate queries",
     "generate:api": "bun run scripts/api-gen/index.ts"
   },
   "devDependencies": {

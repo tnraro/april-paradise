@@ -1,10 +1,10 @@
-import { getAllRunners } from "$edgedb/queries.js";
+import { layout } from "./layout.query";
 
 export const load = async ({ locals, depends, params }) => {
   depends("admin:runners");
 
   const session = locals.auth.session;
-  const runners = await getAllRunners(session.client);
+  const runners = await layout(session.client);
 
   return {
     runners: runners.map((runner) => ({
