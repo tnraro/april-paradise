@@ -15,6 +15,9 @@ const config = {
     alias: {
       $routes: "./src/routes",
     },
+    csrf: {
+      checkOrigin: false,
+    },
   },
 };
 

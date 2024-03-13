@@ -22,7 +22,6 @@
     const res = await api.runners.id.penalties.post({ id }, current);
     isLoading = false;
     if (res.ok) {
-      console.log(res.data);
       await invalidate("admin:runners");
       onclose?.();
     } else {
@@ -52,10 +51,8 @@
   $effect(() => {
     api.runners.id.penalties.get({ id }).then((res) => {
       if (res.ok) {
-        console.log(res.data);
         data = [...res.data.penalties];
         current = [...res.data.penalties];
-        console.log(data);
       } else {
         console.error(res);
       }

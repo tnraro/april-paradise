@@ -30,9 +30,7 @@ export const route = <
     }
     try {
       const set = {} as ResponseInit;
-      console.log(3);
       const res = await handler(re, _body, set);
-      console.log(2);
       return json(res, set);
     } catch (e) {
       options?.err?.(e, re, _body);
