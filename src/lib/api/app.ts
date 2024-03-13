@@ -23,6 +23,7 @@ const _app = new Elysia({ prefix: "/api" })
     };
   });
 export type _App = typeof _app;
+export type App = typeof app;
 export const app = _app.use(runners).onError(({ code, error, request }) => {
   switch (code) {
     case "VALIDATION":

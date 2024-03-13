@@ -1,8 +1,10 @@
 <script lang="ts">
   import { invalidate } from "$app/navigation";
-  import { api } from "$lib/api/api.gen";
+  import type { App } from "$lib/api/app";
   import { deepEqual } from "$lib/shared/util/deep-equal";
   import Dialog from "$lib/ui/floating/dialog.svelte";
+  import { edenTreaty } from "@elysiajs/eden";
+  const client = edenTreaty<App>(location.origin);
 
   const addPenalty = () => {
     current = [
@@ -19,9 +21,9 @@
   };
   const apply = async () => {
     isLoading = true;
-    const res = await api.runners.id.penalties.post({ id }, current);
+    const res = await client.api.api.runners.api[id].penalties.post(current as any);
     isLoading = false;
-    if (res.ok) {
+    if (res.data != null) {
       console.log(res.data);
       await invalidate("admin:runners");
       onclose?.();
@@ -50,8 +52,8 @@
   let isEdited = $derived(!deepEqual(current, data));
 
   $effect(() => {
-    api.runners.id.penalties.get({ id }).then((res) => {
-      if (res.ok) {
+    client.api.runners[id].penalties.get().then((res) => {
+      if (res.data != null) {
         console.log(res.data);
         data = [...res.data.penalties];
         current = [...res.data.penalties];

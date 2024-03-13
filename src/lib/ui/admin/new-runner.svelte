@@ -1,6 +1,9 @@
 <script lang="ts">
   import { invalidate } from "$app/navigation";
-  import { api } from "$lib/api/api.gen";
+  import type { App } from "$lib/api/app";
+  import { edenTreaty } from "@elysiajs/eden";
+
+  const client = edenTreaty<App>(location.origin);
 
   interface State {
     name: string;
@@ -12,14 +15,14 @@
   let { onclose } = $props<Props>();
 
   const onsubmit = async () => {
-    const res = await api.runners.post(currentState);
-    if (res.ok) {
-      if (res.data.created) {
+    const { data, error } = await client.api.api.runners.post(currentState);
+    if (data != null) {
+      if (data.created) {
         invalidate("admin:runners");
         onclose?.();
       }
     } else {
-      error = res.error.message;
+      errorMessage = error.message;
     }
   };
   const oncancel = () => {
@@ -38,7 +41,7 @@
     name: defaults.name,
     twitterId: defaults.twitterId,
   });
-  let error = $state<string | null>(null);
+  let errorMessage = $state<string | null>(null);
 
   let isModified = $derived(
     currentState.name !== defaults.name || currentState.twitterId !== defaults.twitterId,
@@ -61,6 +64,6 @@
     <button type="reset" onclick={oncancel}>취소</button>
   {/if}
 </div>
-{#if error != null}
-  <div>{error}</div>
+{#if errorMessage != null}
+  <div>{errorMessage}</div>
 {/if}
