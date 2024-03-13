@@ -1,8 +1,6 @@
 export const deepEqual = (a: any, b: any): boolean => {
   if (a === b) return true;
   if (a && b && typeof a === "object" && typeof b === "object") {
-    if (a.constructor.name !== b.constructor.name) return false;
-
     if (Array.isArray(a)) {
       if (a.length != b.length) return false;
       return a.every((e, i) => deepEqual(e, b[i]));
