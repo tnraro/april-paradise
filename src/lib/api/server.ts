@@ -10,21 +10,30 @@ export const route = <
   _method: M,
   handler: (e: E, body: z.infer<Z>, set: ResponseInit) => Promise<R> | R,
   options?: {
-    err?: (e: unknown) => void;
+    err?: (e: unknown, re: E, body: z.infer<Z>) => void;
     body?: Z;
   },
 ) => {
-  const p = async (e: E) => {
+  const p = async (re: E) => {
     try {
-      const _body = options?.body?.parse(await e.request.json());
-      const set = {} as ResponseInit;
-      const res = await handler(e, _body, set);
-      return json(res, set);
-    } catch (e) {
-      if (e instanceof ZodError) {
-        error(400, e.errors.map((error) => error.message).join("\n"));
+      const _body = options?.body?.parse(await re.request.json());
+      try {
+        const set = {} as ResponseInit;
+        const res = await handler(re, _body, set);
+        return json(res, set);
+      } catch (e) {
+        if (e instanceof ZodError) {
+          error(400, e.errors.map((error) => error.message).join("\n"));
+        }
+        options?.err?.(e, re, _body);
+        console.error("err", e);
+        error(500);
       }
-      options?.err?.(e);
+    } catch (e) {
+      if (e instanceof SyntaxError) {
+        console.error("err", e);
+        error(400);
+      }
       console.error("err", e);
       error(500);
     }
