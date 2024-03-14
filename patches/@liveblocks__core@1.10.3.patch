@@ -1,0 +1,45 @@
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 186792ba9e57295c2f81d966bf18f646ac96c01e..b4a21804c727f281bb390561ccf2067fbfc07240 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -601,7 +601,7 @@ function b64decode(b64value) {
+   try {
+     const formattedValue = b64value.replace(/-/g, "+").replace(/_/g, "/");
+     const decodedValue = decodeURIComponent(
+-      atob(formattedValue).split("").map(function(c) {
++      atob(formattedValue).split("").map(function (c) {
+         return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+       }).join("")
+     );
+@@ -5492,7 +5492,7 @@ function createRoom(options, config) {
+       params
+     );
+     const fetcher = config.polyfills?.fetch || /* istanbul ignore next */
+-    fetch;
++      fetch;
+     return await fetcher(url, {
+       ...options2,
+       headers: {
+@@ -7068,12 +7068,10 @@ var DEFAULT_LOST_CONNECTION_TIMEOUT = 5e3;
+ var RESOLVE_USERS_BATCH_DELAY = 50;
+ var RESOLVE_ROOMS_INFO_BATCH_DELAY = 50;
+ function getBaseUrl(baseUrl) {
+-  baseUrl || (baseUrl = process.env.LIVEBLOCKS_BASE_URL || process.env.NEXT_PUBLIC_LIVEBLOCKS_BASE_URL || process.env.VITE_LIVEBLOCKS_BASE_URL || void 0);
+   if (typeof baseUrl === "string" && baseUrl.startsWith("http")) {
+     return baseUrl;
+-  } else {
+-    return DEFAULT_BASE_URL;
+   }
++  return DEFAULT_BASE_URL;
+ }
+ function getAuthBearerHeaderFromAuthValue(authValue) {
+   if (authValue.type === "public") {
+@@ -7205,7 +7203,7 @@ function createClient(options) {
+   } = createNotificationsApi({
+     baseUrl,
+     fetcher: clientOptions.polyfills?.fetch || /* istanbul ignore next */
+-    fetch,
++      fetch,
+     authManager,
+     currentUserIdStore
+   });
