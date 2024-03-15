@@ -1,5 +1,54 @@
 @import "tailwindcss";
 
+@theme {
+  --animate-roll: roll 0.01s linear infinite;
+
+  @keyframes roll {
+    0% {
+      transform: translateY(0rem);
+    }
+
+    100% {
+      transform: translateY(-1.5rem);
+    }
+  }
+}
+
+@layer components {
+  .focused {
+    @apply outline-2 outline-offset-[-1px];
+  }
+
+  .focused-red {
+    @apply outline-red-400;
+  }
+
+  .focused-yellow {
+    @apply outline-yellow-400;
+  }
+
+  .focused-blue {
+    @apply outline-blue-400;
+  }
+
+  .focused-purple {
+    @apply outline-purple-400;
+  }
+
+  .focused-green {
+    @apply outline-green-400;
+  }
+
+  .btn-primary {
+    @apply bg-blue-500 text-blue-50 px-2 py-1 rounded
+     hover:bg-blue-600
+      active:bg-blue-700;
+  }
+  .btn-primary:disabled {
+    @apply bg-slate-500 text-slate-300 cursor-not-allowed;
+  }
+}
+
 :root {
   --font-family-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
     system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",

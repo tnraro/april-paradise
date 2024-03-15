@@ -1,4 +1,6 @@
 import { createClient, type Client } from "@liveblocks/client";
+import { newStorage, type Presence, type Storage, type TRoom } from "./model";
+import { roomConfig } from "./config";
 
 let _client: Client;
 
@@ -9,11 +11,10 @@ export const getClient = () => {
   }));
 };
 
-export const getRoom = (id: string) => {
-  return getClient().enterRoom(id, {
-    initialPresence: {},
-    initialStorage: {
-      users: [],
-    },
-  });
+export const enter = (client: Client, id: string) => {
+  return client.enterRoom<Presence, Storage>(id, roomConfig);
+};
+
+export const getRoom = (id: string): { room: TRoom; leave: () => void } => {
+  return enter(getClient(), id);
 };

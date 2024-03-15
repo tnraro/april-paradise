@@ -1,20 +1,15 @@
 <script lang="ts">
-  import { getRoom } from "$lib/liveblocks/client";
-  import { onDestroy, onMount } from "svelte";
+  import { useRoom } from "$lib/liveblocks/room.svelte";
+  import FocusedElement from "$lib/ui/focused-element.svelte";
+  import StatusBar from "$lib/ui/status-bar.svelte";
+  import UserList from "$lib/ui/user-list.svelte";
 
-  let disposes: (() => void)[] = [];
-
-  onMount(async () => {
-    const { room, leave } = getRoom("test");
-    disposes.push(leave);
-
-    console.log(room.getStatus());
-    console.log((await room.getStorage()).root.toImmutable());
-  });
-
-  onDestroy(() => {
-    disposes.forEach((dispose) => dispose());
-  });
+  useRoom("test");
 </script>
 
-<div>432432</div>
+<div class="h-[100dvh]">
+  <UserList />
+  <StatusBar />
+</div>
+
+<FocusedElement />
