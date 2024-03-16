@@ -19,7 +19,7 @@
   };
   const apply = async () => {
     isLoading = true;
-    const res = await api.runners.id.penalties.post({ id }, current);
+    const res = await api().runners.id.penalties.post({ id }, current);
     isLoading = false;
     if (res.ok) {
       await invalidate("admin:runners");
@@ -49,14 +49,16 @@
   let isEdited = $derived(!deepEqual(current, data));
 
   $effect(() => {
-    api.runners.id.penalties.get({ id }).then((res) => {
-      if (res.ok) {
-        data = [...res.data.penalties];
-        current = [...res.data.penalties];
-      } else {
-        console.error(res);
-      }
-    });
+    api()
+      .runners.id.penalties.get({ id })
+      .then((res) => {
+        if (res.ok) {
+          data = [...res.data.penalties];
+          current = [...res.data.penalties];
+        } else {
+          console.error(res);
+        }
+      });
   });
 </script>
 

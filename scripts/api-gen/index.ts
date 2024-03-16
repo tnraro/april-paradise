@@ -48,15 +48,15 @@ for (const file of files) {
     switch (M) {
       case "GET": {
         if (hasParam) {
-          return `(params: ${Mi}["params"]) => req<${Mi}>("${M}", "${path}", params)`;
+          return `(params: ${Mi}["params"]) => req<${Mi}>("${M}", "${path}", params, undefined, _fetch)`;
         }
-        return `() => req<${Mi}>("${M}", "${path}", {})`;
+        return `() => req<${Mi}>("${M}", "${path}", {}, undefined, _fetch)`;
       }
       default: {
         if (hasParam) {
-          return `(params: ${Mi}["params"], body: Parameters<typeof req<${Mi}>>[3]) => req<${Mi}>("${M}", "${path}", params, body)`;
+          return `(params: ${Mi}["params"], body: Parameters<typeof req<${Mi}>>[3]) => req<${Mi}>("${M}", "${path}", params, body, _fetch)`;
         }
-        return `(body: Parameters<typeof req<${Mi}>>[3]) => req<${Mi}>("${M}", "${path}", {}, body)`;
+        return `(body: Parameters<typeof req<${Mi}>>[3]) => req<${Mi}>("${M}", "${path}", {}, body, _fetch)`;
       }
     }
   };
@@ -82,9 +82,9 @@ const walk = (node: any, depth = 0) => {
   }
 };
 
-body.push("export const api = {");
+body.push("export const api = (_fetch?: typeof fetch) => ({");
 walk(tree);
-body.push("};");
+body.push("});");
 
 const gen = `${imports.join("\n")}
 

@@ -14,7 +14,7 @@
   let { onclose } = $props<Props>();
 
   const onsubmit = async () => {
-    const res = await api.runners.post({
+    const res = await api().runners.post({
       name: currentState.name,
       twitterId: currentState.twitterId.replace(/^@/, ""),
     });

@@ -11,9 +11,10 @@ export const req = async <
   path: Entry["route"],
   params: Entry["params"],
   body?: Entry["body"] | Readonly<Entry["body"]>,
+  _fetch = fetch,
 ): Promise<{ ok: true; data: Entry["returns"] } | { ok: false; error: { message: string } }> => {
   const url = path.replaceAll(/(?<=\/)\[([^\]]+)\]/g, (_, $1) => params[$1]);
-  const res = await fetch(url, {
+  const res = await _fetch(url, {
     method,
     body: body != null ? JSON.stringify(body) : undefined,
   });
