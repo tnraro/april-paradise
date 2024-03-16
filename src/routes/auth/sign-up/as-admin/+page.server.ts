@@ -37,17 +37,26 @@ export const actions = {
       if (tokenData == null) {
         throw "token is null";
       }
-      redirect(303, `/auth/sign-up/as-admin/callback?name=${encodeURIComponent(name)}`);
+      redirect(
+        303,
+        `/auth/sign-up/as-admin/callback?name=${encodeURIComponent(name)}`,
+      );
     } catch (error) {
       if (isRedirect(error)) {
         throw error;
       }
       if (error instanceof ZodError) {
-        return fail(400, { id, name, error: error.errors.map((e) => e.message).join("\n") });
+        return fail(400, {
+          id,
+          name,
+          error: error.errors.map((e) => e.message).join("\n"),
+        });
       }
       if (error instanceof Error) {
         try {
-          const e = JSON.parse(error.message) as { error?: { message?: string } };
+          const e = JSON.parse(error.message) as {
+            error?: { message?: string };
+          };
           return fail(400, { id, name, error: e.error?.message });
         } catch (_) {
           console.error(_);

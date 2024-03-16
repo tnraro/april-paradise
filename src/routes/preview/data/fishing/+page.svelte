@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { FishingGrade, type FishingData } from "$lib/data/sheets/model";
+  import { type FishingData, FishingGrade } from "$lib/data/sheets/model";
   import { groupBy } from "$lib/shared/util/group-by";
-  import Tooltip from "$lib/ui/floating/tooltip.svelte";
   import { createTooltip } from "$lib/ui/floating/tooltip-action.svelte";
+  import Tooltip from "$lib/ui/floating/tooltip.svelte";
 
   let { data } = $props();
 
@@ -34,7 +34,9 @@
           >
             {row.name}
           </button>
-          <div class="catchphrase" title={row.catchphrase}>{row.catchphrase}</div>
+          <div class="catchphrase" title={row.catchphrase}>
+            {row.catchphrase}
+          </div>
           <div>{row.probability * 100}%</div>
         {/each}
       </div>

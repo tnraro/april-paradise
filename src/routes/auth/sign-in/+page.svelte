@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { ActionData } from "./$types";
-  interface Props {
-    form: ActionData;
-  }
-  let { form } = $props<Props>();
+import type { ActionData } from "./$types";
+interface Props {
+  form: ActionData;
+}
+let { form } = $props<Props>();
 </script>
 
 <form method="post">

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { portal } from "$lib/ui/actions/portal";
-  import { tick, type Snippet } from "svelte";
+  import { type Snippet, tick } from "svelte";
 
   interface Props {
     children: Snippet;
@@ -14,14 +14,14 @@
     const _ = pos;
     tick().then(() => {
       const rect = self.getBoundingClientRect();
-      const viewport = visualViewport!;
+      if (visualViewport == null) return;
+      const viewport = visualViewport;
       const left = pos.x - rect.width / 2;
       const right = left + rect.width;
 
       dx = viewport.pageLeft;
       dy = viewport.pageTop;
 
-      console.log(right);
       if (left < 0) {
         dx += -left;
       } else if (right > viewport.width) {

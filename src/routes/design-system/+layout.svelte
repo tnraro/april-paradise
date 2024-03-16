@@ -4,9 +4,12 @@
 
 <nav>
   {#each data.pages as page (page.href)}
-    <a href={page.href} aria-current={page.current ? "page" : undefined}>{page.title}</a>
+    <a href={page.href} aria-current={page.current ? "page" : undefined}
+      >{page.title}</a
+    >
   {/each}
 </nav>
+
 {@render children()}
 
 <style lang="scss">

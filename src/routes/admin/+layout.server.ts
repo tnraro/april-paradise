@@ -1,5 +1,5 @@
-import { layout } from "./layout.query";
 import { error } from "@sveltejs/kit";
+import { layout } from "./layout.query";
 
 export const load = async ({ locals }) => {
   const session = locals.auth.session;

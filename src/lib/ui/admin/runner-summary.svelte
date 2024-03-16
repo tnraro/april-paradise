@@ -12,8 +12,11 @@
 
 <div class="runner-summary">
   <span>{name}</span>
-  <a class="x-id" href="https://twitter.com/{twitterId}" rel="noreferrer" target="_blank"
-    >@{twitterId}</a
+  <a
+    class="x-id"
+    href="https://twitter.com/{twitterId}"
+    rel="noreferrer"
+    target="_blank">@{twitterId}</a
   >
   <span>
     {#if isBanned}

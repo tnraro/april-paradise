@@ -1,4 +1,4 @@
-import { error, json, type RequestEvent } from "@sveltejs/kit";
+import { type RequestEvent, error, json } from "@sveltejs/kit";
 import { ZodError, type z } from "zod";
 
 export const route = <
@@ -15,7 +15,7 @@ export const route = <
   },
 ) => {
   const p = async (re: E) => {
-    let _body: any;
+    let _body: z.infer<Z>;
     try {
       _body = options?.body?.parse(await re.request.json());
     } catch (e) {

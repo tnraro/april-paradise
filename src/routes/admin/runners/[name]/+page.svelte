@@ -23,7 +23,9 @@
 <main>
   <div class="title">
     <h1>{current.name}</h1>
-    <a class="x-id" href="https://twitter.com/{current.twitterId}">@{current.twitterId}</a>
+    <a class="x-id" href="https://twitter.com/{current.twitterId}"
+      >@{current.twitterId}</a
+    >
   </div>
   <div>
     <h2>자원</h2>
@@ -41,7 +43,8 @@
       <span
         class="penalty"
         class:penalty--warning={!penalty.isBanned}
-        class:penalty--banned={penalty.isBanned}>{penalty.isBanned ? "제명" : "경고"}</span
+        class:penalty--banned={penalty.isBanned}
+        >{penalty.isBanned ? "제명" : "경고"}</span
       >
       <span>{penalty.reason}</span>
     {/each}

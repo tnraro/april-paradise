@@ -1,6 +1,6 @@
-import { write } from "bun";
 import { readdir } from "node:fs/promises";
-import { join } from "path";
+import { join } from "node:path";
+import { write } from "bun";
 
 const apiRoot = join(import.meta.dir, "../../src/routes/api/");
 const outPath = join(import.meta.dir, "../../src/lib/api/api.gen.ts");
@@ -9,15 +9,25 @@ let index = 0;
 
 const imports: string[] = [];
 const body: string[] = [];
-const tree = {} as any;
+interface Node {
+  [Key: string]: Node | string;
+}
+const tree: Node = {};
 
 const files = await readdir(apiRoot, { recursive: true });
 for (const file of files) {
   if (!file.endsWith("+server.ts")) continue;
   const path = join(apiRoot, file);
   const ps = [
-    ...file.matchAll(/(?<=(?:\/|^)\[)(?<param>[\w_-]+)(?=\])|(?<=\/|^)(?<seg>[\w_-]+)/g),
-  ].map((x) => x.groups! as { param?: string; seg?: string });
+    ...file.matchAll(
+      /(?<=(?:\/|^)\[)(?<param>[\w_-]+)(?=\])|(?<=\/|^)(?<seg>[\w_-]+)/g,
+    ),
+  ].map(
+    (x) =>
+      x.groups as unknown as
+        | { param: string; seg: undefined }
+        | { param: undefined; seg: string },
+  );
   const ts = await Bun.file(path).text();
   const ms = [
     ...[
@@ -31,14 +41,17 @@ for (const file of files) {
     }, new Set<string>()),
   ];
   imports.push(
-    `import { ${ms.map((x) => `${x} as ${x}${index}`).join(", ")} } from "$routes/api/${file.slice(0, -3)}";`,
+    `import { ${ms
+      .map((x) => `${x} as ${x}${index}`)
+      .join(", ")} } from "$routes/api/${file.slice(0, -3)}";`,
   );
-  let node = tree;
+  let node: Node | string = tree;
   let hasParam = false;
   for (const { param, seg } of ps) {
     if (param) hasParam = true;
-    const name = param ?? seg!;
+    const name = param ?? seg;
 
+    if (typeof node === "string") break;
     if (node[name] == null) node[name] = {};
     node = node[name];
   }
@@ -62,13 +75,13 @@ for (const file of files) {
   };
   for (const M of ms) {
     const m = M.toLowerCase();
-    node[m] = to(M);
+    (node as Node)[m] = to(M);
   }
   index++;
 }
 imports.push(`import { req } from "./client";`);
 
-const walk = (node: any, depth = 0) => {
+const walk = (node: Node, depth = 0) => {
   const indent = "  ".repeat(depth + 1);
   for (let [k, v] of Object.entries(node)) {
     const _k = /^[a-z_$][\w_$]*$/i.test(k) ? k : `"${k}"`;

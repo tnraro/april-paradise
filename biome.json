@@ -1,0 +1,31 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.6.1/schema.json",
+  "files": {},
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noConstEnum": "off",
+        "noConsoleLog": "warn"
+      },
+      "style": {
+        "useConst": "off",
+        "useEnumInitializers": "off"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "ignore": ["src/**/*.svelte"]
+  }
+}

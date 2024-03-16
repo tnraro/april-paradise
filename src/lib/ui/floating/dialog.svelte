@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { Snippet } from "svelte";
-  import { portal } from "$lib/ui/actions/portal";
   import { focusTrap } from "$lib/ui/actions/focus-trap";
+  import { portal } from "$lib/ui/actions/portal";
+  import type { Snippet } from "svelte";
 
   interface Props {
     children: Snippet;

@@ -4,6 +4,7 @@ export const createTooltip = <T>() => {
   const valueMap = new WeakMap<HTMLElement, T | undefined>();
   let value = $state.frozen<T>();
   let pos = $state.frozen({ x: 0, y: 0 });
+  // @ts-expect-error ok
   const target: Action<HTMLElement, T> = (node, _value) => {
     valueMap.set(node, _value);
     const handler = (e: MouseEvent) => {

@@ -40,7 +40,8 @@
   let error = $state<string | null>(null);
 
   let isValid = $derived(
-    currentState.name.length > 1 && /^@[\w_]{4,15}$/.test(currentState.twitterId),
+    currentState.name.length > 1 &&
+      /^@[\w_]{4,15}$/.test(currentState.twitterId),
   );
   let isEdited = $derived(!deepEqual(currentState, defaults));
 </script>
@@ -49,7 +50,12 @@
   <div class="new-runner-dialog">
     <h1>러너 추가</h1>
     <div class="new">
-      <input bind:value={currentState.name} name="name" required placeholder="캐릭터 이름" />
+      <input
+        bind:value={currentState.name}
+        name="name"
+        required
+        placeholder="캐릭터 이름"
+      />
       <input
         bind:value={currentState.twitterId}
         oninput={() => {
@@ -69,8 +75,11 @@
       <div class="error">{error}</div>
     {/if}
     <div class="buttons">
-      <button type="reset" onclick={onreset} disabled={!isEdited}>재설정</button>
-      <button class="blue emphasis" onclick={onsubmit} disabled={!isValid}>적용</button>
+      <button type="reset" onclick={onreset} disabled={!isEdited}>재설정</button
+      >
+      <button class="blue emphasis" onclick={onsubmit} disabled={!isValid}
+        >적용</button
+      >
     </div>
   </div>
 </Dialog>
