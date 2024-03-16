@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { ActionData } from "./$types";
-import type { ErrorCode } from "./lib";
+import { ErrorCode } from "./lib";
 interface Props {
   form: ActionData & { code: ErrorCode };
 }

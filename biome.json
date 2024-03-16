@@ -19,7 +19,8 @@
       },
       "style": {
         "useConst": "off",
-        "useEnumInitializers": "off"
+        "useEnumInitializers": "off",
+        "useImportType": "off"
       }
     }
   },
