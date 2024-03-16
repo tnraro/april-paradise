@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { ActionData } from "./$types";
-  import { ErrorCode } from "./lib";
-  interface Props {
-    form: ActionData & { code: ErrorCode };
-  }
-  let { form } = $props<Props>();
+import type { ActionData } from "./$types";
+import type { ErrorCode } from "./lib";
+interface Props {
+  form: ActionData & { code: ErrorCode };
+}
+let { form } = $props<Props>();
 </script>
 
 <form method="post">

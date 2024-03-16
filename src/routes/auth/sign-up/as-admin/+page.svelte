@@ -1,7 +1,7 @@
 <script>
-  import SignUpForm from "$lib/ui/auth/sign-up-form.svelte";
+import SignUpForm from "$lib/ui/auth/sign-up-form.svelte";
 
-  let { form } = $props();
+let { form } = $props();
 </script>
 
 <div class="_">

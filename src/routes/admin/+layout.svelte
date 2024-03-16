@@ -5,7 +5,9 @@
 <header>
   <nav>
     {#each data.pages as page (page.pathname)}
-      <a href={page.pathname} aria-current={page.current ? "page" : undefined}>{page.title}</a>
+      <a href={page.pathname} aria-current={page.current ? "page" : undefined}
+        >{page.title}</a
+      >
     {/each}
   </nav>
   <div>
@@ -15,6 +17,7 @@
     <span>{data.admin.name}</span>
   </div>
 </header>
+
 {@render children()}
 
 <style lang="scss">

@@ -1,9 +1,10 @@
-const table = "!0123456789@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+const table =
+  "!0123456789@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 /**
  * generate password using crypto.getRandomValues
  * @param size password length = size * 4
  */
-export const generatePassword = (length: number = 32) => {
+export const generatePassword = (length = 32) => {
   if (length <= 0) {
     throw new RangeError("password length must be greater than 0");
   }
@@ -12,6 +13,7 @@ export const generatePassword = (length: number = 32) => {
     .getRandomValues(new Uint8Array(3 * size))
     .reduce(
       (a, b) => {
+        // biome-ignore lint/style/noNonNullAssertion: ok
         const l = a.at(-1)!;
         l.length >= 3 ? a.push([b]) : l.push(b);
         return a;

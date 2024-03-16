@@ -12,13 +12,13 @@ export class Parser<T = never> {
     if (this.#result.error == null) return this;
     const text = this.#result.error;
     const m = text.match(/(?<type>칩|토큰)\s*(?<quantity>-?\d+)/);
-    if (m == null) return this;
+    if (m?.groups == null) return this;
 
     this.#result = {
       ok: true,
       data: {
-        type: m.groups!.type === "칩" ? "chips" : "tokens",
-        quantity: Number(m.groups!.quantity),
+        type: m.groups.type === "칩" ? "chips" : "tokens",
+        quantity: Number(m.groups.quantity),
       } as T,
     };
 
@@ -41,13 +41,13 @@ export class Parser<T = never> {
     const m = text.match(
       /(?<month>1?\d+)월\s*(?<date>[123]?\d)일\s*(?<h12>오전|오후)\s*(?<hour>[12]?\d):(?<minute>[0123456]\d)/,
     );
-    if (m == null) return this;
+    if (m?.groups == null) return this;
 
     date.setDate(0);
-    date.setFullYear(2024, Number(m.groups!.month) - 1, Number(m.groups!.date));
+    date.setFullYear(2024, Number(m.groups.month) - 1, Number(m.groups.date));
     date.setHours(
-      Number(m.groups!.hour) + (m.groups!.h12 === "오전" ? 0 : 12),
-      Number(m.groups!.minute),
+      Number(m.groups.hour) + (m.groups.h12 === "오전" ? 0 : 12),
+      Number(m.groups.minute),
       0,
       0,
     );
@@ -79,15 +79,26 @@ export class Parser<T = never> {
     const text = this.#result.error;
 
     const m = text.match(/^(?<number>[-+]?\d+(?:\.\d+)?)(?<unit>%)?/);
-    if (m == null) return this;
+    if (m?.groups == null) return this;
 
-    let number = Number(m.groups!.number);
-    const unit = m.groups!.unit;
+    let number = Number(m.groups.number);
+    const unit = m.groups.unit;
 
     if (unit === "%") number /= 100;
     this.#result = {
       ok: true,
       data: number as T,
+    };
+    return this;
+  }
+  string(): Parser<T | string> {
+    if (this.#result.ok) return this;
+    if (this.#result.error == null) return this;
+    const text = this.#result.error;
+
+    this.#result = {
+      ok: true,
+      data: text as T,
     };
     return this;
   }
@@ -175,6 +186,6 @@ export class Parser<T = never> {
   }
   unwrap() {
     if (this.#result.ok) return this.#result.data;
-    return null;
+    return null as unknown as T;
   }
 }

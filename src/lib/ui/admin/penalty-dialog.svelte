@@ -104,7 +104,9 @@
       {/each}
     </div>
     <button class="cancel" onclick={cancel} disabled={!isEdited}>재설정</button>
-    <button class="apply blue emphasis" onclick={apply} disabled={!isEdited}>적용</button>
+    <button class="apply blue emphasis" onclick={apply} disabled={!isEdited}
+      >적용</button
+    >
   </div>
 </Dialog>
 

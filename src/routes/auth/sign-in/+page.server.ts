@@ -1,5 +1,5 @@
 import { ID, PASSWORD } from "$lib/shared/schema/auth.js";
-import { fail, isRedirect, redirect, type Actions } from "@sveltejs/kit";
+import { type Actions, fail, isRedirect, redirect } from "@sveltejs/kit";
 
 export const actions = {
   default: async ({ request, locals }) => {

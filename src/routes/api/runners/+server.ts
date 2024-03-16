@@ -18,13 +18,12 @@ export const POST = route(
   {
     body: z.object({ name: NAME, twitterId: TWITTER_ID }),
     err(e) {
-      if (e instanceof EdgeDBError) {
-        if (e instanceof ConstraintViolationError) {
-          if (e.message.startsWith("name violates exclusivity constraint")) {
-            return error(409, "conflict name");
-          } else if (e.message.startsWith("twitterId violates exclusivity constraint")) {
-            return error(409, "conflict twitter id");
-          }
+      if (e instanceof ConstraintViolationError) {
+        if (e.message.startsWith("name violates exclusivity constraint")) {
+          return error(409, "conflict name");
+        }
+        if (e.message.startsWith("twitterId violates exclusivity constraint")) {
+          return error(409, "conflict twitter id");
         }
       }
     },

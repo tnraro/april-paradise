@@ -4,7 +4,9 @@ export const load = async ({ url, data }) => {
     { pathname: "/admin/runners", title: "러너 목록", subtree: true },
   ].map((page) => ({
     ...page,
-    current: page.subtree ? url.pathname.startsWith(page.pathname) : url.pathname === page.pathname,
+    current: page.subtree
+      ? url.pathname.startsWith(page.pathname)
+      : url.pathname === page.pathname,
   }));
 
   return {

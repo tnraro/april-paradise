@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Cocktail } from "$lib/data/sheets/model";
-  import Tooltip from "$lib/ui/floating/tooltip.svelte";
   import { createTooltip } from "$lib/ui/floating/tooltip-action.svelte";
+  import Tooltip from "$lib/ui/floating/tooltip.svelte";
 
   let { data } = $props();
 

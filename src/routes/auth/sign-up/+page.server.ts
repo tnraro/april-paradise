@@ -1,6 +1,6 @@
 import { isGameSessionStarted } from "$lib/data/query/is-game-session-started.query";
 import { ID, NAME, PASSWORD } from "$lib/shared/schema/auth";
-import { error, fail, isRedirect, redirect, type Actions } from "@sveltejs/kit";
+import { type Actions, error, fail, isRedirect, redirect } from "@sveltejs/kit";
 import { ErrorCode } from "./lib";
 
 class CustomError extends Error {
