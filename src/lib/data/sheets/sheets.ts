@@ -75,13 +75,14 @@ export const getAchievementData = async (): Promise<AchievementData[]> => {
 };
 
 export const getFishingData = async (): Promise<FishingData[]> => {
-  const data = await getData<FishingData>("낚시", "A1:F");
+  const data = await getData<FishingData>("낚시", "A1:G");
   return data.map((row) => ({
     key: row.key!,
     lure: row.lure!,
     name: row.name!,
     grade: parse(row.grade).grade().unwrap()!,
     probability: parse(row.probability).number().unwrap()!,
+    catchphrase: row.catchphrase!,
     description: row.description!,
   }));
 };

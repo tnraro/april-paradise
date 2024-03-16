@@ -43,9 +43,9 @@ export interface AchievementData {
 export const enum FishingGrade {
   Common,
   Uncommon,
-  Rare,
-  Epic,
+  Heroic,
   Legendary,
+  Mythic,
 }
 export interface FishingData {
   key: string;
@@ -53,6 +53,7 @@ export interface FishingData {
   name: string;
   grade: FishingGrade;
   probability: number;
+  catchphrase: string;
   description: string;
 }
 export interface LureData {

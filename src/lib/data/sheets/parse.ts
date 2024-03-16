@@ -97,6 +97,13 @@ export class Parser<T = never> {
     const text = this.#result.error;
 
     switch (text) {
+      case "신화": {
+        this.#result = {
+          ok: true,
+          data: FishingGrade.Mythic as T,
+        };
+        break;
+      }
       case "전설": {
         this.#result = {
           ok: true,
@@ -104,17 +111,17 @@ export class Parser<T = never> {
         };
         break;
       }
-      case "희귀": {
+      case "영웅": {
         this.#result = {
           ok: true,
-          data: FishingGrade.Epic as T,
+          data: FishingGrade.Heroic as T,
         };
         break;
       }
-      case "레어": {
+      case "고급": {
         this.#result = {
           ok: true,
-          data: FishingGrade.Rare as T,
+          data: FishingGrade.Uncommon as T,
         };
         break;
       }
@@ -122,13 +129,6 @@ export class Parser<T = never> {
         this.#result = {
           ok: true,
           data: FishingGrade.Common as T,
-        };
-        break;
-      }
-      default: {
-        this.#result = {
-          ok: true,
-          data: FishingGrade.Uncommon as T,
         };
         break;
       }
