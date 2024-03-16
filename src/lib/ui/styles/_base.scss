@@ -1,23 +1,38 @@
 @use "mixin";
 @use "sass:math";
 
+:root {
+  --font-sans: "Pretendard Variable",
+  Pretendard,
+  -apple-system,
+  BlinkMacSystemFont,
+  system-ui,
+  Roboto,
+  "Helvetica Neue",
+  "Segoe UI",
+  "Apple SD Gothic Neo",
+  "Noto Sans KR",
+  "Malgun Gothic",
+  "Apple Color Emoji",
+  "Segoe UI Emoji",
+  "Segoe UI Symbol",
+  sans-serif;
+  --font-serif: "Hahmlet", serif;
+  @for $i from 0 to 4 {
+    $y1: math.floor(math.pow($i, 2) + 1);
+    $b1: ($y1 * 2);
+    $s1: ($i * -1);
+    $y2: math.floor(math.pow($i, 1.5) + 1);
+    $b2: ($y2 * 2);
+    $s2: ($y2 * -1);
+    --height-#{$i + 1}: 0 #{$y1}px #{$b1}px #{$s1}px var(--slate-a6),
+      0 #{$y2}px #{$b2}px #{$s2}px var(--slate-a6);
+  }
+}
+
 body {
-  font-family:
-    "Pretendard Variable",
-    Pretendard,
-    -apple-system,
-    BlinkMacSystemFont,
-    system-ui,
-    Roboto,
-    "Helvetica Neue",
-    "Segoe UI",
-    "Apple SD Gothic Neo",
-    "Noto Sans KR",
-    "Malgun Gothic",
-    "Apple Color Emoji",
-    "Segoe UI Emoji",
-    "Segoe UI Symbol",
-    sans-serif;
+  font-family: var(--font-sans);
+    
   color: var(--gray-12);
 }
 
@@ -302,18 +317,5 @@ textarea {
 
   &:focus-visible {
     outline: var(--blue-8) 2px solid;
-  }
-}
-
-:root {
-  @for $i from 0 to 4 {
-    $y1: math.floor(math.pow($i, 2) + 1);
-    $b1: ($y1 * 2);
-    $s1: ($i * -1);
-    $y2: math.floor(math.pow($i, 1.5) + 1);
-    $b2: ($y2 * 2);
-    $s2: ($y2 * -1);
-    --height-#{$i + 1}: 0 #{$y1}px #{$b1}px #{$s1}px var(--slate-a6),
-      0 #{$y2}px #{$b2}px #{$s2}px var(--slate-a6);
   }
 }
