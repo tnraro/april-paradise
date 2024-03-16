@@ -59,9 +59,10 @@ body {
 
 h {
   @for $i from 1 through 6 {
-    $size: 2rem - math.div($i - 1, 5);
+    $size: math.div(2rem, math.sqrt($i));
 
     &#{$i} {
+      font-family: var(--font-serif);
       font-size: $size;
       line-height: $size + 0.5rem;
     }
