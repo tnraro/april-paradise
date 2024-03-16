@@ -16,14 +16,6 @@ const createServerAuthClient: Handle = ({ event, resolve }) => {
   return resolve(event);
 };
 const authRouteHandlers: AuthRouteHandlers = {
-  async onOAuthCallback(params) {
-    console.log("oauthcallback", params);
-    throw 53;
-  },
-  async onBuiltinUICallback(params) {
-    console.log("builtinuicallback", params);
-    throw 53;
-  },
   onSignout() {
     redirect(303, "/");
   },
