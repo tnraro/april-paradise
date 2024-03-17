@@ -91,14 +91,22 @@ export class Parser<T = never> {
     };
     return this;
   }
-  string(): Parser<T | string> {
+  string(optional?: string): Parser<T | string> {
     if (this.#result.ok) return this;
-    if (this.#result.error == null) return this;
     const text = this.#result.error;
+    if (text == null) {
+      if (optional != null) {
+        this.#result = {
+          ok: true,
+          data: optional.trim() as T,
+        };
+      }
+      return this;
+    }
 
     this.#result = {
       ok: true,
-      data: text as T,
+      data: text.trim() as T,
     };
     return this;
   }

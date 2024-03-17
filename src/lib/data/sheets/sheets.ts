@@ -64,7 +64,7 @@ export const getScheduleData = async (): Promise<ScheduleData[]> => {
 };
 
 export const getRouletteData = async (): Promise<RouletteData[]> => {
-  const data = await getData<RouletteData>("룰렛", "A1:C");
+  const data = await getData<RouletteData>("룰렛", "A1:D");
   return data.map((row) => ({
     key: parse(row.key).string().unwrap(),
     result: parse(row.result).money().item().unwrap(),
@@ -84,15 +84,16 @@ export const getAchievementData = async (): Promise<AchievementData[]> => {
 };
 
 export const getFishingData = async (): Promise<FishingData[]> => {
-  const data = await getData<FishingData>("낚시", "A1:G");
+  const data = await getData<FishingData>("낚시", "A1:I");
   return data.map((row) => ({
     key: parse(row.key).string().unwrap(),
     lure: parse(row.lure).string().unwrap(),
     name: parse(row.name).string().unwrap(),
     grade: parse(row.grade).grade().unwrap(),
     probability: parse(row.probability).number().unwrap(),
-    catchphrase: parse(row.catchphrase).string().unwrap(),
+    catchphrase: parse(row.catchphrase).string("낚았다").unwrap(),
     description: parse(row.description).string().unwrap(),
+    exception: parse(row.exception).string().unwrap(),
   }));
 };
 

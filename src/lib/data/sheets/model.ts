@@ -55,6 +55,7 @@ export interface FishingData {
   probability: number;
   catchphrase: string;
   description: string;
+  exception: string;
 }
 export interface LureData {
   key: string;
