@@ -6,12 +6,12 @@
 
 <h1>{data.name}</h1>
 <div class="_">
-  <div class="title">키</div>
-  <div class="title">이름</div>
-  <div class="title">조건</div>
-  <div class="title">보상</div>
+  <div class="__title">키</div>
+  <div class="__title">이름</div>
+  <div class="__title">조건</div>
+  <div class="__title">보상</div>
   {#each data.data as row (row.key)}
-    <div class="key" title={row.key}>{row.key}</div>
+    <div class="__key" title={row.key}>{row.key}</div>
     <div>
       {row.name}
       {#if row.isHidden}

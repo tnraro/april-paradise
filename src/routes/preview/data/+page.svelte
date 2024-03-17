@@ -4,8 +4,8 @@
 
 <h1>목차</h1>
 <div class="_">
-  <div class="title">키</div>
-  <div class="title">이름</div>
+  <div class="__title">키</div>
+  <div class="__title">이름</div>
   {#each data.index as row (row.key)}
     <a href="/preview/data/{row.key}">{row.key}</a>
     <div>{row.name}</div>
