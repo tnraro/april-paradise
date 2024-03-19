@@ -41,7 +41,7 @@ for (const file of files) {
     }, new Set<string>()),
   ];
   imports.push(
-    `import { ${ms
+    `import type { ${ms
       .map((x) => `${x} as ${x}${index}`)
       .join(", ")} } from "$routes/api/${file.slice(0, -3)}";`,
   );
