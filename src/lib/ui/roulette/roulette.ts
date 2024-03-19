@@ -3,4 +3,5 @@ export const enum RouletteState {
   InsertingToken,
   Rolling,
   DroppingReward,
+  Reward,
 }

@@ -1,12 +1,27 @@
 <script lang="ts">
   import type { Item, Money } from "$lib/data/sheets/model";
+  import { untrack } from "svelte";
   import { RouletteState } from "./roulette";
 
   interface Props {
     _state: RouletteState;
     reward: Item | Money | undefined;
+    onanimationend?: () => void;
   }
-  let { _state, reward } = $props<Props>();
+  let { _state, reward, onanimationend } = $props<Props>();
+  const dropDelay = 50;
+  let t: number;
+  $effect(() => {
+    clearTimeout(t);
+    if (_state === RouletteState.DroppingReward) {
+      const r = untrack(() => reward);
+      if (r == null) return;
+      const count = r.type === "item" ? 1 : r.quantity;
+      const delay = count * dropDelay;
+      if (onanimationend)
+        t = setTimeout(onanimationend, delay) as unknown as number;
+    }
+  });
 </script>
 
 <defs>
@@ -15,15 +30,15 @@
     <stop offset="90%" stop-color="var(--sand-4)"></stop>
   </linearGradient>
   <clipPath id="roulette-vent_mask">
-    <rect x="-15.5" y="122.5" width="31" height="14" rx="1" />
+    <rect x="-15.5" y="120.5" width="31" height="16" rx="1" />
   </clipPath>
 
   <path d="M0 112L0 137Q0 130,0 137L0 137" />
 </defs>
 
-<rect class="roulette-vent" x="-16" y="122" width="32" height="15" rx="2" />
+<rect class="roulette-vent" x="-16" y="120" width="32" height="17" rx="2" />
 
-{#if _state === RouletteState.DroppingReward && reward != null}
+{#if (_state === RouletteState.DroppingReward || _state === RouletteState.Reward) && reward != null}
   <g clip-path="url(#roulette-vent_mask)">
     {#if reward.type === "item"}
       {#if reward.id !== "꽝"}
@@ -44,9 +59,9 @@
         {@const y = Math.random() * 2 - 1 - index * 2}
         <image
           class="reward-money"
-          style="animation-delay:{i * 50}ms"
+          style="animation-delay:{i * dropDelay}ms"
           x={-6 + x}
-          y={113 - 6 + y}
+          y={115 - 6 + y}
           width="12"
           height="12"
           href="/icons/{reward.type === 'chips' ? 'chip' : 'token'}.png"
