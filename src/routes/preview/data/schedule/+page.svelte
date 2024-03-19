@@ -32,20 +32,20 @@
   <option value="dangi">단기</option>
 </select>
 <div class="_">
-  <div class="title">키</div>
-  <div class="title">시작</div>
-  <div class="title">끝</div>
+  <div class="__title">키</div>
+  <div class="__title">시작</div>
+  <div class="__title">끝</div>
   {#each data.data as row (row.key)}
-    <div class="key" title={row.key}>{row.key}</div>
+    <div class="__key" title={row.key}>{row.key}</div>
     {#if row.start}
       <div>{i.format(row.start)}</div>
     {:else}
-      <div class="null">empty</div>
+      <div class="__null">empty</div>
     {/if}
     {#if row.end}
       <div>{i.format(row.end)}</div>
     {:else}
-      <div class="null">empty</div>
+      <div class="__null">empty</div>
     {/if}
   {/each}
 </div>

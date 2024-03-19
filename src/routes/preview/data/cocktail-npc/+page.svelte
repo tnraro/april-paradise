@@ -10,12 +10,12 @@
 
 <h1>{data.name}</h1>
 <div class="_">
-  <div class="title">키</div>
-  <div class="title">이름</div>
-  <div class="title">사랑하는</div>
-  <div class="title">좋아하는</div>
+  <div class="__title">키</div>
+  <div class="__title">이름</div>
+  <div class="__title">사랑하는</div>
+  <div class="__title">좋아하는</div>
   {#each data.data as row (row.key)}
-    <div class="key" title={row.key}>{row.key}</div>
+    <div class="__key" title={row.key}>{row.key}</div>
     <div>{row.npc}</div>
     <button use:tooltip.target={row.love}>
       💛{row.love.name}

@@ -17,12 +17,12 @@
     <div>
       <h2>미끼: {lure}</h2>
       <div class="__">
-        <div class="title">키</div>
-        <div class="title">이름</div>
-        <div class="title">설명</div>
-        <div class="title">확률</div>
+        <div class="__title">키</div>
+        <div class="__title">이름</div>
+        <div class="__title">설명</div>
+        <div class="__title">확률</div>
         {#each fishes as row (row.key)}
-          <div class="key" title={row.key}>{row.key}</div>
+          <div class="__key" title={row.key}>{row.key}</div>
           <button
             class="name"
             class:name--grade-0={row.grade === FishingGrade.Common}

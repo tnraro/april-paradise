@@ -6,11 +6,11 @@
 
 <h1>{data.name}</h1>
 <div class="_">
-  <div class="title">키</div>
-  <div class="title">이름</div>
-  <div class="title">가격</div>
+  <div class="__title">키</div>
+  <div class="__title">이름</div>
+  <div class="__title">가격</div>
   {#each data.data as row (row.key)}
-    <div class="key" title={row.key}>{row.key}</div>
+    <div class="__key" title={row.key}>{row.key}</div>
     <div>
       {row.name}
       {#if row.isSpecial}

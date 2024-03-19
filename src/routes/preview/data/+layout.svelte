@@ -15,13 +15,13 @@ let { children, data } = $props();
     display: flex;
     gap: 1rem;
   }
-  :global(.null) {
+  :global(.__null) {
     font-style: italic;
     color: var(--slate-9);
     user-select: none;
     -webkit-user-select: none;
   }
-  :global(.key) {
+  :global(.__key) {
     font-style: italic;
     color: var(--red-11);
     user-select: all;
@@ -31,7 +31,7 @@ let { children, data } = $props();
     text-wrap: nowrap;
     text-overflow: ellipsis;
   }
-  :global(.title) {
+  :global(.__title) {
     font-weight: bold;
     user-select: none;
     -webkit-user-select: none;
