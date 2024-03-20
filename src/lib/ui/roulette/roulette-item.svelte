@@ -12,14 +12,16 @@
 <g transform="translate({x} {y})">
   <rect class="slot_bg" x="-28" width="56" height="15"></rect>
   {#if item.type === "tokens"}
-    <image x="-28" width="14" height="14" href="/icons/token.png"></image>
-    <text class="slot_text" x="-14" y="8.5">
-      토큰 {item.quantity}
+    <image x="-25" y="2.5" width="10" height="10" href="/icons/token.png"
+    ></image>
+    <text class="slot_text" x="-12" y="8.5">
+      토큰×{item.quantity}
     </text>
   {:else if item.type === "chips"}
-    <image x="-28" width="14" height="14" href="/icons/chip.png"></image>
-    <text class="slot_text" x="-14" y="8.5">
-      칩 {item.quantity}
+    <image x="-25" y="2.5" width="10" height="10" href="/icons/chip.png"
+    ></image>
+    <text class="slot_text" x="-12" y="8.5">
+      칩×{item.quantity}
     </text>
   {:else if item.type === "item"}
     <text class="slot_text" y="8.5" text-anchor="middle">
@@ -38,7 +40,7 @@
       fill: var(--sand-11);
       dominant-baseline: middle;
       font-weight: 700;
-      font-size: 9px;
+      font-size: 8px;
     }
   }
 </style>
