@@ -1,4 +1,5 @@
 import { env } from "$env/dynamic/private";
+import { cacheFn } from "$lib/data/cache/cache-fn";
 import { auth, sheets } from "@googleapis/sheets";
 import type {
   AchievementData,
@@ -23,31 +24,31 @@ const googleSheets = sheets({
 });
 
 type Raw<T> = Record<keyof T, string | null>;
-export const getData = async <T>(
-  sheet: string,
-  range: string,
-): Promise<Raw<T>[]> => {
-  const context = await googleSheets.spreadsheets.values.get({
-    spreadsheetId: env.SHEETS_ID,
-    range: `${sheet}!${range}`,
-  });
+export const getData = cacheFn(
+  60,
+  async <T>(sheet: string, range: string): Promise<Raw<T>[]> => {
+    const context = await googleSheets.spreadsheets.values.get({
+      spreadsheetId: env.SHEETS_ID,
+      range: `${sheet}!${range}`,
+    });
 
-  if (context.data.values == null) throw { message: "empty" };
+    if (context.data.values == null) throw { message: "empty" };
 
-  const titles = context.data.values[0];
-  const rows = context.data.values.slice(1);
+    const titles = context.data.values[0];
+    const rows = context.data.values.slice(1);
 
-  return rows.map((row) =>
-    titles.reduce(
-      (o, key, i) => {
-        const value = row[i]?.trim();
-        o[key] = value ? value : null;
-        return o;
-      },
-      {} as Raw<T>,
-    ),
-  );
-};
+    return rows.map((row) =>
+      titles.reduce(
+        (o, key, i) => {
+          const value = row[i]?.trim();
+          o[key] = value ? value : null;
+          return o;
+        },
+        {} as Raw<T>,
+      ),
+    );
+  },
+);
 
 export const getIndexData = async (): Promise<IndexData[]> => {
   const data = await getData<IndexData>("index", "A1:B");
