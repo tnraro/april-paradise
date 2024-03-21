@@ -14,6 +14,7 @@ const config = {
     adapter: adapter(),
     alias: {
       $routes: "./src/routes",
+      $img: "./src/lib/ui/resources",
     },
     csrf: {
       checkOrigin: false,

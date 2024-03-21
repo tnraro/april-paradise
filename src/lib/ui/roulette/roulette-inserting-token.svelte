@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { tokenSrc } from "./roulette-resources";
+
   interface Props {
     onanimationend: () => void;
   }
@@ -18,7 +20,7 @@
     y="-18"
     width="16"
     height="16"
-    href="/icons/token.png"
+    href={tokenSrc}
     {onanimationend}
   ></image>
 </g>

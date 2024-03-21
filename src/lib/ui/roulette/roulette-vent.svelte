@@ -2,6 +2,7 @@
   import type { Item, Money } from "$lib/data/sheets/model";
   import { untrack } from "svelte";
   import { RouletteState } from "./roulette";
+  import { chipSrc, tokenSrc } from "./roulette-resources";
 
   interface Props {
     _state: RouletteState;
@@ -64,7 +65,7 @@
           y={115 - 6 + y}
           width="12"
           height="12"
-          href="/icons/{reward.type === 'chips' ? 'chip' : 'token'}.png"
+          href={reward.type === "chips" ? chipSrc : tokenSrc}
         />
       {/each}
     {/if}
