@@ -1,0 +1,72 @@
+diff --git a/types/ambient.d.ts b/types/ambient.d.ts
+index d8ca61bcf8a8367a337e5f6e51ca6606dd0a060f..757a64dcd153d27e177b00920d5799ccecc61513 100644
+--- a/types/ambient.d.ts
++++ b/types/ambient.d.ts
+@@ -2,3 +2,67 @@ declare module '*?enhanced' {
+ 	const value: string;
+ 	export default value;
+ }
++declare module '*?enhanced&w=16' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&h=16' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&w=24' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&h=24' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&w=32' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&h=32' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&w=64' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&h=64' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&w=128' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&h=128' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&w=256' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&h=256' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&w=512' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&h=512' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&w=1024' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&h=1024' {
++	const value: string;
++	export default value;
++}
