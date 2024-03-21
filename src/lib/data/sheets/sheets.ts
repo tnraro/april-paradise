@@ -84,14 +84,18 @@ export const getAchievementData = async (): Promise<AchievementData[]> => {
 };
 
 export const getFishingData = async (): Promise<FishingData[]> => {
-  const data = await getData<FishingData>("낚시", "A1:I");
+  const data = await getData<FishingData>("낚시", "A1:M");
   return data.map((row) => ({
     key: parse(row.key).string().unwrap(),
     lure: parse(row.lure).string().unwrap(),
     name: parse(row.name).string().unwrap(),
     grade: parse(row.grade).grade().unwrap(),
     probability: parse(row.probability).number().unwrap(),
-    catchphrase: parse(row.catchphrase).string("낚았다").unwrap(),
+    hp: parse(row.hp).number().unwrap(),
+    power: parse(row.power).number().unwrap(),
+    rampancy: parse(row.rampancy).number().unwrap(),
+    endurance: parse(row.endurance).number().unwrap(),
+    catchphrase: parse(row.catchphrase).string().unwrap(),
     description: parse(row.description).string().unwrap(),
     exception: parse(row.exception).string().unwrap(),
   }));

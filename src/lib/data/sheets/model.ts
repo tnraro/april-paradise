@@ -53,6 +53,10 @@ export interface FishingData {
   name: string;
   grade: FishingGrade;
   probability: number;
+  hp: number;
+  power: number;
+  rampancy: number;
+  endurance: number;
   catchphrase: string;
   description: string;
   exception: string;
