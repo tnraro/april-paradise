@@ -6,12 +6,7 @@
 
   const onroll = () => {
     if (resultKey === "_random") {
-      result = pick(
-        table.map((x) => ({
-          item: x.key,
-          probability: x.probability,
-        })),
-      ).item;
+      result = pick(table).key;
     } else {
       result = resultKey;
     }

@@ -1,8 +1,7 @@
 export interface ItemProbability {
-  item: string;
   probability: number;
 }
-export const pick = (items: ItemProbability[]) => {
+export const pick = <T extends ItemProbability>(items: T[]): T => {
   const p = Math.random();
   let acc = 0;
   for (const item of items) {
