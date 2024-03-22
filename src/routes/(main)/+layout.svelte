@@ -9,14 +9,14 @@
       <div class="money">
         <span class="tokens">
           <enhanced:img class="tokens_img" src="$img/token.png?w=24" />
-          {0}
+          {data.user?.tokens ?? 0}
         </span>
         <span class="chips">
           <enhanced:img class="chips_img" src="$img/chip.png?w=24" />
-          {0}
+          {data.user?.chips ?? 0}
         </span>
       </div>
-      <span>러너 이름</span>
+      <span>{data.user?.name ?? "익명"}</span>
     {:else}
       <a class="sign-in" href="/auth/sign-in">로그인</a>
     {/if}

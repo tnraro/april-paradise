@@ -4,23 +4,24 @@
   import Item from "$lib/ui/item/item.svelte";
   import Roulette from "$lib/ui/roulette/roulette.svelte";
 
-  const onroll = () => {
+  const onroll = async () => {
     if (resultKey === "_random") {
-      result = pick(table).key;
-    } else {
-      result = resultKey;
+      result = pick(table);
+      return { result };
     }
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    result = table.find((x) => x.key === resultKey)!;
+    return { result };
   };
   const onreward = () => {
-    // biome-ignore lint/style/noNonNullAssertion: <explanation>
-    history.push(table.find((x) => x.key === result)!.result);
+    if (result) history.push(result.result);
   };
   interface Props {
     table: RouletteData[];
   }
   let { table } = $props<Props>();
 
-  let result = $state<string>();
+  let result = $state<RouletteData>();
   let resultKey = $state("_random");
 
   let history = $state<RouletteData["result"][]>([]);
@@ -47,15 +48,7 @@
   </div>
   <div></div>
   <div style="width: 20rem">
-    <Roulette
-      table={table.map((x) => ({
-        key: x.key,
-        item: x.result,
-      }))}
-      {onroll}
-      {result}
-      {onreward}
-    />
+    <Roulette tokens={Infinity} {table} {onroll} {onreward} />
   </div>
   <div>
     <h3>기록</h3>

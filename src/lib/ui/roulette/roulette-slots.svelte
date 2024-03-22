@@ -3,7 +3,7 @@
   import RouletteItem from "./roulette-item.svelte";
 
   interface Props {
-    table: { key: string; item: Money | Item }[];
+    table: { key: string; result: Money | Item }[];
     speed: number;
     index: number;
   }
@@ -47,7 +47,7 @@
     }}
   >
     {#each slots as slot, i}
-      <RouletteItem item={slot.item} y={36 + i * 16} />
+      <RouletteItem item={slot.result} y={36 + i * 16} />
     {/each}
   </g>
 </g>
