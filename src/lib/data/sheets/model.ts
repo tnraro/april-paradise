@@ -23,6 +23,9 @@ export interface IndexData {
 
 export interface ScheduleData {
   key: string;
+  pathname: string;
+  title: string;
+  description: string;
   start: Date | null;
   end: Date | null;
 }

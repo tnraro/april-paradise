@@ -56,9 +56,12 @@ export const getIndexData = async (): Promise<IndexData[]> => {
 };
 
 export const getScheduleData = async (): Promise<ScheduleData[]> => {
-  const data = await getData<ScheduleData>("일정", "A1:C");
+  const data = await getData<ScheduleData>("일정", "A1:G");
   return data.map((row) => ({
     key: parse(row.key).string().unwrap(),
+    pathname: parse(row.pathname).string().unwrap(),
+    title: parse(row.title).string().unwrap(),
+    description: parse(row.description).string().unwrap(),
     start: parse(row.start).date().unwrap(),
     end: parse(row.end).date().unwrap(),
   }));
