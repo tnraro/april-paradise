@@ -16,15 +16,30 @@ let { form } = $props<Props>();
   <label for="password">비밀번호</label>
   <input type="password" id="password" name="password" autocomplete="new-password" />
   <div>약관 자리</div>
-  <button>가입</button>
+  <button class="blue emphasis">가입</button>
   {#if form != null}
     {#if form.code === ErrorCode.AlreadyRegistered}
-      <div>이미 사용하는 아이디입니다.</div>
+      <div class="error">이미 사용하는 아이디입니다.</div>
     {:else if form.code === ErrorCode.SessionStarted}
-      <div>이미 시작된 세션입니다.</div>
+      <div class="error">이미 시작된 세션입니다.</div>
     {:else}
-      <div>무언가 잘못되었습니다. 나중에 다시 시도해주세요.</div>
+      <div class="error">무언가 잘못되었습니다. 나중에 다시 시도해주세요.</div>
     {/if}
   {/if}
   <a href="/auth/sign-in">로그인</a>
 </form>
+
+<style lang="scss">
+  form {
+    display: grid;
+    align-items: end;
+    gap: 0.5rem;
+  }
+  label {
+    margin-bottom: -0.5rem;
+  }
+  .error {
+    color: var(--red-11);
+    word-break: keep-all;
+  }
+</style>

@@ -26,8 +26,8 @@ export interface ScheduleData {
   pathname: string;
   title: string;
   description: string;
-  start: Date | null;
-  end: Date | null;
+  start: Date;
+  end: Date;
 }
 
 export interface RouletteData {
