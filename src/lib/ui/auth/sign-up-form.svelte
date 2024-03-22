@@ -96,5 +96,6 @@
   }
   .error {
     color: var(--red-11);
+    word-break: keep-all;
   }
 </style>
