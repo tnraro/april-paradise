@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type { Item, Money } from "$lib/data/sheets/model";
+  import type { Item, Money, RouletteData } from "$lib/data/sheets/model";
+  import { repeat } from "$lib/shared/util/repeat";
   import { RouletteState } from "./roulette";
   import Arrow from "./roulette-arrow.svelte";
   import Body from "./roulette-body.svelte";
@@ -13,18 +14,24 @@
   import Vent from "./roulette-vent.svelte";
 
   interface Props {
-    table: { key: string; item: Money | Item }[];
-    onroll?: () => void;
+    table: { key: string; result: Money | Item }[];
+    onroll?: () => Promise<{ result: RouletteData }>;
     onreward?: () => void;
-    result: string | undefined;
+    tokens: number;
+    chips: number;
   }
-  let { onroll, table, result, onreward } = $props<Props>();
+  let { onroll, table, onreward, tokens, chips } = $props<Props>();
   let t: number;
 
   const onclick = () => {
     switch (_state) {
       case RouletteState.Idle:
-        _state = RouletteState.InsertingToken;
+        if (tokens > 0) {
+          _state = RouletteState.InsertingToken;
+          tokens--;
+        } else {
+          _state = RouletteState.NotEnoughTokens;
+        }
         break;
       case RouletteState.InsertingToken:
         break;
@@ -37,15 +44,17 @@
         onreward?.();
         _state = RouletteState.Idle;
         break;
+      case RouletteState.NotEnoughTokens:
+        _state = RouletteState.Idle;
     }
   };
   const done = () => {
     if (result == null) return;
     clearInterval(t);
     speed = 0;
-    index = table.findIndex((x) => x.key === result) + table.length - 1;
+    index = table.findIndex((x) => x.key === result?.key) + table.length - 1;
     bulbs = bulbs.map(() => false);
-    if (result.startsWith("losing")) {
+    if (result.key.startsWith("losing")) {
       onreward?.();
       _state = RouletteState.Idle;
     } else {
@@ -53,12 +62,33 @@
       t = setInterval(() => {
         bulbs = bulbs.map((bulb) => !bulb);
       }, 100) as unknown as number;
+      if (result.result.type === "chips" || result.result.type === "tokens") {
+        animateMoneyIncreasing(result.result);
+      }
+    }
+  };
+  const animateMoneyIncreasing = async (money: Money) => {
+    for await (const i of repeat(money.quantity, 50)) {
+      if (money.type === "chips") {
+        chips++;
+      } else if (money.type === "tokens") {
+        tokens++;
+      }
     }
   };
   const roll = () => {
     _state = RouletteState.Rolling;
     speed = 4;
-    onroll?.();
+    onroll?.()
+      .then((res) => {
+        result = res.result;
+      })
+      .catch((error) => {
+        console.error(error);
+        clearInterval(t);
+        _state = RouletteState.NotEnoughTokens;
+        speed = 0;
+      });
     let i = 0;
     bulbs = bulbs.map(() => false);
     t = setInterval(() => {
@@ -93,9 +123,8 @@
   let _state = $state<RouletteState>(RouletteState.Idle);
   let index = $state(0);
   let speed = $state(0);
-  let reward = $derived(
-    result == null ? undefined : table.find((x) => x.key === result)?.item,
-  );
+  let result = $state<RouletteData>();
+  let reward = $derived(result == null ? undefined : result.result);
   let lcdText = $derived.by(() => {
     switch (_state) {
       case RouletteState.Idle:
@@ -106,6 +135,8 @@
       case RouletteState.DroppingReward:
       case RouletteState.Reward:
         return "보상을 받으세요";
+      case RouletteState.NotEnoughTokens:
+        return "토큰이 없습니다";
     }
   });
 </script>
