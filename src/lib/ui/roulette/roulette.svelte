@@ -22,8 +22,10 @@
   }
   let { onroll, table, onreward, tokens, chips } = $props<Props>();
   let t: number;
+  let t2 = false;
 
   const onclick = () => {
+    t2 = false;
     switch (_state) {
       case RouletteState.Idle:
         if (tokens > 0) {
@@ -68,13 +70,16 @@
     }
   };
   const animateMoneyIncreasing = async (money: Money) => {
+    t2 = true;
     for await (const i of repeat(money.quantity, 50)) {
+      if (!t2) break;
       if (money.type === "chips") {
         chips++;
       } else if (money.type === "tokens") {
         tokens++;
       }
     }
+    t2 = false;
   };
   const roll = () => {
     _state = RouletteState.Rolling;
