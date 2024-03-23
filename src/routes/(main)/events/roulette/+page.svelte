@@ -28,9 +28,9 @@
     display: grid;
     place-items: center;
     background: linear-gradient(0deg, white, var(--sand-6) 30%, var(--sand-8) 35%, white);
-    padding: 5rem 0;
+    height: 100%;
   }
   .machine {
-    width: 25rem;
+    width: 20rem;
   }
 </style>
