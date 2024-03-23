@@ -10,6 +10,7 @@
   <div class="machine">
     <Roulette
       bind:tokens={data.user!.tokens}
+      bind:chips={data.user!.chips}
       table={data.rouletteData}
       onreward={() => {
         invalidate(`header:${data.user?.name}`);

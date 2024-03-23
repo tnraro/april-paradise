@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Item, Money, RouletteData } from "$lib/data/sheets/model";
+  import { repeat } from "$lib/shared/util/repeat";
   import { RouletteState } from "./roulette";
   import Arrow from "./roulette-arrow.svelte";
   import Body from "./roulette-body.svelte";
@@ -17,8 +18,9 @@
     onroll?: () => Promise<{ result: RouletteData }>;
     onreward?: () => void;
     tokens: number;
+    chips: number;
   }
-  let { onroll, table, onreward, tokens } = $props<Props>();
+  let { onroll, table, onreward, tokens, chips } = $props<Props>();
   let t: number;
 
   const onclick = () => {
@@ -60,6 +62,18 @@
       t = setInterval(() => {
         bulbs = bulbs.map((bulb) => !bulb);
       }, 100) as unknown as number;
+      if (result.result.type === "chips" || result.result.type === "tokens") {
+        animateMoneyIncreasing(result.result);
+      }
+    }
+  };
+  const animateMoneyIncreasing = async (money: Money) => {
+    for await (const i of repeat(money.quantity, 50)) {
+      if (money.type === "chips") {
+        chips++;
+      } else if (money.type === "tokens") {
+        tokens++;
+      }
     }
   };
   const roll = () => {
