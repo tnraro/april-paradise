@@ -3,9 +3,10 @@
   import { josa } from "$lib/shared/util/josa";
 
   interface Props {
-    fish: FishingData;
+    fish: Pick<FishingData, "name" | "catchphrase" | "grade">;
   }
   let { fish } = $props<Props>();
+  let catchphrase = $derived(fish.catchphrase.split(/\s*[\/\n]\s*/));
 </script>
 
 <div>
@@ -21,7 +22,9 @@
   </span>{josa(fish.name, "을", "를")} 낚았다!
 </div>
 <div class="catchphrase">
-  {fish.catchphrase ?? fish.description}
+  {#each catchphrase as line}
+    <p>{line}</p>
+  {/each}
 </div>
 
 <style lang="scss">

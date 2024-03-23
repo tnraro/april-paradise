@@ -140,7 +140,14 @@
 
   type CatchingFish = Pick<
     FishingData,
-    "grade" | "hp" | "power" | "rampancy" | "endurance"
+    | "key"
+    | "name"
+    | "catchphrase"
+    | "grade"
+    | "hp"
+    | "power"
+    | "rampancy"
+    | "endurance"
   >;
   interface Props {
     oncast?: (lure: string) => Promise<CatchingFish>;
@@ -207,8 +214,7 @@
         onmousedown={() => (isPulling = true)}
         onmouseup={() => (isPulling = false)}
         onpointerdown={() => (isPulling = true)}
-        onpointerup={() => (isPulling = false)}
-        >당기기</button
+        onpointerup={() => (isPulling = false)}>당기기</button
       >
     {:else if _state === FishingState.Caught}
       {#if catchingFish}
