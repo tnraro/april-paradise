@@ -23,6 +23,8 @@
 
   let result = $state<RouletteData>();
   let resultKey = $state("_random");
+  let tokens = $state(3);
+  let chips = $state(0);
 
   let history = $state<RouletteData["result"][]>([]);
 </script>
@@ -48,9 +50,12 @@
   </div>
   <div></div>
   <div style="width: 20rem">
-    <Roulette tokens={Infinity} {table} {onroll} {onreward} />
+    <Roulette bind:tokens bind:chips {table} {onroll} {onreward} />
   </div>
   <div>
+    <h3>자원</h3>
+    <span>토큰 {tokens}</span>
+    <span>칩 {chips}</span>
     <h3>기록</h3>
     <div class="history_items">
       {#each history as item}
