@@ -1,7 +1,7 @@
 export const isEndsWith받침 = (text: string) => {
   const lastCharacter = text.at(-1);
   if (lastCharacter == null) return false;
-  if (!/가-힣$/.test(lastCharacter)) return false;
+  if (!/[가-힣]$/.test(lastCharacter)) return false;
   const 받침 = ((text.at(-1)?.codePointAt(0) ?? 0) - 0xac00) % 28;
   return 받침 !== 0;
 };
