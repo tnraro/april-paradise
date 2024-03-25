@@ -3,7 +3,6 @@
   import { groupBy } from "$lib/shared/util/group-by";
   import { createTooltip } from "$lib/ui/floating/tooltip-action.svelte";
   import Tooltip from "$lib/ui/floating/tooltip.svelte";
-  import Sim from "./sim.svelte";
 
   let { data } = $props();
 
@@ -78,8 +77,6 @@
     <div>"{row.lure}"로 낚을 수 있다. 확률 {row.probability * 100}%</div>
   </Tooltip>
 {/if}
-
-<Sim table={data.data} />
 
 <style lang="scss">
   ._ {
