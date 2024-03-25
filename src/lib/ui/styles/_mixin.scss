@@ -1,6 +1,7 @@
 @mixin select-none {
-  user-select: none;
-  -webkit-user-select: none;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -webkit-touch-callout: none !important;
 }
 
 @mixin local-bg($color, $scale) {
