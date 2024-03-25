@@ -181,7 +181,7 @@ input:where([type="checkbox"], [type="radio"]) {
   appearance: none;
   border: none;
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
 
   &::before {
@@ -324,4 +324,8 @@ textarea {
   &:focus-visible {
     outline: var(--blue-8) 2px solid;
   }
+}
+
+.pixel {
+  image-rendering: pixelated;
 }
