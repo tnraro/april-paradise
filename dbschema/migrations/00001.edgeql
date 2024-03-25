@@ -1,4 +1,4 @@
-CREATE MIGRATION m12ua76pyiyr2ki6npqbcyjtg7nnse66ym3dm2kxiqurtqjoxldywq
+CREATE MIGRATION m1ozu3ayjh7g6hnr4v43zvadnpnqwzzkgfrbwphjc6ihbahjhep77q
     ONTO initial
 {
   CREATE EXTENSION pgcrypto VERSION '1.3';
@@ -21,31 +21,23 @@ CREATE MIGRATION m12ua76pyiyr2ki6npqbcyjtg7nnse66ym3dm2kxiqurtqjoxldywq
   FILTER
       (.identity = GLOBAL ext::auth::ClientTokenIdentity)
   )));
-  CREATE ABSTRACT TYPE default::Event {
+  CREATE ABSTRACT TYPE default::Item {
       CREATE REQUIRED PROPERTY createdAt: std::datetime {
           SET default := (std::datetime_of_transaction());
       };
-      CREATE PROPERTY description: std::str;
-      CREATE REQUIRED PROPERTY endTime: std::datetime;
-      CREATE REQUIRED PROPERTY isEnded := ((std::datetime_of_transaction() > .endTime));
-      CREATE REQUIRED PROPERTY startTime: std::datetime;
-      CREATE REQUIRED PROPERTY isStarted := ((std::datetime_of_transaction() >= .startTime));
-      CREATE REQUIRED PROPERTY isRunning := ((.isStarted AND NOT (.isEnded)));
-      CREATE REQUIRED PROPERTY name: std::str;
-      CREATE CONSTRAINT std::expression ON ((.startTime < .endTime));
+      CREATE REQUIRED PROPERTY key: std::str {
+          CREATE ANNOTATION std::title := '아이템 키';
+      };
   };
-  CREATE TYPE default::GameSession EXTENDING default::Event;
-  CREATE GLOBAL default::gameSession := (std::assert_single((SELECT
-      default::GameSession
-  )));
-  CREATE TYPE default::Admin EXTENDING default::User {
-      CREATE ACCESS POLICY register_until_session_started
-          DENY INSERT USING (((GLOBAL default::gameSession).isStarted ?? false));
-      CREATE ACCESS POLICY allow_all
-          ALLOW ALL ;
-      CREATE REQUIRED PROPERTY isGod: std::bool {
+  CREATE TYPE default::FishItem EXTENDING default::Item;
+  CREATE TYPE default::Penalty {
+      CREATE REQUIRED LINK user: default::User {
+          ON TARGET DELETE DELETE SOURCE;
+      };
+      CREATE REQUIRED PROPERTY isBanned: std::bool {
           SET default := false;
       };
+      CREATE PROPERTY reason: std::str;
   };
   CREATE TYPE default::Achievement {
       CREATE REQUIRED PROPERTY condition: std::str {
@@ -65,38 +57,7 @@ CREATE MIGRATION m12ua76pyiyr2ki6npqbcyjtg7nnse66ym3dm2kxiqurtqjoxldywq
           CREATE ANNOTATION std::title := '보상';
       };
   };
-  CREATE ABSTRACT TYPE default::Item {
-      CREATE REQUIRED LINK owner: default::User;
-      CREATE REQUIRED PROPERTY name: std::str {
-          CREATE ANNOTATION std::title := '아이템 이름 (키)';
-      };
-      CREATE REQUIRED PROPERTY quantity: std::int64 {
-          CREATE ANNOTATION std::title := '아이템 수량';
-          CREATE CONSTRAINT std::min_value(0);
-      };
-  };
-  CREATE TYPE default::Penalty {
-      CREATE REQUIRED LINK user: default::User {
-          ON TARGET DELETE DELETE SOURCE;
-      };
-      CREATE REQUIRED PROPERTY isBanned: std::bool {
-          SET default := false;
-      };
-      CREATE PROPERTY reason: std::str;
-  };
-  CREATE TYPE default::RunnerAchievement {
-      CREATE REQUIRED LINK achievement: default::Achievement {
-          ON TARGET DELETE DELETE SOURCE;
-      };
-      CREATE REQUIRED PROPERTY createdAt: std::datetime {
-          SET default := (std::datetime_of_transaction());
-      };
-  };
-  ALTER TYPE default::User {
-      CREATE REQUIRED PROPERTY isAdmin := (EXISTS ([IS default::Admin]));
-  };
   CREATE TYPE default::Runner EXTENDING default::User {
-      CREATE MULTI LINK inventory := (.<owner[IS default::Item]);
       CREATE MULTI LINK penalties := (.<user[IS default::Penalty]);
       CREATE PROPERTY banneds := (std::count((SELECT
           .penalties
@@ -123,15 +84,52 @@ CREATE MIGRATION m12ua76pyiyr2ki6npqbcyjtg7nnse66ym3dm2kxiqurtqjoxldywq
           CREATE CONSTRAINT std::exclusive;
       };
   };
-  ALTER TYPE default::User {
-      CREATE REQUIRED PROPERTY isRunner := (EXISTS ([IS default::Runner]));
+  ALTER TYPE default::Item {
+      CREATE REQUIRED LINK owner: default::Runner {
+          SET default := ((GLOBAL default::currentUser)[IS default::Runner]);
+      };
   };
-  ALTER TYPE default::RunnerAchievement {
+  CREATE TYPE default::GarbageItem EXTENDING default::Item;
+  CREATE TYPE default::IngredientItem EXTENDING default::Item;
+  CREATE TYPE default::TicketItem EXTENDING default::Item;
+  CREATE TYPE default::RunnerAchievement {
+      CREATE REQUIRED LINK achievement: default::Achievement {
+          ON TARGET DELETE DELETE SOURCE;
+      };
       CREATE REQUIRED LINK runner: default::Runner {
           ON TARGET DELETE DELETE SOURCE;
       };
+      CREATE REQUIRED PROPERTY createdAt: std::datetime {
+          SET default := (std::datetime_of_transaction());
+      };
+  };
+  ALTER TYPE default::User {
+      CREATE REQUIRED PROPERTY isRunner := (EXISTS ([IS default::Runner]));
+  };
+  CREATE TYPE default::Admin EXTENDING default::User {
+      CREATE REQUIRED PROPERTY isGod: std::bool {
+          SET default := false;
+      };
+  };
+  ALTER TYPE default::User {
+      CREATE REQUIRED PROPERTY isAdmin := (EXISTS ([IS default::Admin]));
   };
   ALTER TYPE default::Runner {
+      CREATE MULTI LINK inventory := (.<owner[IS default::Item]);
       CREATE MULTI LINK achievements := (.<runner[IS default::RunnerAchievement]);
   };
+  CREATE ABSTRACT TYPE default::Event {
+      CREATE REQUIRED PROPERTY endTime: std::datetime;
+      CREATE REQUIRED PROPERTY startTime: std::datetime;
+      CREATE CONSTRAINT std::expression ON ((.startTime < .endTime));
+      CREATE REQUIRED PROPERTY createdAt: std::datetime {
+          SET default := (std::datetime_of_transaction());
+      };
+      CREATE PROPERTY description: std::str;
+      CREATE REQUIRED PROPERTY isEnded := ((std::datetime_of_transaction() > .endTime));
+      CREATE REQUIRED PROPERTY isStarted := ((std::datetime_of_transaction() >= .startTime));
+      CREATE REQUIRED PROPERTY isRunning := ((.isStarted AND NOT (.isEnded)));
+      CREATE REQUIRED PROPERTY name: std::str;
+  };
+  CREATE TYPE default::GameSession EXTENDING default::Event;
 };

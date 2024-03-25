@@ -7,11 +7,6 @@ module default {
       filter .identity = global ext::auth::ClientTokenIdentity
     ))
   );
-  global gameSession := (
-    assert_single((
-      select GameSession
-    ))
-  );
 
   abstract type User {
     identity: ext::auth::Identity{ 
@@ -34,11 +29,6 @@ module default {
     required isGod: bool {
       default := false;
     }
-    access policy allow_all
-      allow all;
-    access policy register_until_session_started
-      deny insert
-      using (global gameSession.isStarted ?? false);
   }
   type Runner extending User {
     required twitterId: str {
@@ -87,13 +77,6 @@ module default {
     required createdAt: datetime {
       default := datetime_of_transaction();
     }
-
-    access policy admin
-      allow all
-      using (global currentUser.isAdmin ?? false);
-    access policy user_can_select
-      allow select
-      using (exists global currentUser);
   }
 
   type GameSession extending Event {}
@@ -132,15 +115,20 @@ module default {
   }
 
   abstract type Item {
-    required owner: User;
-    required name: str {
-      annotation title := "아이템 이름 (키)";
+    required owner: Runner {
+      default := global currentUser[is Runner];
     }
-    required quantity: int64 {
-      annotation title := "아이템 수량";
-      constraint min_value(0);
+    required key: str {
+      annotation title := "아이템 키";
+    }
+    required createdAt: datetime {
+      default := datetime_of_transaction();
     }
   }
+  type TicketItem extending Item {}
+  type FishItem extending Item {}
+  type GarbageItem extending Item {}
+  type IngredientItem extending Item {}
 
   type Penalty {
     required user: User {
@@ -150,12 +138,5 @@ module default {
     required isBanned: bool {
       default := false;
     };
-
-    access policy admin
-      allow all
-      using (global currentUser.isAdmin ?? false);
-    access policy self
-      allow select
-      using (global currentUser ?= .user);
   }
 }
