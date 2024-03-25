@@ -1,4 +1,4 @@
-const sendError = (message: string, additionalInformation?: unknown) => {
+export const sendError = (message: string, additionalInformation?: unknown) => {
   navigator.sendBeacon(
     "/api/errors",
     JSON.stringify({ message, additionalInformation }),
