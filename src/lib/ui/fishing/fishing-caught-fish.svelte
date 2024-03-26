@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { type FishingData, FishingGrade } from "$lib/data/sheets/model";
+  import { FishingGrade } from "$lib/data/sheets/model";
   import { josa } from "$lib/shared/util/josa";
+  import type { CaughtFish } from "./fishing-state.svelte";
 
   interface Props {
-    fish: FishingData;
+    fish: Pick<CaughtFish, "name" | "grade">;
   }
   let { fish } = $props<Props>();
 </script>
@@ -19,9 +20,6 @@
   >
     {fish.name}
   </span>{josa(fish.name, "을", "를")} 낚았다!
-</div>
-<div class="catchphrase">
-  {fish.catchphrase ?? fish.description}
 </div>
 
 <style lang="scss">
@@ -41,12 +39,5 @@
     &--grade-4 {
       color: var(--amber-10);
     }
-  }
-  .catchphrase {
-    border: 1px solid var(--slate-6);
-    padding: 1rem;
-    border-radius: 0.25rem;
-    width: 20rem;
-    word-break: keep-all;
   }
 </style>
