@@ -89,6 +89,7 @@ export interface RunnerData {
   height: number;
   weight: number;
   gender: string;
+  isBanned: boolean;
 }
 
 export interface ItemData {

@@ -153,7 +153,7 @@ export const getCocktailStoreData = async (): Promise<CocktailStoreData[]> => {
 };
 
 export const getRunnerData = async (): Promise<RunnerData[]> => {
-  const data = await getData<RunnerData>("러너", "A1:F");
+  const data = await getData<RunnerData>("러너", "A1:G");
   return data.map((row) => ({
     key: parse(row.key).string().unwrap(),
     name: parse(row.name).string().unwrap(),
@@ -161,6 +161,7 @@ export const getRunnerData = async (): Promise<RunnerData[]> => {
     height: parse(row.height).number().unwrap(),
     weight: parse(row.weight).number().unwrap(),
     gender: parse(row.gender).string().unwrap(),
+    isBanned: parse(row.isBanned).boolean().unwrap(),
   }));
 };
 

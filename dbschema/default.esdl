@@ -61,12 +61,6 @@ module default {
       }
     );
 
-    multi penalties := .<user[is Penalty];
-    banneds := count((select .penalties filter .isBanned));
-    warnings := count((select .penalties filter not .isBanned));
-    required isBanned := count(.banneds) > 0;
-    required isActive := not .isBanned;
-
     multi achievements := .<runner[is Achievement];
     multi inventory := .<owner[is Item];
 
@@ -123,33 +117,6 @@ module default {
   type FishItem extending Item {}
   type GarbageItem extending Item {}
   type IngredientItem extending Item {}
-
-  type Penalty {
-    required user: User {
-      on target delete delete source;
-    }
-    reason: str;
-    required isBanned: bool {
-      default := false;
-    };
-    trigger log_insert_penalty after insert for each do (
-      insert Log {
-        table := "Penalty",
-        action := "insert",
-        patient := __new__.user.key
-      }
-    );
-    trigger log_update_penalty after update for each
-    when (__old__.isBanned != __new__.isBanned)
-    do (
-      insert Log {
-        table := "Penalty",
-        action := "update",
-        patient := __new__.user.key,
-        change := <str>__old__.isBanned ++ '->' ++ <str>__new__.isBanned
-      }
-    );
-  }
 
   type Log {
     required table: str;

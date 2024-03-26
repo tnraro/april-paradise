@@ -1,4 +1,4 @@
-CREATE MIGRATION m1wpt5rtapkgkhikswb4bwpfvvutmss7qroxxdu34mt6bmuynxmqza
+CREATE MIGRATION m1g2idmtz7jlppmnkx4wpwcc3cjcpfjxg5l5szl3niv23dnjrw3f5a
     ONTO initial
 {
   CREATE EXTENSION pgcrypto VERSION '1.3';
@@ -31,15 +31,6 @@ CREATE MIGRATION m1wpt5rtapkgkhikswb4bwpfvvutmss7qroxxdu34mt6bmuynxmqza
       };
   };
   CREATE TYPE default::FishItem EXTENDING default::Item;
-  CREATE TYPE default::Penalty {
-      CREATE REQUIRED LINK user: default::User {
-          ON TARGET DELETE DELETE SOURCE;
-      };
-      CREATE REQUIRED PROPERTY isBanned: std::bool {
-          SET default := false;
-      };
-      CREATE PROPERTY reason: std::str;
-  };
   CREATE TYPE default::Runner EXTENDING default::User {
       CREATE REQUIRED PROPERTY chips: std::int64 {
           SET default := 0;
@@ -49,19 +40,6 @@ CREATE MIGRATION m1wpt5rtapkgkhikswb4bwpfvvutmss7qroxxdu34mt6bmuynxmqza
           SET default := 0;
           CREATE CONSTRAINT std::min_value(0);
       };
-      CREATE MULTI LINK penalties := (.<user[IS default::Penalty]);
-      CREATE PROPERTY banneds := (std::count((SELECT
-          .penalties
-      FILTER
-          .isBanned
-      )));
-      CREATE REQUIRED PROPERTY isBanned := ((std::count(.banneds) > 0));
-      CREATE REQUIRED PROPERTY isActive := (NOT (.isBanned));
-      CREATE PROPERTY warnings := (std::count((SELECT
-          .penalties
-      FILTER
-          NOT (.isBanned)
-      )));
   };
   ALTER TYPE default::Item {
       CREATE REQUIRED LINK owner: default::Runner {
@@ -162,29 +140,6 @@ CREATE MIGRATION m1wpt5rtapkgkhikswb4bwpfvvutmss7qroxxdu34mt6bmuynxmqza
                   table := 'Item',
                   action := 'insert',
                   patient := __new__.key
-              });
-  };
-  ALTER TYPE default::Penalty {
-      CREATE TRIGGER log_insert_penalty
-          AFTER INSERT 
-          FOR EACH DO (INSERT
-              default::Log
-              {
-                  table := 'Penalty',
-                  action := 'insert',
-                  patient := __new__.user.key
-              });
-      CREATE TRIGGER log_update_penalty
-          AFTER UPDATE 
-          FOR EACH 
-              WHEN ((__old__.isBanned != __new__.isBanned))
-          DO (INSERT
-              default::Log
-              {
-                  table := 'Penalty',
-                  action := 'update',
-                  patient := __new__.user.key,
-                  change := ((<std::str>__old__.isBanned ++ '->') ++ <std::str>__new__.isBanned)
               });
   };
 };
