@@ -1,4 +1,4 @@
-CREATE MIGRATION m1ozu3ayjh7g6hnr4v43zvadnpnqwzzkgfrbwphjc6ihbahjhep77q
+CREATE MIGRATION m1wpt5rtapkgkhikswb4bwpfvvutmss7qroxxdu34mt6bmuynxmqza
     ONTO initial
 {
   CREATE EXTENSION pgcrypto VERSION '1.3';
@@ -12,7 +12,7 @@ CREATE MIGRATION m1ozu3ayjh7g6hnr4v43zvadnpnqwzzkgfrbwphjc6ihbahjhep77q
       CREATE REQUIRED PROPERTY createdAt: std::datetime {
           SET default := (std::datetime_of_transaction());
       };
-      CREATE REQUIRED PROPERTY name: std::str {
+      CREATE REQUIRED PROPERTY key: std::str {
           CREATE CONSTRAINT std::exclusive;
       };
   };
@@ -26,6 +26,7 @@ CREATE MIGRATION m1ozu3ayjh7g6hnr4v43zvadnpnqwzzkgfrbwphjc6ihbahjhep77q
           SET default := (std::datetime_of_transaction());
       };
       CREATE REQUIRED PROPERTY key: std::str {
+          CREATE CONSTRAINT std::exclusive;
           CREATE ANNOTATION std::title := '아이템 키';
       };
   };
@@ -39,25 +40,15 @@ CREATE MIGRATION m1ozu3ayjh7g6hnr4v43zvadnpnqwzzkgfrbwphjc6ihbahjhep77q
       };
       CREATE PROPERTY reason: std::str;
   };
-  CREATE TYPE default::Achievement {
-      CREATE REQUIRED PROPERTY condition: std::str {
-          CREATE ANNOTATION std::title := '달성 조건';
-      };
-      CREATE REQUIRED PROPERTY createdAt: std::datetime {
-          SET default := (std::datetime_of_transaction());
-      };
-      CREATE REQUIRED PROPERTY isHidden: std::bool {
-          SET default := false;
-          CREATE ANNOTATION std::title := '히든';
-      };
-      CREATE REQUIRED PROPERTY name: std::str {
-          CREATE ANNOTATION std::title := '업적 명';
-      };
-      CREATE REQUIRED PROPERTY reward: std::str {
-          CREATE ANNOTATION std::title := '보상';
-      };
-  };
   CREATE TYPE default::Runner EXTENDING default::User {
+      CREATE REQUIRED PROPERTY chips: std::int64 {
+          SET default := 0;
+          CREATE CONSTRAINT std::min_value(0);
+      };
+      CREATE REQUIRED PROPERTY tokens: std::int64 {
+          SET default := 0;
+          CREATE CONSTRAINT std::min_value(0);
+      };
       CREATE MULTI LINK penalties := (.<user[IS default::Penalty]);
       CREATE PROPERTY banneds := (std::count((SELECT
           .penalties
@@ -71,37 +62,54 @@ CREATE MIGRATION m1ozu3ayjh7g6hnr4v43zvadnpnqwzzkgfrbwphjc6ihbahjhep77q
       FILTER
           NOT (.isBanned)
       )));
-      CREATE REQUIRED PROPERTY chips: std::int64 {
-          SET default := 0;
-          CREATE CONSTRAINT std::min_value(0);
-      };
-      CREATE PROPERTY memo: std::str;
-      CREATE REQUIRED PROPERTY tokens: std::int64 {
-          SET default := 0;
-          CREATE CONSTRAINT std::min_value(0);
-      };
-      CREATE REQUIRED PROPERTY twitterId: std::str {
-          CREATE CONSTRAINT std::exclusive;
-      };
   };
   ALTER TYPE default::Item {
       CREATE REQUIRED LINK owner: default::Runner {
           SET default := ((GLOBAL default::currentUser)[IS default::Runner]);
+          ON TARGET DELETE DELETE SOURCE;
       };
   };
   CREATE TYPE default::GarbageItem EXTENDING default::Item;
   CREATE TYPE default::IngredientItem EXTENDING default::Item;
   CREATE TYPE default::TicketItem EXTENDING default::Item;
-  CREATE TYPE default::RunnerAchievement {
-      CREATE REQUIRED LINK achievement: default::Achievement {
-          ON TARGET DELETE DELETE SOURCE;
-      };
+  CREATE TYPE default::Achievement {
       CREATE REQUIRED LINK runner: default::Runner {
+          SET default := ((GLOBAL default::currentUser)[IS default::Runner]);
           ON TARGET DELETE DELETE SOURCE;
       };
       CREATE REQUIRED PROPERTY createdAt: std::datetime {
           SET default := (std::datetime_of_transaction());
       };
+      CREATE REQUIRED PROPERTY key: std::str {
+          CREATE ANNOTATION std::title := '업적 키';
+          CREATE CONSTRAINT std::exclusive;
+      };
+  };
+  CREATE TYPE default::Log {
+      CREATE PROPERTY agent: std::str {
+          SET default := ((GLOBAL default::currentUser).key);
+      };
+      CREATE REQUIRED PROPERTY action: std::str;
+      CREATE REQUIRED PROPERTY patient: std::str;
+      CREATE REQUIRED PROPERTY table: std::str;
+      CREATE PROPERTY change: std::str;
+      CREATE REQUIRED PROPERTY createdAt: std::datetime {
+          SET default := (std::datetime_of_transaction());
+      };
+  };
+  ALTER TYPE default::Runner {
+      CREATE MULTI LINK achievements := (.<runner[IS default::Achievement]);
+  };
+  ALTER TYPE default::Achievement {
+      CREATE TRIGGER log_insert_achievement
+          AFTER INSERT 
+          FOR EACH DO (INSERT
+              default::Log
+              {
+                  table := 'Achievement',
+                  action := 'insert',
+                  patient := __new__.key
+              });
   };
   ALTER TYPE default::User {
       CREATE REQUIRED PROPERTY isRunner := (EXISTS ([IS default::Runner]));
@@ -115,21 +123,68 @@ CREATE MIGRATION m1ozu3ayjh7g6hnr4v43zvadnpnqwzzkgfrbwphjc6ihbahjhep77q
       CREATE REQUIRED PROPERTY isAdmin := (EXISTS ([IS default::Admin]));
   };
   ALTER TYPE default::Runner {
+      CREATE MULTI LINK fishes := (.<owner[IS default::FishItem]);
+      CREATE MULTI LINK garbages := (.<owner[IS default::GarbageItem]);
+      CREATE MULTI LINK ingredients := (.<owner[IS default::IngredientItem]);
       CREATE MULTI LINK inventory := (.<owner[IS default::Item]);
-      CREATE MULTI LINK achievements := (.<runner[IS default::RunnerAchievement]);
+      CREATE TRIGGER log_update_chips
+          AFTER UPDATE 
+          FOR EACH 
+              WHEN ((__old__.chips != __new__.chips))
+          DO (INSERT
+              default::Log
+              {
+                  table := 'Runner',
+                  action := 'update',
+                  patient := __new__.key,
+                  change := ((<std::str>__old__.chips ++ '->') ++ <std::str>__new__.chips)
+              });
+      CREATE TRIGGER log_update_tokens
+          AFTER UPDATE 
+          FOR EACH 
+              WHEN ((__old__.tokens != __new__.tokens))
+          DO (INSERT
+              default::Log
+              {
+                  table := 'Runner',
+                  action := 'update',
+                  patient := __new__.key,
+                  change := ((<std::str>__old__.tokens ++ '->') ++ <std::str>__new__.tokens)
+              });
+      CREATE MULTI LINK tickets := (.<owner[IS default::TicketItem]);
   };
-  CREATE ABSTRACT TYPE default::Event {
-      CREATE REQUIRED PROPERTY endTime: std::datetime;
-      CREATE REQUIRED PROPERTY startTime: std::datetime;
-      CREATE CONSTRAINT std::expression ON ((.startTime < .endTime));
-      CREATE REQUIRED PROPERTY createdAt: std::datetime {
-          SET default := (std::datetime_of_transaction());
-      };
-      CREATE PROPERTY description: std::str;
-      CREATE REQUIRED PROPERTY isEnded := ((std::datetime_of_transaction() > .endTime));
-      CREATE REQUIRED PROPERTY isStarted := ((std::datetime_of_transaction() >= .startTime));
-      CREATE REQUIRED PROPERTY isRunning := ((.isStarted AND NOT (.isEnded)));
-      CREATE REQUIRED PROPERTY name: std::str;
+  ALTER TYPE default::Item {
+      CREATE TRIGGER log_insert_item
+          AFTER INSERT 
+          FOR EACH DO (INSERT
+              default::Log
+              {
+                  table := 'Item',
+                  action := 'insert',
+                  patient := __new__.key
+              });
   };
-  CREATE TYPE default::GameSession EXTENDING default::Event;
+  ALTER TYPE default::Penalty {
+      CREATE TRIGGER log_insert_penalty
+          AFTER INSERT 
+          FOR EACH DO (INSERT
+              default::Log
+              {
+                  table := 'Penalty',
+                  action := 'insert',
+                  patient := __new__.user.key
+              });
+      CREATE TRIGGER log_update_penalty
+          AFTER UPDATE 
+          FOR EACH 
+              WHEN ((__old__.isBanned != __new__.isBanned))
+          DO (INSERT
+              default::Log
+              {
+                  table := 'Penalty',
+                  action := 'update',
+                  patient := __new__.user.key,
+                  change := ((<std::str>__old__.isBanned ++ '->') ++ <std::str>__new__.isBanned)
+              });
+  };
 };
