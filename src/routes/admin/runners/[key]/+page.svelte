@@ -32,10 +32,6 @@
     <span>칩: {current.chips}</span>
     <span>토큰: {current.tokens}</span>
   </div>
-  <div>
-    <h2>메모</h2>
-    <textarea class="memo" bind:value={current.memo}></textarea>
-  </div>
   <div class="penalties">
     <div class="penalties-title">경고</div>
     <div class="penalties-title">사유</div>

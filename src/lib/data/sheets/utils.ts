@@ -1,4 +1,4 @@
-import { getScheduleData } from "./sheets";
+import { getRunnerData, getScheduleData } from "./sheets";
 
 export const isScheduleActived = async (key: string) => {
   const scheduleData = await getScheduleData();
@@ -7,4 +7,18 @@ export const isScheduleActived = async (key: string) => {
   const now = new Date();
   const isActived = now >= schedule.start && now <= schedule.end;
   return isActived;
+};
+
+export const wrapRunnerData = async <T extends { key: string }>(
+  x: T | null | undefined | Promise<T | null | undefined>,
+) => {
+  const _x = await x;
+  if (_x == null) return null;
+  const runners = await getRunnerData();
+  const runner = runners.find((runner) => runner.key === _x.key);
+  if (runner == null) return null;
+  return {
+    ..._x,
+    ...runner,
+  };
 };
