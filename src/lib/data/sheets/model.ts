@@ -81,3 +81,19 @@ export interface CocktailStoreData {
   isSpecial: boolean;
   price: Money;
 }
+
+export interface RunnerData {
+  key: string;
+  name: string;
+  twitterId: string;
+  height: number;
+  weight: number;
+  gender: string;
+}
+
+export interface ItemData {
+  key: string;
+  name: string;
+  category: string;
+  description: string;
+}
