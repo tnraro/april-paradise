@@ -1,9 +1,9 @@
 select (insert Admin {
-  name := <str>$name,
+  key := <str>$key,
 })
-if not exists (select User filter User.name = <str>$name)
+if not exists (select User filter User.key = <str>$key)
 else (
   insert Admin {
-    name := <str>$name ++ <str>random()
+    key := <str>$key ++ <str>random()
   }
 )

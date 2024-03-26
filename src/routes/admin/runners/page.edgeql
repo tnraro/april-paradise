@@ -1,12 +1,10 @@
 select Runner {
-  name,
-  memo,
+  key,
   id,
   isBanned,
   isActive,
   chips,
   tokens,
-  twitterId,
   hasIdentity := exists .identity,
   warnings,
   banneds,

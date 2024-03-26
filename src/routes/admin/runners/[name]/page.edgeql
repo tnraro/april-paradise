@@ -1,12 +1,10 @@
 select Runner {
-  name,
-  memo,
+  key,
   id,
   isBanned,
   isActive,
   chips,
   tokens,
-  twitterId,
   penalties: {
     reason,
     isBanned,
@@ -14,4 +12,4 @@ select Runner {
   },
   hasIdentity := exists .identity
 }
-filter .name = <str>$name
+filter .key = <str>$key
