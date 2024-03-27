@@ -2,6 +2,8 @@
   import { focusTrap } from "$lib/ui/actions/focus-trap";
   import { portal } from "$lib/ui/actions/portal";
   import type { Snippet } from "svelte";
+  import { backOut } from "svelte/easing";
+  import { fade, scale } from "svelte/transition";
 
   interface Props {
     children: Snippet;
@@ -10,8 +12,20 @@
   let { children, onclose } = $props<Props>();
 </script>
 
-<button class="backdrop" use:portal onclick={onclose}></button>
-<div class="dialog" use:portal use:focusTrap>
+<button
+  class="backdrop"
+  in:fade={{ duration: 200 }}
+  out:fade={{ duration: 200 }}
+  use:portal
+  onclick={onclose}
+></button>
+<div
+  in:scale={{ duration: 200, easing: backOut }}
+  out:scale={{ duration: 200, easing: backOut }}
+  class="dialog"
+  use:portal
+  use:focusTrap
+>
   {@render children()}
 </div>
 <svelte:window onkeydown={(e) => e.key === "Escape" && onclose?.()} />
@@ -45,5 +59,6 @@
     height: 100%;
     background: var(--slate-a9);
     z-index: 1;
+    backdrop-filter: blur(4px);
   }
 </style>
