@@ -63,7 +63,7 @@
         <h1>4월의 낙원호</h1>
       </div>
       <div>
-        <p><b>{data.runner.name}</b> 님 환영합니다.</p>
+        <p><b>{data.runner.name}</b> 님 어서오세요! 🖐️</p>
         <p>
           <a href={env.PUBLIC_DOCS_URL} target="_blank" rel="noreferrer"
             >시스템 문서</a
@@ -75,14 +75,14 @@
           class="blue emphasis dialog__button"
           onclick={() => {
             isOpen = false;
-          }}>확인했습니다</button
+          }}>숙지했어요</button
         >
         <button
           class="red dialog__button"
           onclick={() => {
             isOpen = false;
             isNotMe = true;
-          }}>{data.runner.name} 님이 아닙니다</button
+          }}>{data.runner.name} 님이 아닐 경우 여기를 눌러주세요</button
         >
       </div>
     </div>
@@ -95,7 +95,7 @@
         <h1>이런!</h1>
       </div>
       <div>
-        <p>착오가 있었습니다</p>
+        <p>뭔가 착오가 있었나봐요 🙏</p>
         <p>총괄에게 문의 부탁드립니다</p>
       </div>
     </div>
