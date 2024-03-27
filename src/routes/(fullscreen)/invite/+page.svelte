@@ -27,7 +27,15 @@
       <Field {form} name="id">
         <Control let:attrs>
           <Label>아이디</Label>
-          <input {...attrs} bind:value={$formData.id} autocomplete="username" />
+          <input
+            {...attrs}
+            bind:value={$formData.id}
+            autocomplete="username"
+            placeholder="아이디를 입력해주세요"
+            minlength="2"
+            maxlength="53"
+            required
+          />
         </Control>
         <FieldErrors />
       </Field>
@@ -39,6 +47,9 @@
             bind:value={$formData.password}
             type="password"
             autocomplete="new-password"
+            placeholder="비밀번호를 입력해주세요"
+            minlength="8"
+            required
           />
         </Control>
         <FieldErrors />

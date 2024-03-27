@@ -1,65 +1,57 @@
 import { isScheduleStarted } from "$lib/data/sheets/utils.js";
-import { ID, NAME, PASSWORD } from "$lib/shared/schema/auth";
-import { error, fail, isRedirect, redirect } from "@sveltejs/kit";
-import { ZodError } from "zod";
+import { error, fail, redirect } from "@sveltejs/kit";
+import { setError, superValidate } from "sveltekit-superforms";
+import { zod } from "sveltekit-superforms/adapters";
+import { page } from "./page.query";
+import { schema } from "./schema";
 
 export const load = async () => {
-  if (!(await isScheduleStarted("커뮤"))) {
-    return;
+  if (await isScheduleStarted("커뮤")) {
+    error(404, "Not Found");
   }
-  // access denied
-  error(404, "Not Found");
+
+  const form = await superValidate(zod(schema));
+  return { form };
 };
 
 export const actions = {
   default: async ({ locals, request }) => {
-    let id: string | undefined;
-    let name: string | undefined;
-    try {
-      if (await isScheduleStarted("커뮤")) {
-        return fail(401);
-      }
-      const form = await request.formData();
-      id = ID.parse(form.get("id"));
-      name = NAME.parse(form.get("name"));
-      const password = PASSWORD.parse(form.get("password"));
-      const email = `${id}@tnraro.com`;
+    if (await isScheduleStarted("커뮤")) {
+      return fail(401);
+    }
+    const form = await superValidate(request, zod(schema));
 
+    if (!form.valid) {
+      return fail(400, { form });
+    }
+
+    const { id, password, name } = form.data;
+    const email = `${id}@tnraro.com`;
+
+    try {
       const { tokenData } = await locals.auth.emailPasswordSignUp({
         email,
         password,
       });
 
-      if (tokenData == null) {
+      if (tokenData?.identity_id == null) {
         throw "token is null";
       }
-      redirect(
-        303,
-        `/auth/sign-up/as-admin/callback?name=${encodeURIComponent(name)}`,
-      );
+
+      await page(locals.client, {
+        key: name,
+        identity: tokenData.identity_id,
+      });
     } catch (error) {
-      if (isRedirect(error)) {
-        throw error;
-      }
-      if (error instanceof ZodError) {
-        return fail(400, {
-          id,
-          name,
-          error: error.errors.map((e) => e.message).join("\n"),
-        });
-      }
       if (error instanceof Error) {
-        try {
-          const e = JSON.parse(error.message) as {
-            error?: { message?: string };
-          };
-          return fail(400, { id, name, error: e.error?.message });
-        } catch (_) {
-          console.error(_);
+        const e = JSON.parse(error.message);
+        if (e.error.code === 50331648) {
+          return setError(form, "id", "이미 등록된 아이디입니다");
         }
       }
-      console.error("err(sign-up as-admin):", error);
-      return fail(500, { id, name, error: "unhandled error" });
+      console.error(error);
+      return fail(500, { form });
     }
+    return redirect(303, "/admin");
   },
 };
