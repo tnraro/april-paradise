@@ -92,6 +92,40 @@ module default {
       }
     );
   }
+  type InviteCode {
+    required code: uuid {
+      default := uuid_generate_v4();
+      constraint exclusive;
+    }
+    required key: str {
+      constraint exclusive;
+    }
+    required createdAt: datetime {
+      default := datetime_of_transaction();
+    }
+    trigger log_insert_invite_code after insert for each do (
+      insert Log {
+        table := "InviteCode",
+        action := "insert",
+        patient := __new__.key ++ "<-" ++ <str>__new__.code,
+      }
+    );
+    trigger log_update_invite_code after update for each do (
+      insert Log {
+        table := "InviteCode",
+        action := "update",
+        patient := __old__.key,
+        change := <str>__old__.code ++ "->" ++ <str>__new__.code,
+      }
+    );
+    trigger log_delete_invite_code after delete for each do (
+      insert Log {
+        table := "InviteCode",
+        action := "delete",
+        patient := __old__.key ++ "<-" ++ <str>__old__.code,
+      }
+    );
+  }
 
   abstract type Item {
     required owner: Runner {
