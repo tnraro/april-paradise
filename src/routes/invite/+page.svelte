@@ -24,6 +24,7 @@
     <div class="_">
       <form method="post" use:enhance>
         <h1>4월의 낙원호</h1>
+        <p class="description">커뮤를 뛰는 동안 사용할 계정을 만들어주세요</p>
         <Field {form} name="id">
           <Control let:attrs>
             <Label>아이디</Label>
