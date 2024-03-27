@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { josa2 } from "$lib/shared/util/josa";
+  import { env } from "$env/dynamic/public";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import { Control, Field, FieldErrors, Label } from "formsnap";
   import { superForm } from "sveltekit-superforms";
@@ -24,7 +24,6 @@
     <div class="_">
       <form method="post" use:enhance>
         <h1>4월의 낙원호</h1>
-        <p class="description">커뮤를 뛰는 동안 사용할 계정을 만들어주세요</p>
         <Field {form} name="id">
           <Control let:attrs>
             <Label>아이디</Label>
@@ -32,7 +31,6 @@
               {...attrs}
               bind:value={$formData.id}
               autocomplete="username"
-              placeholder="아이디를 입력해주세요"
             />
           </Control>
           <FieldErrors />
@@ -45,7 +43,6 @@
               bind:value={$formData.password}
               type="password"
               autocomplete="new-password"
-              placeholder="비밀번호를 입력해주세요"
             />
           </Control>
           <FieldErrors />
@@ -62,26 +59,30 @@
   <Dialog>
     <div class="dialog">
       <div class="dialog__header">
-        <p>커뮤에 초대되셨어요</p>
+        <p>카락실에 오신 것을 환영합니다</p>
         <h1>4월의 낙원호</h1>
       </div>
       <div>
-        <p>{data.runner.name} 님 안녕하세요!🖐️</p>
-        <p>여기선 커뮤를 진행하는 동안 다양한 즐길거리와 이벤트를 제공해요.</p>
+        <p><b>{data.runner.name}</b> 님 환영합니다.</p>
+        <p>
+          <a href={env.PUBLIC_DOCS_URL} target="_blank" rel="noreferrer"
+            >시스템 문서</a
+          >를 제대로 숙지하였다면 입장을 도와드리겠습니다.
+        </p>
       </div>
       <div class="dialog__footer">
         <button
           class="blue emphasis dialog__button"
           onclick={() => {
             isOpen = false;
-          }}>확인했어요</button
+          }}>확인했습니다</button
         >
         <button
           class="red dialog__button"
           onclick={() => {
             isOpen = false;
             isNotMe = true;
-          }}>저는 {josa2(data.runner.name, "이", "가")} 아닌데요...</button
+          }}>{data.runner.name} 님이 아닙니다</button
         >
       </div>
     </div>
@@ -94,8 +95,8 @@
         <h1>이런!</h1>
       </div>
       <div>
-        <p>뭔가 착오가 있었나봐요 🙏</p>
-        <p>운영에 DM 해주세요!</p>
+        <p>착오가 있었습니다</p>
+        <p>총괄에게 문의 부탁드립니다</p>
       </div>
     </div>
   </Dialog>
@@ -138,6 +139,7 @@
     }
     p {
       word-break: keep-all;
+      text-wrap: balance;
     }
   }
 </style>
