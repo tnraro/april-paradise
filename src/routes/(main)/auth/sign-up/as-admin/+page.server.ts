@@ -16,7 +16,6 @@ export const actions = {
     let id: string | undefined;
     let name: string | undefined;
     try {
-      const { session } = locals.auth;
       if (await isScheduleStarted("커뮤")) {
         return fail(401);
       }
