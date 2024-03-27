@@ -1,5 +1,5 @@
 select global currentUser[is Runner] {
-  name,
+  key,
   tokens,
   chips
 }

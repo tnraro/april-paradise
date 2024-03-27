@@ -1,5 +1,4 @@
 select Runner {
   id,
-  name,
-  isBanned,
+  key,
 }

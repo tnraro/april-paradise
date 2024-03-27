@@ -14,7 +14,7 @@ module default {
       on target delete delete source;
       default := global ext::auth::ClientTokenIdentity;
     }
-    required name: str {
+    required key: str {
       constraint exclusive;
     }
 
@@ -31,11 +31,6 @@ module default {
     }
   }
   type Runner extending User {
-    required twitterId: str {
-      constraint exclusive;
-    }
-    memo: str;
-
     required chips: int64 {
       constraint min_value(0);
       default := 0;
@@ -44,99 +39,95 @@ module default {
       constraint min_value(0);
       default := 0;
     }
+    
+    trigger log_update_chips after update for each
+    when (__old__.chips != __new__.chips)
+    do (
+      insert Log {
+        table := "Runner",
+        action := "update",
+        patient := __new__.key,
+        change := <str>__old__.chips ++ '->' ++ <str>__new__.chips
+      }
+    );
+    trigger log_update_tokens after update for each
+    when (__old__.tokens != __new__.tokens)
+    do (
+      insert Log {
+        table := "Runner",
+        action := "update",
+        patient := __new__.key,
+        change := <str>__old__.tokens ++ '->' ++ <str>__new__.tokens
+      }
+    );
 
-    multi penalties := .<user[is Penalty];
-    banneds := count((select .penalties filter .isBanned));
-    warnings := count((select .penalties filter not .isBanned));
-    required isBanned := count(.banneds) > 0;
-    required isActive := not .isBanned;
-
-    multi achievements := .<runner[is RunnerAchievement];
+    multi achievements := .<runner[is Achievement];
     multi inventory := .<owner[is Item];
-  }
 
-  abstract type Event {
-    required name: str;
-    description: str;
-    required startTime: datetime;
-    required endTime: datetime;
-    constraint expression on (
-      .startTime < .endTime
-    );
-
-    required isStarted := (
-      datetime_of_transaction() >= .startTime
-    );
-    required isEnded := (
-      datetime_of_transaction() > .endTime
-    );
-    required isRunning := (
-      .isStarted and not .isEnded
-    );
-
-    required createdAt: datetime {
-      default := datetime_of_transaction();
-    }
-  }
-
-  type GameSession extending Event {}
-
-  type RunnerAchievement {
-    required runner: Runner {
-      on target delete delete source;
-    }
-    required achievement: Achievement {
-      on target delete delete source;
-    }
-
-    required createdAt: datetime {
-      default := datetime_of_transaction();
-    }
+    multi tickets := .<owner[is TicketItem];
+    multi fishes := .<owner[is FishItem];
+    multi garbages := .<owner[is GarbageItem];
+    multi ingredients := .<owner[is IngredientItem];
   }
 
   type Achievement {
-    required name: str {
-      annotation title := "업적 명"
+    required runner: Runner {
+      default := global currentUser[is Runner];
+      on target delete delete source;
     }
-    required condition: str {
-      annotation title := "달성 조건";
-    }
-    required reward: str {
-      annotation title := "보상";
-    }
-    required isHidden: bool {
-      annotation title := "히든";
-      default := false;
+    required key: str {
+      annotation title := "업적 키";
+      constraint exclusive;
     }
 
     required createdAt: datetime {
       default := datetime_of_transaction();
     }
+
+    trigger log_insert_achievement after insert for each do (
+      insert Log {
+        table := "Achievement",
+        action := "insert",
+        patient := __new__.key,
+      }
+    );
   }
 
   abstract type Item {
     required owner: Runner {
       default := global currentUser[is Runner];
+      on target delete delete source;
     }
     required key: str {
       annotation title := "아이템 키";
+      constraint exclusive;
     }
     required createdAt: datetime {
       default := datetime_of_transaction();
     }
+    trigger log_insert_item after insert for each do (
+      insert Log {
+        table := "Item",
+        action := "insert",
+        patient := __new__.key,
+      }
+    );
   }
   type TicketItem extending Item {}
   type FishItem extending Item {}
   type GarbageItem extending Item {}
   type IngredientItem extending Item {}
 
-  type Penalty {
-    required user: User {
-      on target delete delete source;
+  type Log {
+    required table: str;
+    required action: str;
+    agent: str {
+      default := global currentUser.key;
     }
-    reason: str;
-    required isBanned: bool {
-      default := false;
-    };
+    required patient: str;
+    change: str;
+    required createdAt: datetime {
+      default := datetime_of_transaction();
+    }
   }
 }

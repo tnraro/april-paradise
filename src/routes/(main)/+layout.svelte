@@ -7,18 +7,18 @@
     <header class="header">
       <a href="/">4월의 낙원호</a>
       <div class="user">
-        {#if data.isSignedIn}
+        {#if data.user}
           <div class="money">
             <span class="tokens">
               <enhanced:img class="tokens_img" src="$img/token.png?w=24" />
-              {data.user?.tokens ?? 0}
+              {data.user.tokens ?? 0}
             </span>
             <span class="chips">
               <enhanced:img class="chips_img" src="$img/chip.png?w=24" />
-              {data.user?.chips ?? 0}
+              {data.user.chips ?? 0}
             </span>
           </div>
-          <span>{data.user?.name ?? "익명"}</span>
+          <span>{data.user.name}</span>
         {:else}
           <a class="sign-in" href="/auth/sign-in">로그인</a>
         {/if}

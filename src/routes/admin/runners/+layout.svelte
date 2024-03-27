@@ -25,7 +25,7 @@
           class="tab"
           aria-selected={runner.selected}
           aria-controls="panel"
-          href="/admin/runners/{runner.name}">{runner.name}</a
+          href="/admin/runners/{runner.key}">{runner.name}</a
         >
       {/each}
     </div>

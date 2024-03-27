@@ -1,14 +1,11 @@
-import { isGameSessionStarted } from "$lib/data/query/is-game-session-started.query";
+import { isScheduleStarted } from "$lib/data/sheets/utils.js";
 import { ID, NAME, PASSWORD } from "$lib/shared/schema/auth";
 import { error, fail, isRedirect, redirect } from "@sveltejs/kit";
 import { ZodError } from "zod";
 
-export const load = async ({ locals }) => {
-  const session = locals.auth.session;
-
-  if (!(await isGameSessionStarted(session.client))) {
-    // admin mode
-    return {};
+export const load = async () => {
+  if (!(await isScheduleStarted("커뮤"))) {
+    return;
   }
   // access denied
   error(404, "Not Found");
@@ -19,8 +16,7 @@ export const actions = {
     let id: string | undefined;
     let name: string | undefined;
     try {
-      const { session } = locals.auth;
-      if (await isGameSessionStarted(session.client)) {
+      if (await isScheduleStarted("커뮤")) {
         return fail(401);
       }
       const form = await request.formData();

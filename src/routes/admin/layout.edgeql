@@ -1,1 +1,1 @@
-select assert_single((global currentUser[is Admin] { id, isGod, name }));
+select assert_single((global currentUser[is Admin] { id, isGod, key }));

@@ -7,8 +7,10 @@ import type {
   CocktailStoreData,
   FishingData,
   IndexData,
+  ItemData,
   LureData,
   RouletteData,
+  RunnerData,
   ScheduleData,
 } from "./model";
 import { parse } from "./parse";
@@ -147,5 +149,28 @@ export const getCocktailStoreData = async (): Promise<CocktailStoreData[]> => {
     name: parse(row.name).string().unwrap(),
     isSpecial: parse(row.isSpecial).boolean().unwrap(),
     price: parse(row.price).money().unwrap(),
+  }));
+};
+
+export const getRunnerData = async (): Promise<RunnerData[]> => {
+  const data = await getData<RunnerData>("러너", "A1:G");
+  return data.map((row) => ({
+    key: parse(row.key).string().unwrap(),
+    name: parse(row.name).string().unwrap(),
+    twitterId: parse(row.twitterId).string().unwrap(),
+    height: parse(row.height).number().unwrap(),
+    weight: parse(row.weight).number().unwrap(),
+    gender: parse(row.gender).string().unwrap(),
+    isBanned: parse(row.isBanned).boolean().unwrap(),
+  }));
+};
+
+export const getItemData = async (): Promise<ItemData[]> => {
+  const data = await getData<ItemData>("아이템", "A1:D");
+  return data.map((row) => ({
+    key: parse(row.key).string().unwrap(),
+    name: parse(row.name).string().unwrap(),
+    category: parse(row.category).string().unwrap(),
+    description: parse(row.description).string().unwrap(),
   }));
 };
