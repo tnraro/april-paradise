@@ -14,6 +14,5 @@ let { form } = $props();
   ._ {
     display: grid;
     gap: 1rem;
-    padding: 1rem;
   }
 </style>
