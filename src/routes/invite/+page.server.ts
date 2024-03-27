@@ -2,7 +2,7 @@ import { getRunnerKeyByInviteCode } from "$lib/data/invite/get-runner-key-by-inv
 import { useInviteCode } from "$lib/data/invite/use-invite-code.query";
 import { wrapRunnerData } from "$lib/data/sheets/utils.js";
 import { error, fail, redirect } from "@sveltejs/kit";
-import { message, setError, superValidate } from "sveltekit-superforms";
+import { setError, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { z } from "zod";
 import { schema } from "./schema";
@@ -54,7 +54,6 @@ export const actions = {
         code,
         identity: tokenData.identity_id,
       });
-      console.log(inviteCode);
       if (inviteCode == null) return fail(401, { form });
     } catch (e) {
       if (e instanceof Error) {
@@ -63,6 +62,8 @@ export const actions = {
           return setError(form, "id", "이미 있는 계정입니다");
         }
       }
+      console.error(e);
+      error(500);
     }
     return redirect(303, "/");
   },
