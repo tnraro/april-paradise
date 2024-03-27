@@ -5,7 +5,6 @@
 <div class="_">
   <div class="_title">이름</div>
   <div class="_title">𝕏</div>
-  <div class="_title">메모</div>
   <div class="_title">칩</div>
   <div class="_title">토큰</div>
   <div class="_title">경고</div>
@@ -21,6 +20,7 @@
     >
     <div class="number">{runner.chips}</div>
     <div class="number">{runner.tokens}</div>
+    <div>{runner.isBanned}</div>
     <div>{runner.hasIdentity}</div>
   {/each}
 </div>
@@ -29,7 +29,7 @@
   @use "sass:math";
   ._ {
     display: grid;
-    grid-template-columns: repeat(7, max-content);
+    grid-template-columns: repeat(6, max-content);
     gap: 0.5rem 1rem;
 
     &title {

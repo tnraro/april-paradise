@@ -1,14 +1,24 @@
 <script lang="ts">
-  import NewRunnerDialog from "$lib/ui/admin/new-runner-dialog.svelte";
+    import { invalidate } from '$app/navigation';
+  import { api } from '$lib/api/api.gen.js';
+    import { sendError } from '$lib/ui/error/send-error.js';
 
+  const syncRunner = async () => {
+    const res = await api().runners.put(undefined);
+    if (!res.ok) {
+      sendError("sync failed", res.error);
+    } else {
+      if (res.data.updated > 0) {
+        invalidate("admin:runners");
+      }
+    }
+  }
   let { data, children } = $props();
-
-  let showNewRunner = $state(false);
 </script>
 
 <div class="_">
   <div class="_left">
-    <button onclick={() => (showNewRunner = true)}>+ 러너 추가</button>
+    <button onclick={syncRunner}>러너 동기화</button>
     <div role="tablist" class="tablist">
       <a
         role="tab"
@@ -36,10 +46,6 @@
     {/key}
   </div>
 </div>
-
-{#if showNewRunner}
-  <NewRunnerDialog onclose={() => (showNewRunner = false)} />
-{/if}
 
 <style lang="scss">
   ._ {
