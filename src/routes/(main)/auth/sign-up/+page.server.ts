@@ -1,4 +1,4 @@
-import { isGameSessionStarted } from "$lib/data/query/is-game-session-started.query";
+import { isScheduleStarted } from "$lib/data/sheets/utils";
 import { ID, NAME, PASSWORD } from "$lib/shared/schema/auth";
 import { type Actions, error, fail, isRedirect, redirect } from "@sveltejs/kit";
 import { ErrorCode } from "./lib";
@@ -14,8 +14,7 @@ class CustomError extends Error {
 export const load = async ({ locals }) => {
   const session = locals.auth.session;
 
-  if (!(await isGameSessionStarted(session.client))) {
-    // admin mode
+  if (!(await isScheduleStarted("커뮤"))) {
     return {};
   }
   // access denied
@@ -28,7 +27,7 @@ export const actions = {
     let name: string | undefined;
     try {
       const session = locals.auth.session;
-      if (await isGameSessionStarted(session.client)) {
+      if (await isScheduleStarted("커뮤")) {
         throw new CustomError(ErrorCode.SessionStarted);
       }
 

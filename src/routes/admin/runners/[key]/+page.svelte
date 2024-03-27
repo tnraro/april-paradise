@@ -32,19 +32,6 @@
     <span>칩: {current.chips}</span>
     <span>토큰: {current.tokens}</span>
   </div>
-  <div class="penalties">
-    <div class="penalties-title">경고</div>
-    <div class="penalties-title">사유</div>
-    {#each current.penalties as penalty (penalty.id)}
-      <span
-        class="penalty"
-        class:penalty--warning={!penalty.isBanned}
-        class:penalty--banned={penalty.isBanned}
-        >{penalty.isBanned ? "제명" : "경고"}</span
-      >
-      <span>{penalty.reason}</span>
-    {/each}
-  </div>
   <div class="identity">
     계정 {current.hasIdentity ? "" : "안 "}만듦 <button>초대 코드 복사</button>
   </div>
@@ -105,29 +92,5 @@
   }
   .memo {
     width: 100%;
-  }
-  .penalties {
-    display: grid;
-    min-width: 20rem;
-    grid-template-columns: max-content 1fr;
-    gap: 0.25rem 0.5rem;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--slate-6);
-    &-title {
-      font-weight: bold;
-    }
-  }
-  .penalty {
-    padding: 0 0.5rem;
-    border-radius: 0.25rem;
-    &--warning {
-      background: var(--yellow-9);
-      color: var(--yellow-12);
-    }
-    &--banned {
-      background: var(--red-9);
-      color: var(--red-1);
-    }
   }
 </style>

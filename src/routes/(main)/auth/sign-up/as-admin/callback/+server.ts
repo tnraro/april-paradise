@@ -8,11 +8,11 @@ export const GET = async ({ locals, url }) => {
   if (!(await session.isSignedIn())) {
     error(401);
   }
-  const name = NAME.parse(url.searchParams.get("name"));
+  const key = NAME.parse(url.searchParams.get("name"));
 
   try {
     await get(session.client, {
-      name,
+      key,
     });
   } catch (e) {
     if (e instanceof EdgeDBError) {

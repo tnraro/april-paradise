@@ -14,18 +14,18 @@
   let { onclose } = $props<Props>();
 
   const onsubmit = async () => {
-    const res = await api().runners.post({
-      name: currentState.name,
-      twitterId: currentState.twitterId.replace(/^@/, ""),
-    });
-    if (res.ok) {
-      if (res.data.created) {
-        invalidate("admin:runners");
-        onclose?.();
-      }
-    } else {
-      error = res.error.message;
-    }
+    // const res = await api().runners.post({
+    //   name: currentState.name,
+    //   twitterId: currentState.twitterId.replace(/^@/, ""),
+    // });
+    // if (res.ok) {
+    //   if (res.data.created) {
+    //     invalidate("admin:runners");
+    //     onclose?.();
+    //   }
+    // } else {
+    //   error = res.error.message;
+    // }
   };
   const onreset = () => {
     currentState = { ...defaults };
