@@ -1,5 +1,5 @@
-with runner := global currentUser[is Runner]
-update runner
+with user := global currentUser
+update user
 set {
-  tokens := runner.tokens + <int64>$tokens
+  tokens := user.tokens + <int64>$tokens
 }

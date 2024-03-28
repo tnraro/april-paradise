@@ -1,12 +1,12 @@
-with runner := (
-  select Runner
+with user := (
+  select User
   filter .key = <str>$key
 ),
 inviteCode := (
   insert InviteCode {
-    runner := runner,
+    user := user,
   }
-  unless conflict on .runner
+  unless conflict on .user
   else (
     update InviteCode
     set {
@@ -17,10 +17,10 @@ inviteCode := (
 ),
 _delete_factor := (
   delete ext::auth::Factor
-  filter .identity = runner.identity
+  filter .identity = user.identity
 ),
 _delete_identity := (
-  delete runner.identity
+  delete user.identity
 ),
 select inviteCode {
   code

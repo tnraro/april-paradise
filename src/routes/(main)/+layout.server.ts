@@ -3,14 +3,24 @@ import { layout } from "./layout.query.js";
 
 export const load = async ({ locals, depends }) => {
   const session = locals.auth.session;
-  const isSignedIn = await session.isSignedIn();
-  const user = await wrapRunnerData(layout(session.client));
+  const user = await layout(session.client);
   if (user) {
     depends(`header:${user.key}`);
+
+    if (user.isAdmin) {
+      return {
+        user: {
+          ...user,
+          name: user.key,
+        },
+      };
+    }
+    return {
+      user: await wrapRunnerData(user),
+    };
   }
 
   return {
-    isSignedIn,
     user,
   };
 };

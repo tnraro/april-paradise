@@ -1,6 +1,6 @@
 with runners := <json>$runners
 for runner in json_array_unpack(runners) union (
-  insert Runner {
+  insert User {
     key := <str>runner["key"],
     identity := {}
   }

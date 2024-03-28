@@ -2,13 +2,13 @@ with inviteCode := (
   select InviteCode
   filter .code = <uuid>$code
 ),
-runner := inviteCode.runner,
+user := inviteCode.user,
 identity := (
   select ext::auth::Identity 
   filter .id = <uuid>$identity
 ),
 _delete_invite_code := (delete inviteCode)
-update runner
+update user
 set {
   identity := identity,
 }

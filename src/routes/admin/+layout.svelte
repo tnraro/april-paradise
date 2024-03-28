@@ -11,9 +11,6 @@
     {/each}
   </nav>
   <div>
-    {#if data.admin.isGod}
-      <span title={`"신"`}>💛</span>
-    {/if}
     <span>{data.admin.key}</span>
   </div>
 </header>

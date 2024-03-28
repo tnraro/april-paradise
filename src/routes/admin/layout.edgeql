@@ -1,1 +1,1 @@
-select assert_single((global currentUser[is Admin] { id, isGod, key }));
+select global currentUser { id, key } filter .isAdmin;
