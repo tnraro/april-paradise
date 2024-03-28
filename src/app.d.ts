@@ -1,4 +1,4 @@
-import type { ServerRequestAuth } from "@edgedb/auth-sveltekit/server";
+import type { Client, ServerRequestAuth } from "@edgedb/auth-sveltekit/server";
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 declare global {
@@ -6,6 +6,7 @@ declare global {
     // interface Error {}
     interface Locals {
       auth: ServerRequestAuth;
+      client: Client;
     }
     // interface PageData {}
     // interface PageState {}

@@ -6,7 +6,7 @@ export const load = async ({ locals, depends }) => {
   const isSignedIn = await session.isSignedIn();
   const user = await wrapRunnerData(layout(session.client));
   if (user) {
-    depends(`header:${user.name}`);
+    depends(`header:${user.key}`);
   }
 
   return {
