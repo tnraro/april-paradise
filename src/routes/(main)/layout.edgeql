@@ -1,5 +1,6 @@
-select global currentUser[is Runner] {
+select global currentUser {
   key,
-  tokens,
-  chips
+  tokens := [is Runner].tokens ?? 0,
+  chips := [is Runner].chips ?? 0,
+  isAdmin,
 }
