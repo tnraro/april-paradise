@@ -4,3 +4,11 @@
 [data-fs-error] {
   color: var(--red-11);
 }
+
+[data-tooltip-content] {
+  width: min(20rem, 90%);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: white;
+  box-shadow: var(--height-3);
+}

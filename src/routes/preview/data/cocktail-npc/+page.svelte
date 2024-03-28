@@ -1,12 +1,31 @@
 <script lang="ts">
   import type { Cocktail } from "$lib/data/sheets/model";
-  import { createTooltip } from "$lib/ui/floating/tooltip-action.svelte";
-  import Tooltip from "$lib/ui/floating/tooltip.svelte";
+  import { Tooltip } from "bits-ui";
 
   let { data } = $props();
-
-  const tooltip = createTooltip<Cocktail>();
 </script>
+
+{#snippet tooltip(cocktail: Cocktail, prefix: string)}
+  <Tooltip.Root openDelay={0} disableHoverableContent={true}>
+    <Tooltip.Trigger>
+      {prefix}{cocktail.name}
+    </Tooltip.Trigger>
+    <Tooltip.Content
+      side="bottom"
+      align="center"
+    >
+      <h2>{cocktail.name}</h2>
+      <div class="ingredients">
+        {#each cocktail.ingredients.required as ingredient}
+          <span class="ingredient">{ingredient}</span>
+        {/each}
+        {#each cocktail.ingredients.oneOf as ingredient}
+          <span class="ingredient">{ingredient.join(" or ")}</span>
+        {/each}
+      </div>
+    </Tooltip.Content>
+  </Tooltip.Root>
+{/snippet}
 
 <h1>{data.name}</h1>
 <div class="_">
@@ -17,28 +36,10 @@
   {#each data.data as row (row.key)}
     <div class="__key" title={row.key}>{row.key}</div>
     <div>{row.npc}</div>
-    <button use:tooltip.target={row.love}>
-      💛{row.love.name}
-    </button>
-    <button use:tooltip.target={row.like}>
-      ⭐{row.like.name}
-    </button>
+    {@render tooltip(row.love, "💛")}
+    {@render tooltip(row.like, "⭐")}
   {/each}
 </div>
-
-{#if tooltip.value}
-  <Tooltip pos={tooltip.pos}>
-    <h2>{tooltip.value.name}</h2>
-    <div class="ingredients">
-      {#each tooltip.value.ingredients.required as ingredient}
-        <span class="ingredient">{ingredient}</span>
-      {/each}
-      {#each tooltip.value.ingredients.oneOf as ingredient}
-        <span class="ingredient">{ingredient.join(" or ")}</span>
-      {/each}
-    </div>
-  </Tooltip>
-{/if}
 
 <style>
   ._ {
