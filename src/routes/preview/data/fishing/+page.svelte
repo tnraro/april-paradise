@@ -1,15 +1,43 @@
 <script lang="ts">
   import { type FishingData, FishingGrade } from "$lib/data/sheets/model";
   import { groupBy } from "$lib/shared/util/group-by";
-  import { createTooltip } from "$lib/ui/floating/tooltip-action.svelte";
-  import Tooltip from "$lib/ui/floating/tooltip.svelte";
+  import { Tooltip } from "bits-ui";
 
   let { data } = $props();
 
   let groupByLure = $derived(groupBy(data.data, (fish) => fish.lure));
-
-  let tooltip = createTooltip<FishingData>();
 </script>
+
+{#snippet tooltip(row: FishingData)}
+  <div
+    class="tooltip_title"
+    class:name--grade-0={row.grade === FishingGrade.Common}
+    class:name--grade-1={row.grade === FishingGrade.Uncommon}
+    class:name--grade-2={row.grade === FishingGrade.Heroic}
+    class:name--grade-3={row.grade === FishingGrade.Legendary}
+    class:name--grade-4={row.grade === FishingGrade.Mythic}
+  >
+    <h1>
+      {row.name}
+    </h1>
+    <div>
+      {#if row.grade === FishingGrade.Common}
+        보통
+      {:else if row.grade === FishingGrade.Uncommon}
+        고급
+      {:else if row.grade === FishingGrade.Heroic}
+        영웅
+      {:else if row.grade === FishingGrade.Legendary}
+        전설
+      {:else if row.grade === FishingGrade.Mythic}
+        신화
+      {/if}
+    </div>
+  </div>
+  <div>"{row.catchphrase ?? "잡았다"}"</div>
+  <div>{row.description}</div>
+  <div>"{row.lure}"로 낚을 수 있다. 확률 {row.probability * 100}%</div>
+{/snippet}
 
 <h1>{data.name}</h1>
 <div class="_">
@@ -23,17 +51,28 @@
         <div class="__title">확률</div>
         {#each fishes as row (row.key)}
           <div class="__key" title={row.key}>{row.key}</div>
-          <button
-            class="name"
-            class:name--grade-0={row.grade === FishingGrade.Common}
-            class:name--grade-1={row.grade === FishingGrade.Uncommon}
-            class:name--grade-2={row.grade === FishingGrade.Heroic}
-            class:name--grade-3={row.grade === FishingGrade.Legendary}
-            class:name--grade-4={row.grade === FishingGrade.Mythic}
-            use:tooltip.target={row}
-          >
-            {row.name}
-          </button>
+          <Tooltip.Root openDelay={0} disableHoverableContent={true}>
+            <Tooltip.Trigger asChild let:builder>
+              <button
+                use:builder.action
+                {...builder}
+                class="name"
+                class:name--grade-0={row.grade === FishingGrade.Common}
+                class:name--grade-1={row.grade === FishingGrade.Uncommon}
+                class:name--grade-2={row.grade === FishingGrade.Heroic}
+                class:name--grade-3={row.grade === FishingGrade.Legendary}
+                class:name--grade-4={row.grade === FishingGrade.Mythic}
+              >
+                {row.name}
+              </button>
+            </Tooltip.Trigger>
+            <Tooltip.Content
+              side="bottom"
+              align="center"
+            >
+              {@render tooltip(row)}
+            </Tooltip.Content>
+          </Tooltip.Root>
           <div class="catchphrase" title={row.catchphrase}>
             {row.catchphrase}
           </div>
@@ -44,39 +83,6 @@
   {/each}
 </div>
 
-{#if tooltip.value}
-  {@const row = tooltip.value}
-  <Tooltip pos={tooltip.pos}>
-    <div
-      class="tooltip_title"
-      class:name--grade-0={row.grade === FishingGrade.Common}
-      class:name--grade-1={row.grade === FishingGrade.Uncommon}
-      class:name--grade-2={row.grade === FishingGrade.Heroic}
-      class:name--grade-3={row.grade === FishingGrade.Legendary}
-      class:name--grade-4={row.grade === FishingGrade.Mythic}
-    >
-      <h1>
-        {row.name}
-      </h1>
-      <div>
-        {#if row.grade === FishingGrade.Common}
-          보통
-        {:else if row.grade === FishingGrade.Uncommon}
-          고급
-        {:else if row.grade === FishingGrade.Heroic}
-          영웅
-        {:else if row.grade === FishingGrade.Legendary}
-          전설
-        {:else if row.grade === FishingGrade.Mythic}
-          신화
-        {/if}
-      </div>
-    </div>
-    <div>"{row.catchphrase ?? "잡았다"}"</div>
-    <div>{row.description}</div>
-    <div>"{row.lure}"로 낚을 수 있다. 확률 {row.probability * 100}%</div>
-  </Tooltip>
-{/if}
 
 <style lang="scss">
   ._ {

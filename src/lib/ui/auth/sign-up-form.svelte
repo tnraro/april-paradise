@@ -6,7 +6,7 @@
     name?: string;
     error?: string;
   }
-  let { id, name, error } = $props<Props>();
+  let { id, name, error }: Props = $props();
   let current = $state({
     id: id ?? "",
     name: name ?? "",

@@ -9,7 +9,7 @@
     children: Snippet;
     onclose?: () => void;
   }
-  let { children, onclose } = $props<Props>();
+  let { children, onclose }: Props = $props();
 </script>
 
 <button

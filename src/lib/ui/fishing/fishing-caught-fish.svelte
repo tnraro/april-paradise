@@ -6,7 +6,7 @@
   interface Props {
     fish: Pick<CaughtFish, "name" | "grade">;
   }
-  let { fish } = $props<Props>();
+  let { fish }: Props = $props();
 </script>
 
 <div>

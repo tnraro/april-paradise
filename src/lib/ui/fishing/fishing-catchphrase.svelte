@@ -4,7 +4,7 @@
   interface Props {
     fish: Pick<CaughtFish, "catchphrase">;
   }
-  let { fish } = $props<Props>();
+  let { fish }: Props = $props();
   let catchphrase = $derived(fish.catchphrase?.split(/\s*[\/\n]\s*/) ?? []);
 </script>
 

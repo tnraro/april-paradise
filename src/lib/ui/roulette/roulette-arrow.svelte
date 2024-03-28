@@ -5,7 +5,7 @@
     r?: number;
     color?: string;
   }
-  let { x, y, r = 0, color = "var(--blue-9)" } = $props<Props>();
+  let { x, y, r = 0, color = "var(--blue-9)" }: Props = $props();
 </script>
 
 <g class="arrow" transform="translate({x} {y})">

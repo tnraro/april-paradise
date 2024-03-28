@@ -7,7 +7,7 @@
     x?: number;
     y?: number;
   }
-  let { item, x = 0, y = 0 } = $props<Props>();
+  let { item, x = 0, y = 0 }: Props = $props();
 </script>
 
 <g transform="translate({x} {y})">

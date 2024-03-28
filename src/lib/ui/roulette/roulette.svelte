@@ -20,7 +20,13 @@
     tokens: number;
     chips: number;
   }
-  let { onroll, table, onreward, tokens, chips } = $props<Props>();
+  let {
+    onroll,
+    table,
+    onreward,
+    tokens = $bindable(),
+    chips = $bindable(),
+  }: Props = $props();
   let t: number;
   let t2 = false;
 
