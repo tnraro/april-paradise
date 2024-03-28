@@ -9,7 +9,7 @@
     reward: Item | Money | undefined;
     onanimationend?: () => void;
   }
-  let { _state, reward, onanimationend } = $props<Props>();
+  let { _state, reward, onanimationend }: Props = $props();
   const dropDelay = 50;
   let t: number;
   $effect(() => {

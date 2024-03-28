@@ -11,7 +11,7 @@ module default {
   abstract type User {
     identity: ext::auth::Identity{ 
       constraint exclusive;
-      on target delete delete source;
+      on target delete allow;
       default := global ext::auth::ClientTokenIdentity;
     }
     required key: str {
@@ -89,6 +89,43 @@ module default {
         table := "Achievement",
         action := "insert",
         patient := __new__.key,
+      }
+    );
+  }
+  type InviteCode {
+    required code: uuid {
+      default := uuid_generate_v4();
+      constraint exclusive;
+    }
+    required runner: Runner {
+      constraint exclusive;
+      on target delete delete source;
+    }
+    required createdAt: datetime {
+      default := datetime_of_transaction();
+    }
+    trigger log_insert_invite_code after insert for each do (
+      insert Log {
+        table := "InviteCode",
+        action := "insert",
+        patient := __new__.runner.key ++ "<-" ++ <str>__new__.code,
+      }
+    );
+    trigger log_update_invite_code after update for each
+    when (__old__.code != __new__.code)
+    do (
+      insert Log {
+        table := "InviteCode",
+        action := "update",
+        patient := __old__.runner.key,
+        change := <str>__old__.code ++ "->" ++ <str>__new__.code,
+      }
+    );
+    trigger log_delete_invite_code after delete for each do (
+      insert Log {
+        table := "InviteCode",
+        action := "delete",
+        patient := __old__.runner.key ++ "<-" ++ <str>__old__.code,
       }
     );
   }

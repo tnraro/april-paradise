@@ -3,7 +3,7 @@
     name: string;
     quantity?: number;
   }
-  let { name, quantity } = $props<Props>();
+  let { name, quantity }: Props = $props();
 </script>
 
 {#if quantity == null || quantity === 1}

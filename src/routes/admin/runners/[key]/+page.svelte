@@ -1,6 +1,19 @@
 <script lang="ts">
+    import { api } from "$lib/api/api.gen.js";
   import { deepEqual } from "$lib/shared/util/deep-equal.js";
+    import { sendError } from "$lib/ui/error/send-error.js";
   import Alert from "$lib/ui/floating/alert.svelte";
+
+  const copyInviteCode = async () => {
+    const res = await api().runners.post({ key: data.runner.key });
+    if (!res.ok) {
+      sendError(res.error.message);
+    } else {
+      const code = res.data.code;
+      const url = `${location.origin}/invite?code=${code}`;
+      await navigator.clipboard.writeText(url);
+    }
+  }
 
   const reset = () => {
     current = {
@@ -33,7 +46,7 @@
     <span>토큰: {current.tokens}</span>
   </div>
   <div class="identity">
-    계정 {current.hasIdentity ? "" : "안 "}만듦 <button>초대 코드 복사</button>
+    계정 {current.hasIdentity ? "" : "안 "}만듦 <button onclick={copyInviteCode}>초대 코드 복사</button>
   </div>
 </main>
 {#if !isEqual}

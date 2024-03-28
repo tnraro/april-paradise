@@ -15,7 +15,7 @@
   interface Props {
     data: PageData;
   }
-  let { data } = $props<Props>();
+  let { data }: Props = $props();
 </script>
 
 <main class="_">

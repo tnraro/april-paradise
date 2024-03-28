@@ -7,7 +7,7 @@
     tab: Snippet<[number]>;
     tabpanel: Snippet<[number]>;
   }
-  let { prefix, n, tab, tabpanel } = $props<Props>();
+  let { prefix, n, tab, tabpanel }: Props = $props();
 
   let index = $state(0);
 </script>

@@ -14,7 +14,7 @@
     value: string;
     currentLures: Record<string, number>;
   }
-  let { value, currentLures } = $props<Props>();
+  let { value = $bindable(), currentLures }: Props = $props();
 
   let index = $derived(lures.findIndex((lure) => lure === value));
 </script>

@@ -7,7 +7,7 @@
     speed: number;
     index: number;
   }
-  let { table, speed, index } = $props<Props>();
+  let { table, speed, index = $bindable() }: Props = $props();
 
   let slots = $derived([
     table[index % table.length],

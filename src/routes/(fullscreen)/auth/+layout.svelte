@@ -8,7 +8,8 @@ let { children } = $props();
 
 <style lang="scss">
   main {
-    max-width: 20rem;
+    width: min(20rem, 90%);
     margin: 0 auto;
+    padding: 1rem;
   }
 </style>

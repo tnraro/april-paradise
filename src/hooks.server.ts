@@ -17,6 +17,7 @@ const logger: Handle = ({ event, resolve }) => {
 };
 const createServerAuthClient: Handle = ({ event, resolve }) => {
   event.locals.auth = createServerRequestAuth(event);
+  event.locals.client = event.locals.auth.session.client;
   return resolve(event);
 };
 const authRouteHandlers: AuthRouteHandlers = {

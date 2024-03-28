@@ -7,7 +7,7 @@
     chips: number;
     tokens: number;
   }
-  let { id, name, twitterId, isBanned, chips, tokens } = $props<Props>();
+  let { id, name, twitterId, isBanned, chips, tokens }: Props = $props();
 </script>
 
 <div class="runner-summary">

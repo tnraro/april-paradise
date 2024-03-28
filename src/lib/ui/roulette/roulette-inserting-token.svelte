@@ -4,7 +4,7 @@
   interface Props {
     onanimationend: () => void;
   }
-  let { onanimationend } = $props<Props>();
+  let { onanimationend }: Props = $props();
 </script>
 
 <defs>

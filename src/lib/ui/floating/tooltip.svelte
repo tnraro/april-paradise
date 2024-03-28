@@ -7,7 +7,7 @@
     pos: { x: number; y: number };
   }
   let self: HTMLElement;
-  let { children, pos } = $props<Props>();
+  let { children, pos }: Props = $props();
   let dx = $state(0);
   let dy = $state(0);
   $effect(() => {

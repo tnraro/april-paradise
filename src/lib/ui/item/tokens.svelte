@@ -2,7 +2,7 @@
   interface Props {
     quantity: number;
   }
-  let { quantity } = $props<Props>();
+  let { quantity }: Props = $props();
 </script>
 
 <span class="tokens">토큰 {quantity}</span>

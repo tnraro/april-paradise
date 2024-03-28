@@ -7,7 +7,7 @@
     enRatio: number;
     powerRatio: number;
   }
-  let { fish, hpRatio, enRatio, powerRatio } = $props<Props>();
+  let { fish, hpRatio, enRatio, powerRatio }: Props = $props();
 </script>
 
 <div class="_">

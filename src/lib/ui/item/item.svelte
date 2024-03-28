@@ -7,7 +7,7 @@
   interface Props {
     item: Money | Item;
   }
-  let { item } = $props<Props>();
+  let { item }: Props = $props();
 </script>
 
 {#if item}

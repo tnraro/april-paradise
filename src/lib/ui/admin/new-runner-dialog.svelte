@@ -11,7 +11,7 @@
   interface Props {
     onclose?: () => void;
   }
-  let { onclose } = $props<Props>();
+  let { onclose }: Props = $props();
 
   const onsubmit = async () => {
     // const res = await api().runners.post({

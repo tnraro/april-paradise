@@ -2,7 +2,7 @@
   interface Props {
     text?: string;
   }
-  let { text } = $props<Props>();
+  let { text }: Props = $props();
 </script>
 
 <defs>

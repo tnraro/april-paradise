@@ -4,7 +4,7 @@
     y: number;
     on: boolean;
   }
-  let { x, y, on } = $props<Props>();
+  let { x, y, on }: Props = $props();
 </script>
 
 <circle class="bulb" class:bulb--on={on} r="1.4" cx={x} cy={y} />

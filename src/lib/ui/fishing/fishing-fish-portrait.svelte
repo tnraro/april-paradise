@@ -5,7 +5,7 @@
     fish: Pick<CaughtFish, "key">;
     silhouette?: boolean;
   }
-  let { fish, silhouette = false } = $props<Props>();
+  let { fish, silhouette = false }: Props = $props();
 </script>
 
 <enhanced:img

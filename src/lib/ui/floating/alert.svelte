@@ -6,7 +6,7 @@
   interface Props {
     children: Snippet;
   }
-  let { children } = $props<Props>();
+  let { children }: Props = $props();
 </script>
 
 <div class="alert" use:portal={{ containerId: "alerts" }} use:focusTrap>

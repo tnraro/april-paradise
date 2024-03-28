@@ -19,7 +19,7 @@
   interface Props {
     table: RouletteData[];
   }
-  let { table } = $props<Props>();
+  let { table }: Props = $props();
 
   let result = $state<RouletteData>();
   let resultKey = $state("_random");
