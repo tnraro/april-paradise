@@ -1,3 +1,3 @@
 select InviteCode {
-  key := .runner.key
+  key := .user.key
 } filter .code = <uuid>$code

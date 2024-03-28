@@ -8,8 +8,8 @@ module default {
     ))
   );
 
-  abstract type User {
-    identity: ext::auth::Identity{ 
+  type User {
+    identity: ext::auth::Identity { 
       constraint exclusive;
       on target delete allow;
       default := global ext::auth::ClientTokenIdentity;
@@ -18,19 +18,13 @@ module default {
       constraint exclusive;
     }
 
-    required isAdmin := exists [is Admin];
-    required isRunner := exists [is Runner];
-
-    required createdAt: datetime {
-      default := datetime_of_transaction();
-    }
-  }
-  type Admin extending User {
-    required isGod: bool {
+    required isAdmin: bool {
       default := false;
     }
-  }
-  type Runner extending User {
+    required isBanned: bool {
+      default := false;
+    }
+
     required chips: int64 {
       constraint min_value(0);
       default := 0;
@@ -39,12 +33,16 @@ module default {
       constraint min_value(0);
       default := 0;
     }
-    
+
+    required createdAt: datetime {
+      default := datetime_of_transaction();
+    }
+
     trigger log_update_chips after update for each
     when (__old__.chips != __new__.chips)
     do (
       insert Log {
-        table := "Runner",
+        table := "User",
         action := "update",
         patient := __new__.key,
         change := <str>__old__.chips ++ '->' ++ <str>__new__.chips
@@ -54,14 +52,14 @@ module default {
     when (__old__.tokens != __new__.tokens)
     do (
       insert Log {
-        table := "Runner",
+        table := "User",
         action := "update",
         patient := __new__.key,
         change := <str>__old__.tokens ++ '->' ++ <str>__new__.tokens
       }
     );
 
-    multi achievements := .<runner[is Achievement];
+    multi achievements := .<user[is Achievement];
     multi inventory := .<owner[is Item];
 
     multi tickets := .<owner[is TicketItem];
@@ -71,8 +69,8 @@ module default {
   }
 
   type Achievement {
-    required runner: Runner {
-      default := global currentUser[is Runner];
+    required user: User {
+      default := global currentUser;
       on target delete delete source;
     }
     required key: str {
@@ -92,12 +90,13 @@ module default {
       }
     );
   }
+
   type InviteCode {
     required code: uuid {
       default := uuid_generate_v4();
       constraint exclusive;
     }
-    required runner: Runner {
+    required user: User {
       constraint exclusive;
       on target delete delete source;
     }
@@ -108,7 +107,7 @@ module default {
       insert Log {
         table := "InviteCode",
         action := "insert",
-        patient := __new__.runner.key ++ "<-" ++ <str>__new__.code,
+        patient := __new__.user.key ++ "<-" ++ <str>__new__.code,
       }
     );
     trigger log_update_invite_code after update for each
@@ -117,7 +116,7 @@ module default {
       insert Log {
         table := "InviteCode",
         action := "update",
-        patient := __old__.runner.key,
+        patient := __old__.user.key,
         change := <str>__old__.code ++ "->" ++ <str>__new__.code,
       }
     );
@@ -125,14 +124,14 @@ module default {
       insert Log {
         table := "InviteCode",
         action := "delete",
-        patient := __old__.runner.key ++ "<-" ++ <str>__old__.code,
+        patient := __old__.user.key ++ "<-" ++ <str>__old__.code,
       }
     );
   }
 
   abstract type Item {
-    required owner: Runner {
-      default := global currentUser[is Runner];
+    required owner: User {
+      default := global currentUser;
       on target delete delete source;
     }
     required key: str {

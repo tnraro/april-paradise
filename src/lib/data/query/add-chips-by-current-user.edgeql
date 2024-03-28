@@ -1,5 +1,5 @@
-with runner := global currentUser[is Runner]
-update runner
+with user := global currentUser
+update user
 set {
-  chips := runner.chips + <int64>$chips
+  chips := user.chips + <int64>$chips
 }

@@ -1,4 +1,4 @@
-select Runner {
+select User {
   id,
   key,
-}
+} filter not .isAdmin

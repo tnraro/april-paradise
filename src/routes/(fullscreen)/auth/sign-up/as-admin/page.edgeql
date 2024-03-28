@@ -2,14 +2,16 @@ with identity := (
   select ext::auth::Identity 
   filter .id = <uuid>$identity
 )
-select (insert Admin {
+select (insert User {
   key := <str>$key,
-  identity := identity
+  identity := identity,
+  isAdmin := true
 })
 if not exists (select User filter User.key = <str>$key)
 else (
-  insert Admin {
+  insert User {
     key := <str>$key ++ <str>random(),
-    identity := identity
+    identity := identity,
+    isAdmin := true
   }
 )
