@@ -81,6 +81,10 @@
             S.snap();
           } else {
             S.catchFish();
+            const res = await api().events.fishing.put({ next: fish.next });
+            if (!res.ok) {
+              S.error("무언가 잘못되었습니다", res.error);
+            }
           }
           break;
         }
