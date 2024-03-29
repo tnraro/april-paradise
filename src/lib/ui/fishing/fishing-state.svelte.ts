@@ -23,7 +23,7 @@ export type CaughtFish = Pick<
   | "power"
   | "rampancy"
   | "endurance"
->;
+> & { next: string };
 interface FishingOptions {
   oncast: (lure: string) => Promise<CaughtFish>;
   onbite?: (fish: CaughtFish) => void;
