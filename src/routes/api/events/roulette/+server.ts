@@ -1,4 +1,5 @@
 import { route } from "$lib/api/server";
+import { addTicketItem } from "$lib/data/item/add-ticket-item.query";
 import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
 import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
 import { getRouletteData } from "$lib/data/sheets/sheets";
@@ -11,7 +12,7 @@ export type POST = typeof POST;
 export const POST = route(
   "post",
   async (e: RequestEvent) => {
-    const client = e.locals.auth.session.client;
+    const client = e.locals.client;
     return await client.transaction(async (tx) => {
       await addTokensByCurrentUser(tx, {
         tokens: -1,
@@ -31,8 +32,10 @@ export const POST = route(
           break;
         case "item":
           if (result.key.startsWith("losing-")) break;
-          console.error("not implemented yet");
-        // break;
+          await addTicketItem(client, {
+            key: result.key,
+          });
+          break;
       }
       return { result };
     });
