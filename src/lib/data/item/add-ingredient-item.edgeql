@@ -1,3 +1,4 @@
-insert IngredientItem {
+insert Item {
   key := <str>$key,
+  category := "ingredient",
 }

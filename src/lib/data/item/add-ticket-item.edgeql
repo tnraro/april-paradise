@@ -1,3 +1,4 @@
-insert TicketItem {
+insert Item {
   key := <str>$key,
+  category := "ticket",
 }

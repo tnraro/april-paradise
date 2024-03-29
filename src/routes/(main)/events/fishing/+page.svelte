@@ -95,11 +95,8 @@
     },
   });
 
-  let currentLures = $state({
-    "까만 콩 지렁이": 0,
-    "토깽이 떡밥": 2,
-    "사우루숭 벌레 유충": 3,
-  } as Record<string, number>);
+  let { data } = $props();
+  let currentLures = $state(data.lures as Record<string, number>);
   let selectedLure = $state("까만 콩 지렁이");
   let errorMessage = $state<string>();
 
