@@ -48,6 +48,7 @@ export const POST = route(
       }
       throw e;
     }
+    return {};
   },
   {
     body: z.object({

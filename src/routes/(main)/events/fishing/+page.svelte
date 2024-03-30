@@ -4,16 +4,22 @@
   import { repeat } from "$lib/shared/util/repeat";
   import { sleep } from "$lib/shared/util/sleep";
   import FishingCatchphrase from "$lib/ui/fishing/fishing-catchphrase.svelte";
-  import { default as FishingCaughtFish, default as FishingFish } from "$lib/ui/fishing/fishing-caught-fish.svelte";
+  import FishingCaughtFish from "$lib/ui/fishing/fishing-caught-fish.svelte";
+  import FishingCurrentLures from "$lib/ui/fishing/fishing-current-lures.svelte";
   import { fight } from "$lib/ui/fishing/fishing-fighting";
   import FishingFighting from "$lib/ui/fishing/fishing-fighting.svelte";
   import FishingFishPortrait from "$lib/ui/fishing/fishing-fish-portrait.svelte";
   import FishingLures from "$lib/ui/fishing/fishing-lures.svelte";
-  import { FishingState, createFishing } from "$lib/ui/fishing/fishing-state.svelte";
+  import {
+    FishingState,
+    createFishing,
+  } from "$lib/ui/fishing/fishing-state.svelte";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import Item from "$lib/ui/item/item.svelte";
   import Lure from "$lib/ui/item/lure.svelte";
   import Tab from "$lib/ui/tab/tab.svelte";
+  import { useWallet } from "$routes/(main)/wallet.svelte.js";
+  import { type Lures, useLures } from "./lures.svelte.js";
   const vibrate = async (size: number) => {
     const r = Math.random() * Math.PI * 2;
     const s = Math.random() * size * size;
@@ -23,17 +29,18 @@
       x *= -0.5;
       y *= -0.5;
       const d = Math.sqrt(x * x + y * y);
-      navigator.vibrate(Math.max(25, d) / 25 * 100);
+      navigator.vibrate((Math.max(25, d) / 25) * 100);
     }
     x = 0;
     y = 0;
-  }
+  };
   const pull = () => {
-    isPulling = true
+    isPulling = true;
   };
   const release = () => {
-    isPulling = false
+    isPulling = false;
   };
+  const wallet = useWallet();
   const S = createFishing({
     async oncast(lure) {
       if (currentLures[lure] <= 0) {
@@ -98,8 +105,8 @@
   });
 
   let { data } = $props();
-  let currentLures = $state(data.lures as Record<string, number>);
-  let selectedLure = $state("까만 콩 지렁이");
+  let currentLures = useLures(data.lures);
+  let selectedLure = $state<keyof Lures>("까만 콩 지렁이");
   let errorMessage = $state<string>();
 
   let isPulling = $state(false);
@@ -160,6 +167,12 @@
             S.error(res.error.message);
           } else {
             invalidate("header");
+            if (lure.price.type === "chips") {
+              wallet.chips -= lure.price.quantity;
+            } else if (lure.price.type === "tokens") {
+              wallet.tokens -= lure.price.quantity;
+            }
+            currentLures[lure.key as keyof Lures] ++;
           }
         }}>구매하기</button>
       </div>
@@ -173,7 +186,7 @@
       파도가 넘실거리는 그림
     {:else if S.state === FishingState.Casting}
       낚시대를 휘두르는 그림
-    {:else if S.state === FishingState.Waiting} 
+    {:else if S.state === FishingState.Waiting}
       기다리는 그림
     {:else if S.state === FishingState.Biting}
       물고깅이 미끼를 문 그림
@@ -187,7 +200,7 @@
       물고깅을 잡은 그림
 
       {#if S.caughtFish}
-        <FishingFish fish={S.caughtFish} />
+        <FishingCaughtFish fish={S.caughtFish} />
       {/if}
     {:else if S.state === FishingState.Missing}
       물고깅을 놓친 그림
@@ -196,7 +209,10 @@
     {/if}
   </div>
   <div class="tabs">
-    <Tab prefix="fishing" n={4} {tab} {tabpanel}/>
+    <Tab prefix="fishing" n={4} {tab} {tabpanel} />
+    <div class="lures">
+      <FishingCurrentLures {currentLures} />
+    </div>
   </div>
 </main>
 
@@ -228,10 +244,12 @@
   <Dialog>
     <div class="caught-fish-dialog">
       {errorMessage}
-      <button onclick={() => {
-        errorMessage = undefined;
-        S.idle();
-      }}>그렇군요</button>
+      <button
+        onclick={() => {
+          errorMessage = undefined;
+          S.idle();
+        }}>그렇군요</button
+      >
     </div>
   </Dialog>
 {/if}
@@ -260,7 +278,7 @@
     display: grid;
     justify-content: center;
   }
-  :global(.fishing__tab[aria-selected=true]) {
+  :global(.fishing__tab[aria-selected="true"]) {
     background: var(--blue-3);
   }
   :global(.fishing__tabpanel) {
@@ -295,5 +313,10 @@
       align-items: center;
       gap: 0.25rem;
     }
+  }
+  .lures {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -110%);
   }
 </style>

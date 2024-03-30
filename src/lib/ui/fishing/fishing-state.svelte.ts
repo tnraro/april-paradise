@@ -1,5 +1,6 @@
 import type { FishingData } from "$lib/data/sheets/model";
 import { sleep } from "$lib/shared/util/sleep";
+import type { Lures } from "$routes/(main)/events/fishing/lures.svelte";
 import { sendError } from "../error/send-error";
 
 export const enum FishingState {
@@ -25,7 +26,7 @@ export type CaughtFish = Pick<
   | "endurance"
 > & { next: string };
 interface FishingOptions {
-  oncast: (lure: string) => Promise<CaughtFish>;
+  oncast: (lure: keyof Lures) => Promise<CaughtFish>;
   onbite?: (fish: CaughtFish) => void;
   onpull?: (fish: CaughtFish) => void;
   oncatch?: (fish: CaughtFish) => void;
@@ -41,7 +42,7 @@ export const createFishing = (options: FishingOptions) => {
     state = FishingState.Idle;
     caughtFish = undefined;
   };
-  const cast = async (lure: string) => {
+  const cast = async (lure: keyof Lures) => {
     if (state !== FishingState.Idle) return;
     state = FishingState.Casting;
     try {
