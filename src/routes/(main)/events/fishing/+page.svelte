@@ -144,6 +144,16 @@
     <enhanced:img class="pixel" src="$img/fishing-medal.png?w=64" alt="" />
   {:else if index === 3}
     상점
+    {#each data.lureData as lure}
+      <div class="lure">
+        <Lure />
+        <div>
+          <div class="lure__quantity">{lure.name}</div>
+          <div>가격: <Item item={lure.price} /></div>
+        </div>
+        <button class="lure">구매하기</button>
+      </div>
+    {/each}
   {/if}
 {/snippet}
 
