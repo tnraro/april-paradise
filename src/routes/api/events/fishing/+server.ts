@@ -3,6 +3,7 @@ import { env } from "$env/dynamic/private";
 import { route } from "$lib/api/server";
 import { addFishItem } from "$lib/data/item/add-fish-item.query";
 import { addGarbageItem } from "$lib/data/item/add-garbage-item.query";
+import { addResource } from "$lib/data/resources/add-resource.query";
 import { getFishingData } from "$lib/data/sheets/sheets";
 import { pick } from "$lib/shared/random/pick";
 import { z } from "zod";
@@ -26,6 +27,10 @@ export const POST = route(
       const next =
         cipher.update(JSON.stringify({ id, key }), "utf8", "base64url") +
         cipher.final("base64url");
+      await addResource(tx, {
+        key: body.lure,
+        value: -1,
+      });
 
       return {
         result: {
@@ -52,15 +57,15 @@ export const POST = route(
 export type PUT = typeof PUT;
 export const PUT = route(
   "put",
-  async (e: RequestEvent, body) => {
+  async ({ locals }: RequestEvent, body) => {
     const decipher = createDecipheriv("aes-128-gcm", KEY, env.IV);
     const fish: { key: string } = JSON.parse(
       decipher.update(body.next, "base64url", "utf8"),
     );
     if (fish.key.startsWith("losing-")) {
-      addGarbageItem(e.locals.client, { key: fish.key });
+      addGarbageItem(locals.client, { key: fish.key });
     } else {
-      addFishItem(e.locals.client, { key: fish.key });
+      addFishItem(locals.client, { key: fish.key });
     }
   },
   {

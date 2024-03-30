@@ -160,6 +160,9 @@
           <div class="lure__price">가격: <Item item={lure.price} /></div>
         </div>
         <button class="blue" onclick={async () => {
+          if (wallet.chips <= 0) {
+            S.error("칩이 부족합니다");
+          }
           const res = await api().events.fishing.lure.post({
             lure: lure.key as any
           });
