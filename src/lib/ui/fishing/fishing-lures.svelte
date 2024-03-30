@@ -27,7 +27,7 @@
       <div class="lures__list" style:---x="-{index * 64}px">
         {#each lures as lure}
           <div class="lure">
-            <Lure />
+            <Lure lure={lure} />
             <div class="lure__quantity">×{currentLures[lure]}</div>
           </div>
         {/each}

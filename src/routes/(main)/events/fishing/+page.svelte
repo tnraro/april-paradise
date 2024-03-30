@@ -147,7 +147,7 @@
     상점
     {#each data.lureData as lure}
       <div class="lure">
-        <Lure />
+        <Lure lure={lure.key} />
         <div>
           <div class="lure__name">{lure.name}</div>
           <div class="lure__price">가격: <Item item={lure.price} /></div>
