@@ -3,14 +3,15 @@
   import { repeat } from "$lib/shared/util/repeat";
   import { sleep } from "$lib/shared/util/sleep";
   import FishingCatchphrase from "$lib/ui/fishing/fishing-catchphrase.svelte";
-  import FishingCaughtFish from "$lib/ui/fishing/fishing-caught-fish.svelte";
-  import FishingFish from "$lib/ui/fishing/fishing-caught-fish.svelte";
+  import { default as FishingCaughtFish, default as FishingFish } from "$lib/ui/fishing/fishing-caught-fish.svelte";
   import { fight } from "$lib/ui/fishing/fishing-fighting";
   import FishingFighting from "$lib/ui/fishing/fishing-fighting.svelte";
   import FishingFishPortrait from "$lib/ui/fishing/fishing-fish-portrait.svelte";
   import FishingLures from "$lib/ui/fishing/fishing-lures.svelte";
   import { FishingState, createFishing } from "$lib/ui/fishing/fishing-state.svelte";
   import Dialog from "$lib/ui/floating/dialog.svelte";
+    import Item from "$lib/ui/item/item.svelte";
+    import Lure from "$lib/ui/item/lure.svelte";
   import Tab from "$lib/ui/tab/tab.svelte";
   const vibrate = async (size: number) => {
     const r = Math.random() * Math.PI * 2;
