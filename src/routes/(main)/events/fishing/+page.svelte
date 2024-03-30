@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { invalidate } from "$app/navigation";
   import { api } from "$lib/api/api.gen";
   import { repeat } from "$lib/shared/util/repeat";
   import { sleep } from "$lib/shared/util/sleep";
@@ -10,8 +11,8 @@
   import FishingLures from "$lib/ui/fishing/fishing-lures.svelte";
   import { FishingState, createFishing } from "$lib/ui/fishing/fishing-state.svelte";
   import Dialog from "$lib/ui/floating/dialog.svelte";
-    import Item from "$lib/ui/item/item.svelte";
-    import Lure from "$lib/ui/item/lure.svelte";
+  import Item from "$lib/ui/item/item.svelte";
+  import Lure from "$lib/ui/item/lure.svelte";
   import Tab from "$lib/ui/tab/tab.svelte";
   const vibrate = async (size: number) => {
     const r = Math.random() * Math.PI * 2;
@@ -148,10 +149,19 @@
       <div class="lure">
         <Lure />
         <div>
-          <div class="lure__quantity">{lure.name}</div>
-          <div>가격: <Item item={lure.price} /></div>
+          <div class="lure__name">{lure.name}</div>
+          <div class="lure__price">가격: <Item item={lure.price} /></div>
         </div>
-        <button class="lure">구매하기</button>
+        <button class="blue" onclick={async () => {
+          const res = await api().events.fishing.lure.post({
+            lure: lure.key as any
+          });
+          if (!res.ok) {
+            S.error("무언가 잘못되었습니다", res.error);
+          } else {
+            invalidate(`header:${data.user!.key}`);
+          }
+        }}>구매하기</button>
       </div>
     {/each}
   {/if}
@@ -271,5 +281,19 @@
     font-weight: 700;
     font-size: 3rem;
     font-family: var(--font-serif);
+  }
+  .lure {
+    display: grid;
+    grid-template-columns: min-content 1fr max-content;
+    align-items: center;
+
+    &__name {
+      font-weight: 700;
+    }
+    &__price {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
   }
 </style>
