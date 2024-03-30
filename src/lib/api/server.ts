@@ -1,4 +1,4 @@
-import { type RequestEvent, error, json } from "@sveltejs/kit";
+import { type RequestEvent, error, isHttpError, json } from "@sveltejs/kit";
 import { ZodError, type z } from "zod";
 
 export const route = <
@@ -33,6 +33,7 @@ export const route = <
       const res = await handler(re, _body, set);
       return json(res, set);
     } catch (e) {
+      if (isHttpError(e)) throw e;
       options?.err?.(e, re, _body);
       console.error("err", e);
       error(500);
