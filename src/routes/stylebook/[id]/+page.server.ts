@@ -2,10 +2,10 @@ import { error } from "@sveltejs/kit";
 import { sbs } from "../setup.js";
 
 export const load = async ({ params }) => {
-  if (!sbs.has(`/${params.route}`)) {
+  if (!sbs.has(params.id)) {
     error(404);
   }
   return {
-    path: params.route,
+    id: params.id,
   };
 };

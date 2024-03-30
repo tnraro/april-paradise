@@ -66,7 +66,7 @@ export const oninput =
         case "number":
           ref[key] = Number(e.currentTarget.value);
           break;
-        case "boolean":
+        case "checkbox":
           ref[key] = e.currentTarget.checked;
           break;
         default:
