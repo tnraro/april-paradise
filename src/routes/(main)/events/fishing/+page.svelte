@@ -157,7 +157,7 @@
             lure: lure.key as any
           });
           if (!res.ok) {
-            S.error("무언가 잘못되었습니다", res.error);
+            S.error(res.error.message);
           } else {
             invalidate(`header:${data.user!.key}`);
           }
