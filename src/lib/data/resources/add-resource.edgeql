@@ -1,6 +1,6 @@
 insert Resource {
   key := <str>$key,
-  value := <int64>$value,
+  value := max({ 0, <int64>$value }),
 }
 unless conflict on (.owner, .key)
 else (
