@@ -1,5 +1,9 @@
 <script lang="ts">
+  import AnimatingMoney from "$lib/ui/item/animating-money.svelte";
+  import { useWallet } from "./wallet.svelte.js";
+
   let { children, data } = $props();
+  const wallet = useWallet(data.user);
 </script>
 
 <div class="_">
@@ -9,14 +13,8 @@
       <div class="user">
         {#if data.user}
           <div class="money">
-            <span class="tokens">
-              <enhanced:img class="tokens_img" src="$img/token.png?w=24" />
-              {data.user.tokens ?? 0}
-            </span>
-            <span class="chips">
-              <enhanced:img class="chips_img" src="$img/chip.png?w=24" />
-              {data.user.chips ?? 0}
-            </span>
+            <AnimatingMoney type="tokens" quantity={wallet.tokens} />
+            <AnimatingMoney type="chips" quantity={wallet.chips} />
           </div>
           <span>{data.user.name}</span>
         {:else}
@@ -61,24 +59,6 @@
   .money {
     display: flex;
     gap: 0.5rem;
-  }
-  .tokens {
-    display: flex;
-    gap: 0.25rem;
-    color: var(--amber-11);
-    &_img {
-      width: auto;
-      height: 1.5rem;
-    }
-  }
-  .chips {
-    display: flex;
-    gap: 0.25rem;
-    color: var(--blue-11);
-    &_img {
-      width: auto;
-      height: 1.5rem;
-    }
   }
   .sign-in {
     text-decoration: none;

@@ -50,7 +50,7 @@
   </div>
   <div></div>
   <div style="width: 20rem">
-    <Roulette bind:tokens bind:chips {table} {onroll} {onreward} />
+    <Roulette {table} {onroll} {onreward} />
   </div>
   <div>
     <h3>자원</h3>

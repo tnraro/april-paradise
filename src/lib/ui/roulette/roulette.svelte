@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Item, Money, RouletteData } from "$lib/data/sheets/model";
   import { repeat } from "$lib/shared/util/repeat";
+  import { useWallet } from "$routes/(main)/wallet.svelte";
   import { RouletteState } from "./roulette";
   import Arrow from "./roulette-arrow.svelte";
   import Body from "./roulette-body.svelte";
@@ -17,26 +18,18 @@
     table: { key: string; result: Money | Item }[];
     onroll?: () => Promise<{ result: RouletteData }>;
     onreward?: () => void;
-    tokens: number;
-    chips: number;
   }
-  let {
-    onroll,
-    table,
-    onreward,
-    tokens = $bindable(),
-    chips = $bindable(),
-  }: Props = $props();
+  let { onroll, table, onreward }: Props = $props();
   let t: number;
-  let t2 = false;
+
+  const wallet = useWallet();
 
   const onclick = () => {
-    t2 = false;
     switch (_state) {
       case RouletteState.Idle:
-        if (tokens > 0) {
+        if (wallet.tokens > 0) {
           _state = RouletteState.InsertingToken;
-          tokens--;
+          wallet.tokens--;
         } else {
           _state = RouletteState.NotEnoughTokens;
         }
@@ -66,30 +59,21 @@
       onreward?.();
       _state = RouletteState.Idle;
     } else {
-      _state = RouletteState.DroppingReward;
       t = setInterval(() => {
         bulbs = bulbs.map((bulb) => !bulb);
       }, 100) as unknown as number;
-      if (result.result.type === "chips" || result.result.type === "tokens") {
-        animateMoneyIncreasing(result.result);
+      if (result.result.type === "chips") {
+        wallet.chips += result.result.quantity;
+      } else if (result.result.type === "tokens") {
+        wallet.tokens += result.result.quantity;
       }
+      _state = RouletteState.DroppingReward;
     }
-  };
-  const animateMoneyIncreasing = async (money: Money) => {
-    t2 = true;
-    for await (const i of repeat(money.quantity, 50)) {
-      if (!t2) break;
-      if (money.type === "chips") {
-        chips++;
-      } else if (money.type === "tokens") {
-        tokens++;
-      }
-    }
-    t2 = false;
   };
   const roll = () => {
     _state = RouletteState.Rolling;
     speed = 4;
+    result = undefined;
     onroll?.()
       .then((res) => {
         result = res.result;
