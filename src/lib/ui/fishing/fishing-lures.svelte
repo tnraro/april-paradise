@@ -1,5 +1,6 @@
 <script lang="ts">
   import { lures } from "$lib/shared/config/lures";
+  import Lure from "../item/lure.svelte";
 
   const left = () => {
     const i = (index + lures.length - 1) % lures.length;
@@ -26,7 +27,7 @@
       <div class="lures__list" style:---x="-{index * 64}px">
         {#each lures as lure}
           <div class="lure">
-            <enhanced:img class="lure__img" src="$img/lure.png?w=64" />
+            <Lure />
             <div class="lure__quantity">×{currentLures[lure]}</div>
           </div>
         {/each}
@@ -63,9 +64,6 @@
   .lure {
     width: 100%;
     position: relative;
-    &__img {
-      max-width: fit-content;
-    }
     &__quantity {
       right: 0;
       bottom: 0;
