@@ -13,7 +13,7 @@
       bind:chips={data.user!.chips}
       table={data.rouletteData}
       onreward={() => {
-        invalidate(`header:${data.user!.key}`);
+        invalidate("header");
       }}
       onroll={async () => {
         const res = await api().events.roulette.post(undefined);

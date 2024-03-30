@@ -159,7 +159,7 @@
           if (!res.ok) {
             S.error(res.error.message);
           } else {
-            invalidate(`header:${data.user!.key}`);
+            invalidate("header");
           }
         }}>구매하기</button>
       </div>
