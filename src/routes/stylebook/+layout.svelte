@@ -24,7 +24,7 @@
 <style>
   ._ {
     display: grid;
-    grid-template-columns: min-content 1fr;
+    grid-template-columns: max-content 1fr;
   }
   .sidebar {
     padding: 0 0.5rem;
