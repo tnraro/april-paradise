@@ -1,5 +1,6 @@
 <script lang="ts">
   import { type ComponentType, mount } from "svelte";
+  import { oninput, propsToControls, value } from "../utils";
 
   interface Props {
     name: string;
@@ -10,6 +11,9 @@
   let { name, Component, props }: Props = $props();
   // biome-ignore lint/style/noNonNullAssertion: <explanation>
   let self = $state<Element>(undefined!);
+  let controls = $derived(propsToControls(props));
+
+  $inspect(props, controls);
 
   $effect(() => {
     self.innerHTML = "";
@@ -28,6 +32,31 @@
   <details>
     <summary>props</summary>
     <pre class="props">{JSON.stringify(props, undefined, 2)}</pre>
+  </details>
+  <details>
+    <summary>controls</summary>
+    {#each controls as control}
+      <h4>{control.path}</h4>
+      {#if control.type === "string"}
+        <input
+          value={value(props, control.path)}
+          oninput={oninput(props, control.path)}
+        />
+      {:else if control.type === "number"}
+        <input
+          type="number"
+          value={value(props, control.path)}
+          oninput={oninput(props, control.path)}
+        />
+      {:else if control.type === "boolean"}
+        <input
+          type="checkbox"
+          role="switch"
+          checked={value(props, control.path)}
+          oninput={oninput(props, control.path)}
+        />
+      {/if}
+    {/each}
   </details>
 </div>
 

@@ -1,4 +1,4 @@
-import { sbs } from "./stylebook.setup";
+import { sbs } from "./setup";
 
 export const load = async () => {
   return {

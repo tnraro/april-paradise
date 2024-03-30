@@ -1,6 +1,6 @@
 <script lang="ts">
   import { type ComponentType } from "svelte";
-  import { sbs } from "../stylebook.setup";
+  import { sbs } from "../setup";
   import ComponentVariant from "./component-variant.svelte";
 
   let { data } = $props();

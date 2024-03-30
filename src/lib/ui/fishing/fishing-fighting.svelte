@@ -2,7 +2,7 @@
   import FishingFishPortrait from "./fishing-fish-portrait.svelte";
   import type { CaughtFish } from "./fishing-state.svelte";
   interface Props {
-    fish: CaughtFish;
+    fish: Pick<CaughtFish, "key">;
     hpRatio: number;
     enRatio: number;
     powerRatio: number;
