@@ -296,9 +296,7 @@
   }
   :global(.fishing__tabpanel) {
     display: grid;
-    border: 1px solid var(--slate-6);
-    margin: 1rem;
-    padding: 1rem;
+    padding: 0 1rem;
     border-radius: 1rem;
     overflow-y: auto;
   }

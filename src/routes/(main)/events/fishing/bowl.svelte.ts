@@ -9,7 +9,7 @@ export const useBowl = (initial?: InventoryItem[]) => {
   if (initial) {
     bowl = [
       {
-        name: "asd",
+        name: "물고기",
         items: initial,
       },
     ];
