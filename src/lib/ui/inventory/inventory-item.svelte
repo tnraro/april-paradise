@@ -1,12 +1,14 @@
 <script lang="ts">
   import { getItems } from "$img/imgs";
   import { Tooltip } from "bits-ui";
+  import type { Snippet } from "svelte";
 
   interface Props {
     key: string;
     quantity: number;
+    children?: Snippet;
   }
-  let { key, quantity }: Props = $props();
+  let { key, quantity, children }: Props = $props();
 
   let src = $state<string>();
 
@@ -26,7 +28,11 @@
         <enhanced:img class="item__img pixel" src="$img/items/sample-fish.png?w=64" />
       {/if}
     </Tooltip.Trigger>
-    <Tooltip.Content side="bottom" sideOffset={4}>설명</Tooltip.Content>
+    <Tooltip.Content side="bottom" sideOffset={4}>
+      {#if children}
+        {@render children()}
+      {/if}
+    </Tooltip.Content>
   </Tooltip.Root>
   <div class="item__quantity">{quantity}</div>
 </div>

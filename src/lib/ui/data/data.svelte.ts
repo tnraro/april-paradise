@@ -21,8 +21,8 @@ const createSingletonData = <T>() => {
   };
 };
 
-export const useAchievementData = createSingletonData<AchievementData>();
-export const useFishingData = createSingletonData<FishingData>();
-export const useLureData = createSingletonData<LureData>();
-export const useCocktailNpcData = createSingletonData<CocktailNpcData>();
-export const useCocktailStoreData = createSingletonData<CocktailStoreData>();
+export const useAchievementData = createSingletonData<AchievementData[]>();
+export const useFishingData = createSingletonData<FishingData[]>();
+export const useLureData = createSingletonData<LureData[]>();
+export const useCocktailNpcData = createSingletonData<CocktailNpcData[]>();
+export const useCocktailStoreData = createSingletonData<CocktailStoreData[]>();

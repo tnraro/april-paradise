@@ -1,6 +1,7 @@
 <script lang="ts">
   import { invalidate } from "$app/navigation";
   import { api } from "$lib/api/api.gen";
+  import type { FishingData } from "$lib/data/sheets/model.js";
   import { repeat } from "$lib/shared/util/repeat";
   import { sleep } from "$lib/shared/util/sleep";
   import FishingCatchphrase from "$lib/ui/fishing/fishing-catchphrase.svelte";
@@ -121,6 +122,8 @@
 
   let bowl = useBowl(data.items);
 
+  let fishData = $derived(new Map(data.fishData.map(x => [x.key, x])));
+
   let isPulling = $state(false);
   let powerRatio = $state(0);
   let hpRatio = $state(0);
@@ -130,6 +133,12 @@
   let y = $state(0);
 </script>
 
+{#snippet fishDescription(fish: FishingData)}  
+  <h1 class="fish--grade-{fish.grade}">{fish.name}</h1>
+  <div class="fish__description">
+    {fish.description}
+  </div>
+{/snippet}
 {#snippet tab(index: number)}
   {#if index === TabIndex.Game}
     께임
@@ -159,8 +168,13 @@
   {:else if index === TabIndex.Bowl}
     <div>
       <div class="inventory">
-        {#each bowl.fishes as fish}
-          <InventoryItem {...fish} />
+        {#each bowl.fishes as item}
+          {@const fish = fishData.get(item.key)}
+          <InventoryItem {...item}>
+            {#if fish}
+              {@render fishDescription(fish)}
+            {/if}
+          </InventoryItem>
         {/each}
       </div>
     </div>
@@ -343,5 +357,26 @@
     position: absolute;
     left: 50%;
     transform: translate(-50%, -110%);
+  }
+  .fish {
+    &--grade-0 {
+      color: var(--slate-10);
+    }
+    &--grade-1 {
+      color: var(--green-10);
+    }
+    &--grade-2 {
+      color: var(--blue-10);
+    }
+    &--grade-3 {
+      color: var(--purple-10);
+    }
+    &--grade-4 {
+      color: var(--amber-10);
+    }
+    &__description {
+      color: var(--slate-11);
+      word-break: keep-all;
+    }
   }
 </style>
