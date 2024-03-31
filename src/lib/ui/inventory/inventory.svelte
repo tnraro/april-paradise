@@ -1,11 +1,9 @@
 <script lang="ts">
   import InventoryItem from "./inventory-item.svelte";
+  import type { InventoryGroup } from "./inventory.types";
 
   interface Props {
-    groups: {
-      name: string;
-      items: { key: string; quantity: number }[];
-    }[];
+    groups: InventoryGroup[];
   }
   let { groups }: Props = $props();
 </script>

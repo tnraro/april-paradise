@@ -1,7 +1,7 @@
 import { getItemData, getLureData } from "$lib/data/sheets/sheets.js";
 import { isScheduleActived } from "$lib/data/sheets/utils";
 import { redirect } from "@sveltejs/kit";
-import { inventory } from "./inventory.query.js";
+import { bowl } from "./bowl.query.js";
 import { lures } from "./lures.query.js";
 
 export const load = async ({ locals }) => {
@@ -15,7 +15,7 @@ export const load = async ({ locals }) => {
     const [_, lureData, itemData] = await Promise.all([
       (async () => {
         const { lure0, lure1, lure2 } = await lures(tx);
-        const items = await inventory(tx, { category: "fish" });
+        const items = await bowl(tx, { category: "fish" });
 
         return {
           lures: {

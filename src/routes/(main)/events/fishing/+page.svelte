@@ -15,10 +15,12 @@
     createFishing,
   } from "$lib/ui/fishing/fishing-state.svelte";
   import Dialog from "$lib/ui/floating/dialog.svelte";
+  import Inventory from "$lib/ui/inventory/inventory.svelte";
   import Item from "$lib/ui/item/item.svelte";
   import Lure from "$lib/ui/item/lure.svelte";
   import Tab from "$lib/ui/tab/tab.svelte";
   import { useWallet } from "$routes/(main)/wallet.svelte.js";
+    import { useBowl } from "./bowl.svelte.js";
   import { type Lures, useLures } from "./lures.svelte.js";
   const vibrate = async (size: number) => {
     const r = Math.random() * Math.PI * 2;
@@ -115,6 +117,8 @@
   let selectedLure = $state<keyof Lures>("까만 콩 지렁이");
   let errorMessage = $state<string>();
 
+  let bowl = useBowl(data.items);
+
   let isPulling = $state(false);
   let powerRatio = $state(0);
   let hpRatio = $state(0);
@@ -153,7 +157,7 @@
       >당기기</button>
     {/if}
   {:else if index === TabIndex.Bowl}
-    <enhanced:img class="pixel" src="$img/fishing-bowl.png?w=64" alt="" />
+    <Inventory groups={bowl.groups} />
   {:else if index === TabIndex.Achievement}
     <enhanced:img class="pixel" src="$img/fishing-medal.png?w=64" alt="" />
   {:else if index === TabIndex.Store}
@@ -267,7 +271,7 @@
   main {
     display: grid;
     height: 100%;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 50% 50%;
     justify-content: center;
   }
   .imgs {
@@ -296,6 +300,7 @@
     margin: 1rem;
     padding: 1rem;
     border-radius: 1rem;
+    overflow-y: auto;
   }
   .caught-fish-dialog {
     display: grid;

@@ -17,21 +17,19 @@
   });
 </script>
 
-{#if src}
-  <div class="item">
-    <Tooltip.Root openDelay={0} disableHoverableContent={true}>
-      <Tooltip.Trigger class="inventory-item__trigger">
+<div class="item">
+  <Tooltip.Root openDelay={0} disableHoverableContent={true}>
+    <Tooltip.Trigger class="inventory-item__trigger">
+      {#if src}
         <enhanced:img class="item__img pixel" {src} />
-      </Tooltip.Trigger>
-      <Tooltip.Content side="bottom" sideOffset={4}>
-        설명
-      </Tooltip.Content>
-    </Tooltip.Root>
-    <div class="item__quantity">{quantity}</div>
-  </div>
-{:else}
-  <div class="item" />
-{/if}
+      {:else}
+        {key}
+      {/if}
+    </Tooltip.Trigger>
+    <Tooltip.Content side="bottom" sideOffset={4}>설명</Tooltip.Content>
+  </Tooltip.Root>
+  <div class="item__quantity">{quantity}</div>
+</div>
 
 <style lang="scss">
   .item {
