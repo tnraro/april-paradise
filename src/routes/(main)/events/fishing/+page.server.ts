@@ -23,7 +23,7 @@ export const load = async ({ locals }) => {
             "토깽이 떡밥": lure1,
             "사우루숭 벌레 유충": lure2,
           },
-          items,
+          items: items.map((x) => ({ key: x.item, quantity: x.quantity })),
         };
       })(),
       getLureData(),
