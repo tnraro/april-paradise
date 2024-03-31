@@ -34,6 +34,12 @@
     x = 0;
     y = 0;
   };
+  const enum TabIndex {
+    Game,
+    Bowl,
+    Achievement,
+    Store,
+  }
   const pull = () => {
     isPulling = true;
   };
@@ -119,20 +125,20 @@
 </script>
 
 {#snippet tab(index: number)}
-  {#if index === 0}
+  {#if index === TabIndex.Game}
     께임
-  {:else if index === 1}
-    <enhanced:img class="pixel" src="$img/fishing-port.png?w=64" alt="" />
+  {:else if index === TabIndex.Bowl}
+    <enhanced:img class="pixel" src="$img/fishing-bowl.png?w=64" alt="" />
     어항
-  {:else if index === 2}
+  {:else if index === TabIndex.Achievement}
     <enhanced:img class="pixel" src="$img/fishing-medal.png?w=64" alt="" />
     업적
-  {:else if index === 3}
+  {:else if index === TabIndex.Store}
     상점
   {/if}
 {/snippet}
 {#snippet tabpanel(index: number)}
-  {#if index === 0}
+  {#if index === TabIndex.Game}
     {#if S.state === FishingState.Idle}
       <FishingLures bind:value={selectedLure} {currentLures} />
       <button class="blue emphasis tab__btn" onclick={() => S.cast(selectedLure)}>던지기</button>
@@ -146,11 +152,11 @@
         onpointerup={release}
       >당기기</button>
     {/if}
-  {:else if index === 1}
-    <enhanced:img class="pixel" src="$img/fishing-port.png?w=64" alt="" />
-  {:else if index === 2}
+  {:else if index === TabIndex.Bowl}
+    <enhanced:img class="pixel" src="$img/fishing-bowl.png?w=64" alt="" />
+  {:else if index === TabIndex.Achievement}
     <enhanced:img class="pixel" src="$img/fishing-medal.png?w=64" alt="" />
-  {:else if index === 3}
+  {:else if index === TabIndex.Store}
     상점
     {#each data.lureData as lure}
       <div class="lure">
