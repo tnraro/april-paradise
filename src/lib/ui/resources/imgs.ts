@@ -1,5 +1,5 @@
-const imgs = import.meta.glob<boolean, string, { default: string }>(
-  "$img/*.png",
+const items = import.meta.glob<boolean, string, { default: string }>(
+  "$img/items/*.png",
   {
     query: {
       enhanced: true,
@@ -8,5 +8,5 @@ const imgs = import.meta.glob<boolean, string, { default: string }>(
   },
 );
 
-export const getImg = (key: string) =>
-  imgs[`/src/lib/ui/resources/${key}.png`]?.();
+export const getItems = (key: string) =>
+  items[`/src/lib/ui/resources/items/${key}.png`]?.();

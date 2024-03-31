@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getImg } from "$img/imgs";
+  import { getItems } from "$img/imgs";
   import { Tooltip } from "bits-ui";
 
   interface Props {
@@ -11,7 +11,7 @@
   let src = $state<string>();
 
   $effect(() => {
-    getImg(key)?.then((x) => {
+    getItems(key)?.then((x) => {
       src = x.default;
     });
   });
@@ -23,7 +23,7 @@
       {#if src}
         <enhanced:img class="item__img pixel" {src} />
       {:else}
-        <enhanced:img class="item__img pixel" src="$img/sample-fish.png?w=64" />
+        <enhanced:img class="item__img pixel" src="$img/items/sample-fish.png?w=64" />
       {/if}
     </Tooltip.Trigger>
     <Tooltip.Content side="bottom" sideOffset={4}>설명</Tooltip.Content>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getItems } from "$img/imgs";
   import type { CaughtFish } from "./fishing-state.svelte";
 
   interface Props {
@@ -6,13 +7,23 @@
     silhouette?: boolean;
   }
   let { fish, silhouette = false }: Props = $props();
+  let src = $state<string>();
+  $effect(() => {
+    getItems(fish.key)?.then((x) => {
+      src = x.default;
+    });
+  });
 </script>
 
-<enhanced:img
-  class="fish pixel"
-  class:fish--silhouette={silhouette}
-  src="$img/sample-fish.png?w=64"
-/>
+{#if src}
+  <enhanced:img class="fish pixel" class:fish--silhouette={silhouette} {src} />
+{:else}
+  <enhanced:img
+    class="fish pixel"
+    class:fish--silhouette={silhouette}
+    src="$img/items/sample-fish.png?w=64"
+  />
+{/if}
 
 <style lang="scss">
   .fish {
