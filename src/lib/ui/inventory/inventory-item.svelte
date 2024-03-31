@@ -23,7 +23,7 @@
       {#if src}
         <enhanced:img class="item__img pixel" {src} />
       {:else}
-        {key}
+        <enhanced:img class="item__img pixel" src="$img/sample-fish.png?w=64" />
       {/if}
     </Tooltip.Trigger>
     <Tooltip.Content side="bottom" sideOffset={4}>설명</Tooltip.Content>

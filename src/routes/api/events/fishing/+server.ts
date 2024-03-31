@@ -67,6 +67,7 @@ export const PUT = route(
     } else {
       addFishItem(locals.client, { key: fish.key });
     }
+    return {};
   },
   {
     body: z.object({

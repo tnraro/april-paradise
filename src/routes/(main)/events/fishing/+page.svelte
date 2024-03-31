@@ -15,12 +15,12 @@
     createFishing,
   } from "$lib/ui/fishing/fishing-state.svelte";
   import Dialog from "$lib/ui/floating/dialog.svelte";
-  import Inventory from "$lib/ui/inventory/inventory.svelte";
+  import InventoryItem from "$lib/ui/inventory/inventory-item.svelte";
   import Item from "$lib/ui/item/item.svelte";
   import Lure from "$lib/ui/item/lure.svelte";
   import Tab from "$lib/ui/tab/tab.svelte";
   import { useWallet } from "$routes/(main)/wallet.svelte.js";
-    import { useBowl } from "./bowl.svelte.js";
+  import { useBowl } from "./bowl.svelte.js";
   import { type Lures, useLures } from "./lures.svelte.js";
   const vibrate = async (size: number) => {
     const r = Math.random() * Math.PI * 2;
@@ -101,6 +101,8 @@
             const res = await api().events.fishing.put({ next: fish.next });
             if (!res.ok) {
               S.error("무언가 잘못되었습니다", res.error);
+            } else {
+              bowl.addFish(fish.key);
             }
           }
           break;
@@ -133,10 +135,8 @@
     께임
   {:else if index === TabIndex.Bowl}
     <enhanced:img class="pixel" src="$img/fishing-bowl.png?w=64" alt="" />
-    어항
   {:else if index === TabIndex.Achievement}
     <enhanced:img class="pixel" src="$img/fishing-medal.png?w=64" alt="" />
-    업적
   {:else if index === TabIndex.Store}
     상점
   {/if}
@@ -157,39 +157,47 @@
       >당기기</button>
     {/if}
   {:else if index === TabIndex.Bowl}
-    <Inventory groups={bowl.groups} />
+    <div>
+      <div class="inventory">
+        {#each bowl.fishes as fish}
+          <InventoryItem {...fish} />
+        {/each}
+      </div>
+    </div>
   {:else if index === TabIndex.Achievement}
     <enhanced:img class="pixel" src="$img/fishing-medal.png?w=64" alt="" />
   {:else if index === TabIndex.Store}
-    상점
-    {#each data.lureData as lure}
-      <div class="lure">
-        <Lure lure={lure.key} />
-        <div>
-          <div class="lure__name">{lure.name}</div>
-          <div class="lure__price">가격: <Item item={lure.price} /></div>
-        </div>
-        <button class="blue" onclick={async () => {
-          if (wallet.chips <= 0) {
-            S.error("칩이 부족합니다");
-          }
-          const res = await api().events.fishing.lure.post({
-            lure: lure.key as any
-          });
-          if (!res.ok) {
-            S.error(res.error.message);
-          } else {
-            invalidate("header");
-            if (lure.price.type === "chips") {
-              wallet.chips -= lure.price.quantity;
-            } else if (lure.price.type === "tokens") {
-              wallet.tokens -= lure.price.quantity;
+    <div>
+      <h1>상점</h1>
+      {#each data.lureData as lure}
+        <div class="lure">
+          <Lure lure={lure.key} />
+          <div>
+            <div class="lure__name">{lure.name}</div>
+            <div class="lure__price">가격: <Item item={lure.price} /></div>
+          </div>
+          <button class="blue" onclick={async () => {
+            if (wallet.chips <= 0) {
+              S.error("칩이 부족합니다");
             }
-            currentLures[lure.key as keyof Lures] ++;
-          }
-        }}>구매하기</button>
-      </div>
-    {/each}
+            const res = await api().events.fishing.lure.post({
+              lure: lure.key as any
+            });
+            if (!res.ok) {
+              S.error(res.error.message);
+            } else {
+              invalidate("header");
+              if (lure.price.type === "chips") {
+                wallet.chips -= lure.price.quantity;
+              } else if (lure.price.type === "tokens") {
+                wallet.tokens -= lure.price.quantity;
+              }
+              currentLures[lure.key as keyof Lures] ++;
+            }
+          }}>구매하기</button>
+        </div>
+      {/each}
+    </div>
   {/if}
 {/snippet}
 
@@ -311,6 +319,11 @@
     font-weight: 700;
     font-size: 3rem;
     font-family: var(--font-serif);
+  }
+  .inventory {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 64px);
+    gap: 1rem;
   }
   .lure {
     display: grid;
