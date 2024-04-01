@@ -207,7 +207,7 @@
   {:else if index === TabIndex.Achievement}
     <enhanced:img class="pixel" src="$img/fishing-medal.png?w=64" alt="" />
   {:else if index === TabIndex.Store}
-    상점
+    <enhanced:img class="pixel" src="$img/fishing-store.png?w=64" alt="" />
   {/if}
 {/snippet}
 {#snippet tabpanel(index: number)}
