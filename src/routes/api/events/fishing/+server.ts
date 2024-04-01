@@ -1,6 +1,8 @@
 import { createCipheriv, createDecipheriv, scryptSync } from "node:crypto";
 import { env } from "$env/dynamic/private";
 import { route } from "$lib/api/server";
+import { onCaughtFish } from "$lib/data/achievement/achievement";
+import { addAchievements } from "$lib/data/achievement/add-achievements.query";
 import { addFishItem } from "$lib/data/item/add-fish-item.query";
 import { addGarbageItem } from "$lib/data/item/add-garbage-item.query";
 import { addResource } from "$lib/data/resources/add-resource.query";
@@ -62,12 +64,18 @@ export const PUT = route(
     const fish: { key: string } = JSON.parse(
       decipher.update(body.next, "base64url", "utf8"),
     );
-    if (fish.key.startsWith("losing-")) {
-      addGarbageItem(locals.client, { key: fish.key });
-    } else {
-      addFishItem(locals.client, { key: fish.key });
-    }
-    return {};
+    return await locals.client.transaction(async (tx) => {
+      if (fish.key.startsWith("losing-")) {
+        await addGarbageItem(locals.client, { key: fish.key });
+      } else {
+        await addFishItem(locals.client, { key: fish.key });
+      }
+      const achievements = await onCaughtFish(tx, fish.key);
+      await addAchievements(tx, { achievements });
+      return {
+        achievements,
+      };
+    });
   },
   {
     body: z.object({

@@ -103,6 +103,7 @@
             if (!res.ok) {
               S.error("무언가 잘못되었습니다", res.error);
             } else {
+              console.log(res.data.achievements);
               bowl.addFish(fish.key);
             }
           }
