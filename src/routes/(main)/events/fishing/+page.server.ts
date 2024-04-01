@@ -1,6 +1,6 @@
 import {
+  getAchievementData,
   getFishingData,
-  getItemData,
   getLureData,
 } from "$lib/data/sheets/sheets.js";
 import { isScheduleActived } from "$lib/data/sheets/utils";
@@ -16,7 +16,7 @@ export const load = async ({ locals }) => {
     redirect(303, "/auth/sign-in");
   }
   return await locals.client.transaction(async (tx) => {
-    const [_, lureData, fishData] = await Promise.all([
+    const [_, lureData, fishData, achievementData] = await Promise.all([
       (async () => {
         const { lure0, lure1, lure2 } = await lures(tx);
         const items = await bowl(tx, { category: "fish" });
@@ -32,12 +32,14 @@ export const load = async ({ locals }) => {
       })(),
       getLureData(),
       getFishingData(),
+      getAchievementData(),
     ]);
     return {
       lures: _.lures,
       items: _.items,
       lureData,
       fishData,
+      achievementData,
     };
   });
 };

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { invalidate } from "$app/navigation";
   import { api } from "$lib/api/api.gen";
-  import type { FishingData } from "$lib/data/sheets/model.js";
+  import type { FishingData, Money } from "$lib/data/sheets/model.js";
   import { repeat } from "$lib/shared/util/repeat";
   import { sleep } from "$lib/shared/util/sleep";
   import FishingCatchphrase from "$lib/ui/fishing/fishing-catchphrase.svelte";
@@ -15,6 +15,7 @@
     FishingState,
     createFishing,
   } from "$lib/ui/fishing/fishing-state.svelte";
+    import Achievement from "$lib/ui/floating/achievement.svelte";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import InventoryItem from "$lib/ui/inventory/inventory-item.svelte";
   import Item from "$lib/ui/item/item.svelte";
@@ -103,7 +104,29 @@
             if (!res.ok) {
               S.error("무언가 잘못되었습니다", res.error);
             } else {
-              console.log(res.data.achievements);
+              const map = new Map(data.achievementData.map(x => [x.key, x]));
+              achievements = res.data.achievements.map(x => {
+                // biome-ignore lint/style/noNonNullAssertion: <explanation>
+                const achievement = map.get(x)!;
+                return ({
+                  id: crypto.randomUUID(),
+                  name: achievement.name,
+                  condition: achievement.condition,
+                  reward: achievement.reward,
+                  isHidden: achievement.isHidden,
+                })
+              }
+              );
+              setTimeout(() => {
+                for (const a of achievements) {
+                  if (a.reward.type === "tokens") {
+                    wallet.tokens += a.reward.quantity;
+                  } else if (a.reward.type === "chips") {
+                    wallet.chips += a.reward.quantity;
+                  }
+                }
+                achievements = []; 
+              }, 5000);
               bowl.addFish(fish.key);
             }
           }
@@ -132,6 +155,16 @@
 
   let x = $state(0);
   let y = $state(0);
+
+  let achievements = $state<
+    {
+      id: string;
+      name: string;
+      condition: string;
+      reward: Money;
+      isHidden: boolean;
+    }[]
+  >([]);
 </script>
 
 {#snippet fishDescription(fish: FishingData)}  
@@ -290,6 +323,19 @@
     </div>
   </Dialog>
 {/if}
+{#each achievements as achievement (achievement.id)}
+  <Achievement
+    {...achievement} 
+    onclose={() => {
+      achievements = achievements.filter((x) => x.id !== achievement.id);
+      if (achievement.reward.type === "tokens") {
+        wallet.tokens += achievement.reward.quantity;
+      } else if (achievement.reward.type === "chips") {
+        wallet.chips += achievement.reward.quantity;
+      }
+    }}
+  />
+{/each}
 
 <style lang="scss">
   main {

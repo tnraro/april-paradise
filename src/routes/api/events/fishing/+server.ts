@@ -5,8 +5,10 @@ import { onCaughtFish } from "$lib/data/achievement/achievement";
 import { addAchievements } from "$lib/data/achievement/add-achievements.query";
 import { addFishItem } from "$lib/data/item/add-fish-item.query";
 import { addGarbageItem } from "$lib/data/item/add-garbage-item.query";
+import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
+import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
 import { addResource } from "$lib/data/resources/add-resource.query";
-import { getFishingData } from "$lib/data/sheets/sheets";
+import { getAchievementData, getFishingData } from "$lib/data/sheets/sheets";
 import { pick } from "$lib/shared/random/pick";
 import { z } from "zod";
 import type { RequestEvent } from "./$types";
@@ -72,6 +74,27 @@ export const PUT = route(
       }
       const achievements = await onCaughtFish(tx, fish.key);
       await addAchievements(tx, { achievements });
+      const map = new Map((await getAchievementData()).map((x) => [x.key, x]));
+      const money = achievements.reduce(
+        (sum, x) => {
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
+          const _x = map.get(x)!;
+          if (_x.reward.type === "chips") {
+            sum.chips += _x.reward.quantity;
+          }
+          if (_x.reward.type === "tokens") {
+            sum.tokens += _x.reward.quantity;
+          }
+          return sum;
+        },
+        { tokens: 0, chips: 0 },
+      );
+      if (money.tokens > 0) {
+        await addTokensByCurrentUser(tx, { tokens: money.tokens });
+      }
+      if (money.chips > 0) {
+        await addChipsByCurrentUser(tx, { chips: money.chips });
+      }
       return {
         achievements,
       };
