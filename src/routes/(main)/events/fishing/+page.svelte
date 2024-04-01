@@ -16,6 +16,7 @@
     FishingState,
     createFishing,
   } from "$lib/ui/fishing/fishing-state.svelte";
+    import FishingStoreLure from "$lib/ui/fishing/fishing-store-lure.svelte";
     import Achievement from "$lib/ui/floating/achievement.svelte";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import InventoryItem from "$lib/ui/inventory/inventory-item.svelte";
@@ -247,14 +248,9 @@
   {:else if index === TabIndex.Store}
     <div>
       <h1>상점</h1>
-      {#each data.lureData as lure}
-        <div class="lure">
-          <Lure lure={lure.key} />
-          <div>
-            <div class="lure__name">{lure.name}</div>
-            <div class="lure__price">가격: <Item item={lure.price} /></div>
-          </div>
-          <button class="blue" onclick={async () => {
+      <div class="store-lures">
+        {#each data.lureData as lure}
+          <FishingStoreLure {lure} onclick={async () => {
             if (wallet.chips <= 0) {
               S.error("칩이 부족합니다");
             }
@@ -272,9 +268,9 @@
               }
               currentLures[lure.key as keyof Lures] ++;
             }
-          }}>구매하기</button>
-        </div>
-      {/each}
+          }} />
+        {/each}
+      </div>
     </div>
   {/if}
 {/snippet}
@@ -376,6 +372,9 @@
   .imgs {
     display: grid;
     place-items: center;
+    background: url("$img/fishing/background.png");
+    background-position: center;
+    background-size: cover;
   }
   .tabs {
     display: grid;
@@ -416,19 +415,9 @@
     grid-template-columns: repeat(auto-fit, 64px);
     gap: 1rem;
   }
-  .lure {
+  .store-lures {
     display: grid;
-    grid-template-columns: min-content 1fr max-content;
-    align-items: center;
-
-    &__name {
-      font-weight: 700;
-    }
-    &__price {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
+    gap: 1rem;
   }
   .lures {
     position: absolute;

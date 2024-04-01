@@ -23,8 +23,8 @@
     display: flex;
     justify-content: center;
     gap: 1rem;
-    padding: 1rem 1.75rem;
-    background: var(--slate-a3);
+    padding: 0.75rem 1rem;
+    background: hsl(0deg 0% 100% / 0.9);
     border-radius: 99999rem;
     width: max-content;
   }
