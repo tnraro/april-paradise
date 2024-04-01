@@ -4,6 +4,7 @@
   import type { FishingData, Money } from "$lib/data/sheets/model.js";
   import { repeat } from "$lib/shared/util/repeat";
   import { sleep } from "$lib/shared/util/sleep";
+    import AchievementComponent from "$lib/ui/achievement/achievement-component.svelte";
   import FishingCatchphrase from "$lib/ui/fishing/fishing-catchphrase.svelte";
   import FishingCaughtFish from "$lib/ui/fishing/fishing-caught-fish.svelte";
   import FishingCurrentLures from "$lib/ui/fishing/fishing-current-lures.svelte";
@@ -104,10 +105,12 @@
             if (!res.ok) {
               S.error("무언가 잘못되었습니다", res.error);
             } else {
-              const map = new Map(data.achievementData.map(x => [x.key, x]));
-              achievements = res.data.achievements.map(x => {
+              const xs = res.data.achievements.map(x => {
                 // biome-ignore lint/style/noNonNullAssertion: <explanation>
-                const achievement = map.get(x)!;
+                return achievementDataMap.get(x)!;
+              });
+              achievements.push(...xs);
+              newAchievements = xs.map(achievement => {
                 return ({
                   id: crypto.randomUUID(),
                   name: achievement.name,
@@ -118,14 +121,14 @@
               }
               );
               setTimeout(() => {
-                for (const a of achievements) {
+                for (const a of newAchievements) {
                   if (a.reward.type === "tokens") {
                     wallet.tokens += a.reward.quantity;
                   } else if (a.reward.type === "chips") {
                     wallet.chips += a.reward.quantity;
                   }
                 }
-                achievements = []; 
+                newAchievements = []; 
               }, 5000);
               bowl.addFish(fish.key);
             }
@@ -144,6 +147,8 @@
   let selectedLure = $state<keyof Lures>("까만 콩 지렁이");
   let errorMessage = $state<string>();
 
+  let achievementDataMap = $derived(new Map(data.achievementData.map(x => [x.key, x])));
+
   let bowl = useBowl(data.items);
 
   let fishData = $derived(new Map(data.fishData.map(x => [x.key, x])));
@@ -156,7 +161,7 @@
   let x = $state(0);
   let y = $state(0);
 
-  let achievements = $state<
+  let newAchievements = $state<
     {
       id: string;
       name: string;
@@ -165,6 +170,26 @@
       isHidden: boolean;
     }[]
   >([]);
+
+  let achievements = $state<{
+    key: string;
+    name: string;
+    condition: string;
+    reward: Money;
+    isHidden: boolean;
+  // biome-ignore lint/style/noNonNullAssertion: <explanation>
+  }[]>(data.achievements.map(x => achievementDataMap.get(x.key)!));
+
+  let achievementList = $derived.by(() => {
+    const map = new Map(achievements.map(x => [x.key, x]));
+    
+    return data.achievementData.map(x => {
+      return {
+        ...x,
+        isDone: map.has(x.key)
+      }
+    });
+  });
 </script>
 
 {#snippet fishDescription(fish: FishingData)}  
@@ -214,7 +239,11 @@
       </div>
     </div>
   {:else if index === TabIndex.Achievement}
-    <enhanced:img class="pixel" src="$img/fishing-medal.png?w=64" alt="" />
+    <div>
+      {#each achievementList as achievement}
+        <AchievementComponent {...achievement} />
+      {/each}
+    </div>
   {:else if index === TabIndex.Store}
     <div>
       <h1>상점</h1>
@@ -323,11 +352,11 @@
     </div>
   </Dialog>
 {/if}
-{#each achievements as achievement (achievement.id)}
+{#each newAchievements as achievement (achievement.id)}
   <Achievement
     {...achievement} 
     onclose={() => {
-      achievements = achievements.filter((x) => x.id !== achievement.id);
+      newAchievements = newAchievements.filter((x) => x.id !== achievement.id);
       if (achievement.reward.type === "tokens") {
         wallet.tokens += achievement.reward.quantity;
       } else if (achievement.reward.type === "chips") {

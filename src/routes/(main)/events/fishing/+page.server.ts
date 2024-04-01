@@ -5,6 +5,7 @@ import {
 } from "$lib/data/sheets/sheets.js";
 import { isScheduleActived } from "$lib/data/sheets/utils";
 import { redirect } from "@sveltejs/kit";
+import { achievements } from "./achievements.query.js";
 import { bowl } from "./bowl.query.js";
 import { lures } from "./lures.query.js";
 
@@ -28,6 +29,7 @@ export const load = async ({ locals }) => {
             "사우루숭 벌레 유충": lure2,
           },
           items: items.map((x) => ({ key: x.item, quantity: x.quantity })),
+          achievements: await achievements(tx),
         };
       })(),
       getLureData(),
@@ -37,6 +39,7 @@ export const load = async ({ locals }) => {
     return {
       lures: _.lures,
       items: _.items,
+      achievements: _.achievements,
       lureData,
       fishData,
       achievementData,
