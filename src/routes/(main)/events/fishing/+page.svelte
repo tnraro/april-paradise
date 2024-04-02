@@ -5,6 +5,7 @@
   import { repeat } from "$lib/shared/util/repeat";
   import { sleep } from "$lib/shared/util/sleep";
     import AchievementComponent from "$lib/ui/achievement/achievement-component.svelte";
+    import { useLureData } from "$lib/ui/data/data.svelte.js";
     import FishingApproach from "$lib/ui/fishing/fishing-approach.svelte";
   import FishingCatchphrase from "$lib/ui/fishing/fishing-catchphrase.svelte";
   import FishingCaughtFish from "$lib/ui/fishing/fishing-caught-fish.svelte";
@@ -18,6 +19,7 @@
     createFishing,
   } from "$lib/ui/fishing/fishing-state.svelte";
     import FishingStoreLure from "$lib/ui/fishing/fishing-store-lure.svelte";
+    import FishingStore from "$lib/ui/fishing/fishing-store.svelte";
     import Achievement from "$lib/ui/floating/achievement.svelte";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import InventoryItem from "$lib/ui/inventory/inventory-item.svelte";
@@ -145,6 +147,7 @@
   });
 
   let { data } = $props();
+  useLureData(data.lureData);
   let currentLures = useLures(data.lures);
   let selectedLure = $state<keyof Lures>("까만 콩 지렁이");
   let errorMessage = $state<string>();
@@ -250,29 +253,7 @@
   {:else if index === TabIndex.Store}
     <div>
       <h1>상점</h1>
-      <div class="store-lures">
-        {#each data.lureData as lure}
-          <FishingStoreLure {lure} onclick={async () => {
-            if (wallet.chips <= 0) {
-              S.error("칩이 부족합니다");
-            }
-            const res = await api().events.fishing.lure.post({
-              lure: lure.key as any
-            });
-            if (!res.ok) {
-              S.error(res.error.message);
-            } else {
-              invalidate("header");
-              if (lure.price.type === "chips") {
-                wallet.chips -= lure.price.quantity;
-              } else if (lure.price.type === "tokens") {
-                wallet.tokens -= lure.price.quantity;
-              }
-              currentLures[lure.key as keyof Lures] ++;
-            }
-          }} />
-        {/each}
-      </div>
+      <FishingStore onerror={S.error} />
     </div>
   {/if}
 {/snippet}

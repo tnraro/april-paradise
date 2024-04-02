@@ -4,22 +4,12 @@
 
   interface Props {
     lure: LureData;
-    onclick?: () => Promise<void>;
+    onclick?: () => void;
   }
   let { lure, onclick }: Props = $props();
-  let isLoading = $state(false);
 </script>
 
-<button
-  class="lure"
-  onclick={async () => {
-    if (isLoading) return;
-    isLoading = true;
-    await onclick?.();
-    isLoading = false;
-  }}
-  disabled={isLoading}
->
+<button class="lure" {onclick}>
   <Lure lure={lure.key} />
   <div class="lure__name">{lure.name}</div>
   <div>♻️</div>

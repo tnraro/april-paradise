@@ -14,28 +14,28 @@ export const POST = route(
   "post",
   async ({ locals }: RequestEvent, body) => {
     const lureData = await getLureData();
-    const lure = lureData.find((lure) => lure.key === body.lure);
-    if (lure == null) error(400, "무언가 잘못되었습니다");
+    const data = new Map(lureData.map((x) => [x.key, x]));
     try {
       await locals.client.transaction(async (tx) => {
-        switch (lure.price.type) {
-          case "chips": {
+        for (const key of lures) {
+          const quantity = body[key];
+          if (quantity == null) continue;
+          const lureData = data.get(key);
+          if (lureData == null) continue;
+          if (lureData.price.type === "chips") {
             await addChipsByCurrentUser(tx, {
-              chips: -lure.price.quantity,
+              chips: -lureData.price.quantity * quantity,
             });
-            break;
-          }
-          case "tokens": {
+          } else if (lureData.price.type === "tokens") {
             await addTokensByCurrentUser(tx, {
-              tokens: -lure.price.quantity,
+              tokens: -lureData.price.quantity * quantity,
             });
-            break;
           }
+          await addResource(tx, {
+            key,
+            value: quantity,
+          });
         }
-        await addResource(tx, {
-          key: body.lure,
-          value: 1,
-        });
       });
     } catch (e) {
       if (e instanceof ConstraintViolationError) {
@@ -52,7 +52,9 @@ export const POST = route(
   },
   {
     body: z.object({
-      lure: z.enum(lures),
+      "까만 콩 지렁이": z.number().optional(),
+      "토깽이 떡밥": z.number().optional(),
+      "사우루숭 벌레 유충": z.number().optional(),
     }),
   },
 );
