@@ -5,6 +5,7 @@
   import { repeat } from "$lib/shared/util/repeat";
   import { sleep } from "$lib/shared/util/sleep";
     import AchievementComponent from "$lib/ui/achievement/achievement-component.svelte";
+    import FishingApproach from "$lib/ui/fishing/fishing-approach.svelte";
   import FishingCatchphrase from "$lib/ui/fishing/fishing-catchphrase.svelte";
   import FishingCaughtFish from "$lib/ui/fishing/fishing-caught-fish.svelte";
   import FishingCurrentLures from "$lib/ui/fishing/fishing-current-lures.svelte";
@@ -20,8 +21,6 @@
     import Achievement from "$lib/ui/floating/achievement.svelte";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import InventoryItem from "$lib/ui/inventory/inventory-item.svelte";
-  import Item from "$lib/ui/item/item.svelte";
-  import Lure from "$lib/ui/item/lure.svelte";
   import Tab from "$lib/ui/tab/tab.svelte";
   import { useWallet } from "$routes/(main)/wallet.svelte.js";
   import { useBowl } from "./bowl.svelte.js";
@@ -46,10 +45,12 @@
     Achievement,
     Store,
   }
-  const pull = () => {
+  const pull = (e: Event) => {
+    e.preventDefault();
     isPulling = true;
   };
-  const release = () => {
+  const release = (e: Event) => {
+    e.preventDefault();
     isPulling = false;
   };
   const wallet = useWallet();
@@ -63,7 +64,7 @@
         lure: lure as "까만 콩 지렁이" | "토깽이 떡밥" | "사우루숭 벌레 유충",
       });
       if (!res.ok) throw res.error.message;
-      setTimeout(S.wait, 200);
+      setTimeout(S.wait, 0);
       return res.data.result;
     },
     onbite(fish) {
@@ -224,6 +225,7 @@
         onpointerdown={pull}
         onmouseup={release}
         onpointerup={release}
+        ontouchstart={e => e.preventDefault()}
       >당기기</button>
     {/if}
   {:else if index === TabIndex.Bowl}
@@ -277,30 +279,20 @@
 
 <main>
   <div class="imgs">
-    {#if S.state === FishingState.Idle}
-      파도가 넘실거리는 그림
-    {:else if S.state === FishingState.Casting}
-      낚시대를 휘두르는 그림
-    {:else if S.state === FishingState.Waiting}
-      기다리는 그림
-    {:else if S.state === FishingState.Biting}
-      물고깅이 미끼를 문 그림
+    {#if S.state === FishingState.Waiting}
+      입질을 기다리는 중...
+    {:else if S.state === FishingState.Approaching || S.state === FishingState.Biting}
+      {#if S.caughtFish}
+        <FishingApproach grade={S.caughtFish.grade ?? 0} onbite={S.bite} />
+      {/if}
     {:else if S.state === FishingState.Pulling}
-      물고깅을 당기는 그림
-
       {#if S.caughtFish}
         <FishingFighting fish={S.caughtFish} {hpRatio} {enRatio} {powerRatio} />
       {/if}
     {:else if S.state === FishingState.Caught}
-      물고깅을 잡은 그림
-
       {#if S.caughtFish}
         <FishingCaughtFish fish={S.caughtFish} />
       {/if}
-    {:else if S.state === FishingState.Missing}
-      물고깅을 놓친 그림
-    {:else if S.state === FishingState.Snapped}
-      낚시줄이 끊어진 그림
     {/if}
   </div>
   <div class="tabs">
@@ -412,8 +404,9 @@
   }
   .inventory {
     display: grid;
-    grid-template-columns: repeat(auto-fit, 64px);
+    grid-template-columns: repeat(auto-fill, 64px);
     gap: 1rem;
+    justify-content: center;
   }
   .store-lures {
     display: grid;

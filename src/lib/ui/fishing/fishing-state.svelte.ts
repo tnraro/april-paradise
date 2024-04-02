@@ -7,6 +7,7 @@ export const enum FishingState {
   Idle,
   Casting,
   Waiting,
+  Approaching,
   Biting,
   Pulling,
   Caught,
@@ -27,6 +28,7 @@ export type CaughtFish = Pick<
 > & { next: string };
 interface FishingOptions {
   oncast: (lure: keyof Lures) => Promise<CaughtFish>;
+  onapproaching?: (fish: CaughtFish) => void;
   onbite?: (fish: CaughtFish) => void;
   onpull?: (fish: CaughtFish) => void;
   oncatch?: (fish: CaughtFish) => void;
@@ -57,11 +59,17 @@ export const createFishing = (options: FishingOptions) => {
   const wait = async () => {
     if (state !== FishingState.Casting) return;
     state = FishingState.Waiting;
-    await sleep(1000);
-    bite();
+    await sleep(1000 + Math.random() * 3000);
+    approaching();
+  };
+  const approaching = () => {
+    if (state !== FishingState.Waiting) return;
+    if (caughtFish == null) throw error("caught fish is null", "approaching()");
+    state = FishingState.Approaching;
+    options.onapproaching?.(caughtFish);
   };
   const bite = () => {
-    if (state !== FishingState.Waiting) return;
+    if (state !== FishingState.Approaching) return;
     if (caughtFish == null) throw error("caught fish is null", "bite()");
     state = FishingState.Biting;
     options.onbite?.(caughtFish);
@@ -106,6 +114,7 @@ export const createFishing = (options: FishingOptions) => {
     idle,
     cast,
     wait,
+    bite,
     pull,
     miss,
     snap,
