@@ -15,15 +15,17 @@
   $effect(() => {
     const k = untrack(() => q);
     if (quantity === k) return;
-    const length = Math.abs(quantity - k);
+    const length = quantity - k;
     tick().then(async () => {
       t = quantity;
       const t2 = quantity;
-      const dir = Math.sign(quantity - k);
-      for await (const _ of repeat(length, 50)) {
+      const dir = Math.floor(length / 8);
+      q += length % 8;
+      for await (const _ of repeat(8, 50)) {
         if (t !== t2) break;
         q += dir;
       }
+      q = quantity;
     });
   });
 </script>
