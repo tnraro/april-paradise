@@ -15,7 +15,11 @@
 <div class="achievement">
   <div>
     <h1>
-      {name}
+      {#if !isHidden || isDone}
+        {name}
+      {:else}
+        ???
+      {/if}
     </h1>
     <p>
       {#if isHidden}

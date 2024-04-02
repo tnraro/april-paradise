@@ -12,7 +12,9 @@
 <button class="lure" {onclick}>
   <Lure lure={lure.key} />
   <div class="lure__name">{lure.name}</div>
-  <div>♻️</div>
+  <div>
+    <enhanced:img src="$img/exchange.png?w=24" />
+  </div>
   <div class="lure__price">
     <enhanced:img src="$img/chip.png?w=24" />
     ×{lure.price.quantity}

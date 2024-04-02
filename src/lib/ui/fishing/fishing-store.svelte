@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { invalidate } from "$app/navigation";
   import { api } from "$lib/api/api.gen";
   import type { LureData } from "$lib/data/sheets/model";
   import { lures } from "$lib/shared/config/lures";
@@ -91,5 +90,6 @@
   .store {
     display: grid;
     gap: 1rem;
+    margin-top: 1rem;
   }
 </style>

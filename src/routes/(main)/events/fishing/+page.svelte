@@ -252,7 +252,7 @@
     </div>
   {:else if index === TabIndex.Store}
     <div>
-      <h1>상점</h1>
+      <h1>미끼 상점</h1>
       <FishingStore onerror={S.error} />
     </div>
   {/if}
