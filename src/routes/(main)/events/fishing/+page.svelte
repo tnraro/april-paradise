@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { invalidate } from "$app/navigation";
   import { api } from "$lib/api/api.gen";
   import type { FishingData, Money } from "$lib/data/sheets/model.js";
   import { repeat } from "$lib/shared/util/repeat";
   import { sleep } from "$lib/shared/util/sleep";
-    import AchievementComponent from "$lib/ui/achievement/achievement-component.svelte";
-    import { useLureData } from "$lib/ui/data/data.svelte.js";
-    import FishingApproach from "$lib/ui/fishing/fishing-approach.svelte";
+  import AchievementComponent from "$lib/ui/achievement/achievement-component.svelte";
+  import { useLureData } from "$lib/ui/data/data.svelte.js";
+  import FishingApproach from "$lib/ui/fishing/fishing-approach.svelte";
   import FishingCatchphrase from "$lib/ui/fishing/fishing-catchphrase.svelte";
   import FishingCaughtFish from "$lib/ui/fishing/fishing-caught-fish.svelte";
   import FishingCurrentLures from "$lib/ui/fishing/fishing-current-lures.svelte";
@@ -18,9 +17,8 @@
     FishingState,
     createFishing,
   } from "$lib/ui/fishing/fishing-state.svelte";
-    import FishingStoreLure from "$lib/ui/fishing/fishing-store-lure.svelte";
-    import FishingStore from "$lib/ui/fishing/fishing-store.svelte";
-    import Achievement from "$lib/ui/floating/achievement.svelte";
+  import FishingStore from "$lib/ui/fishing/fishing-store.svelte";
+  import Achievement from "$lib/ui/floating/achievement.svelte";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import InventoryItem from "$lib/ui/inventory/inventory-item.svelte";
   import Tab from "$lib/ui/tab/tab.svelte";
@@ -271,12 +269,8 @@
         />
       {/if}
     {:else if S.state === FishingState.Pulling}
-      {#if S.caughtFish}
+      {#if S.caughtFish} 
         <FishingFighting fish={S.caughtFish} {hpRatio} {enRatio} {powerRatio} />
-      {/if}
-    {:else if S.state === FishingState.Caught}
-      {#if S.caughtFish}
-        <FishingCaughtFish fish={S.caughtFish} />
       {/if}
     {/if}
   </div>
@@ -345,6 +339,8 @@
     height: 100%;
     grid-template-rows: 50% 50%;
     justify-content: center;
+    max-width: 23rem;
+    margin: 0 auto;
   }
   .imgs {
     display: grid;

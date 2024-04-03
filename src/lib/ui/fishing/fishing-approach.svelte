@@ -41,7 +41,11 @@
   });
 </script>
 
-<div class="_" class:_--is-bite={s === FishingState.Biting} in:scale={{ easing: backOut }}>
+<div
+  class="_"
+  class:_--is-bite={s === FishingState.Biting}
+  in:scale={{ easing: backOut }}
+>
   <Background
     {s}
     t={time}

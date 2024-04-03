@@ -53,7 +53,9 @@
 <g
   class="move"
   onanimationend={onbite}
-  transform="translate({x} {y}) rotate({_r})"
+  style:--x="{x}px"
+  style:--y="{y}px"
+  style:--r="{_r}deg"
 >
   <image
     href={getFishImage(grade)}
@@ -69,6 +71,7 @@
     offset-path: path("M50 40C28 40 25 30 5 20");
     offset-rotate: reverse;
     animation: move 1s ease-out forwards;
+    transform: translate(var(--x), var(--y)) rotate(var(--r));
   }
   @keyframes -global-move {
     0% {
