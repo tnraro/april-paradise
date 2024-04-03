@@ -1,6 +1,6 @@
 <script>
   import { Control, Field, FieldErrors, Label } from "formsnap";
-  import SuperDebug, { superForm } from "sveltekit-superforms";
+  import { superForm } from "sveltekit-superforms";
   import { zodClient } from "sveltekit-superforms/adapters";
   import { schema } from "./schema";
 
@@ -60,7 +60,6 @@
   <button class="blue emphasis">참가하기</button>
   <a href="/auth/sign-in">로그인</a>
 </form>
-<SuperDebug data={$formData} />
 
 <style lang="scss">
   ._ {
