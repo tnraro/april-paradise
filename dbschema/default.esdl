@@ -44,7 +44,7 @@ module default {
       insert Log {
         table := "User",
         action := "update",
-        patient := __new__.key,
+        patient := "chips",
         change := <str>__old__.chips ++ '->' ++ <str>__new__.chips
       }
     );
@@ -54,7 +54,7 @@ module default {
       insert Log {
         table := "User",
         action := "update",
-        patient := __new__.key,
+        patient := "tokens",
         change := <str>__old__.tokens ++ '->' ++ <str>__new__.tokens
       }
     );
@@ -70,7 +70,6 @@ module default {
     }
     required key: str {
       annotation title := "업적 키";
-      constraint exclusive;
     }
 
     required createdAt: datetime {
@@ -84,6 +83,8 @@ module default {
         patient := __new__.key,
       }
     );
+    
+    constraint exclusive on ((.user, .key));
   }
 
   type InviteCode {
