@@ -6,7 +6,7 @@
   import fishGrade4 from "$img/fishing/fish-grade-4-w128.png?enhanced&w=64";
   import { FishingGrade } from "$lib/data/sheets/model";
 
-  const getFishImage = (grade: FishingGrade) => {
+  const getFishImage = (grade: FishingGrade = FishingGrade.Common) => {
     const imp = ((grade) => {
       switch (grade) {
         case FishingGrade.Common:

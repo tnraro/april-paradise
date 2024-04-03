@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { State } from "./types";
+  import { FishingState } from "../fishing-state.svelte";
 
   interface Props {
     x: number;
     y: number;
-    state: State;
+    s: FishingState;
   }
-  let { x, y, state }: Props = $props();
+  let { x, y, s }: Props = $props();
 </script>
 
-{#if state === State.Waiting}
+{#if s === FishingState.Waiting || s === FishingState.Approaching}
   <path class="line" d="M-60-30 Q {x - 10} 12 {x} {y}" />
-{:else if state === State.Biting}
+{:else if s === FishingState.Biting}
   <path class="line" d="M-60-30 L {x} {y}" />
 {/if}
 

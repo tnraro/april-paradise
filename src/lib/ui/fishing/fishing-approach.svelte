@@ -4,12 +4,14 @@
   import { backOut } from "svelte/easing";
   import { scale } from "svelte/transition";
   import Background from "./fishing-approach/background.svelte";
+  import { FishingState } from "./fishing-state.svelte";
 
   interface Props {
+    s: FishingState;
     grade: FishingGrade;
     onbite?: () => void;
   }
-  let { grade, onbite }: Props = $props();
+  let { s, grade, onbite }: Props = $props();
 
   let x = $state(0);
   let y = $state(0);
@@ -37,16 +39,15 @@
   onDestroy(() => {
     isRunning = false;
   });
-  let isBite = $state(false);
 </script>
 
-<div class="_" class:_--is-bite={isBite} in:scale={{ easing: backOut }}>
+<div class="_" class:_--is-bite={s === FishingState.Biting} in:scale={{ easing: backOut }}>
   <Background
+    {s}
     t={time}
     {grade}
     y={0}
     onbite={() => {
-      isBite = true;
       onbite?.();
     }}
   />

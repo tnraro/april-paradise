@@ -23,7 +23,7 @@
   in:fly={{ y: -100 }}
   onclick={onclose}
 >
-  <AchievementComponent {name} {condition} {isHidden} {reward} />
+  <AchievementComponent {name} {condition} {isHidden} {reward} isDone={true} />
 </div>
 
 <style lang="scss">

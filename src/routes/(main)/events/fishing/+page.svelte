@@ -260,11 +260,15 @@
 
 <main>
   <div class="imgs">
-    {#if S.state === FishingState.Waiting}
-      입질을 기다리는 중...
-    {:else if S.state === FishingState.Approaching || S.state === FishingState.Biting}
+    {#if S.state === FishingState.Waiting ||
+         S.state === FishingState.Approaching ||
+         S.state === FishingState.Biting}
       {#if S.caughtFish}
-        <FishingApproach grade={S.caughtFish.grade ?? 0} onbite={S.bite} />
+        <FishingApproach
+          s={S.state}
+          grade={S.caughtFish.grade ?? 0}
+          onbite={S.bite}
+        />
       {/if}
     {:else if S.state === FishingState.Pulling}
       {#if S.caughtFish}
