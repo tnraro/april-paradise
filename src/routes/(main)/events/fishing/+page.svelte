@@ -244,13 +244,14 @@
     </div>
   {:else if index === TabIndex.Achievement}
     <div>
+      <h1 class="title">업적</h1>
       {#each achievementList as achievement}
         <AchievementComponent {...achievement} />
       {/each}
     </div>
   {:else if index === TabIndex.Store}
     <div>
-      <h1>미끼 상점</h1>
+      <h1 class="title">미끼 상점</h1>
       <FishingStore onerror={S.error} />
     </div>
   {/if}
@@ -348,6 +349,9 @@
     background: url("$img/fishing/background.png");
     background-position: center;
     background-size: cover;
+  }
+  .title {
+    margin-bottom: 1rem;
   }
   .tabs {
     display: grid;
