@@ -11,7 +11,6 @@
   }
   let { s, grade, onbite }: Props = $props();
 
-  let x = $state(0);
   let y = $state(0);
   let r = $state(0);
 
@@ -66,7 +65,7 @@
     border-radius: 99999rem;
     overflow: hidden;
     &--is-biting {
-      animation: endurance 3s ease-out forwards;
+      animation: endurance 3s ease-out forwards, bite 0.4s linear;
     }
     animation: scale 400ms cubic-bezier(0.18, 0.89, 0.32, 1.28);
   }
@@ -89,6 +88,26 @@
   @keyframes -global-scale {
     0% {
       transform: scale(0);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes -global-bite {
+    0% {
+      transform: scale(1);
+    }
+    20% {
+      transform: scale(1.1);
+    }
+    40% {
+      transform: scale(0.97);
+    }
+    60% {
+      transform: scale(1.01);
+    }
+    80% {
+      transform: scale(0.99);
     }
     100% {
       transform: scale(1);

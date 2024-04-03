@@ -59,7 +59,7 @@ export const createFishing = (options: FishingOptions) => {
   const wait = async () => {
     if (state !== FishingState.Casting) return;
     state = FishingState.Waiting;
-    await sleep(1000 + Math.random() * 3000);
+    await sleep(5000 + Math.random() * 3000);
     approaching();
   };
   const approaching = () => {
