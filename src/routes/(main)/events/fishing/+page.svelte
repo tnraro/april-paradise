@@ -1,6 +1,7 @@
 <script lang="ts">
   import { api } from "$lib/api/api.gen";
-  import type { FishingData, Money } from "$lib/data/sheets/model.js";
+  import { type FishingData, FishingGrade, type Money } from "$lib/data/sheets/model.js";
+    import { groupBy } from "$lib/shared/util/group-by.js";
   import { repeat } from "$lib/shared/util/repeat";
   import { sleep } from "$lib/shared/util/sleep";
   import AchievementComponent from "$lib/ui/achievement/achievement-component.svelte";
@@ -156,6 +157,12 @@
 
   let fishData = $derived(new Map(data.fishData.map(x => [x.key, x])));
 
+  let groupedFishes = $derived.by(() => {
+    const groupedFishes = groupBy(bowl.fishes, (x) => fishData.get(x.key)?.grade ?? 0)
+    return Array.from(groupedFishes, ([key, items]) => ({ grade: key, items }))
+      .sort((a, b) => b.grade - a.grade);
+  });
+
   let isPulling = $state(false);
   let powerRatio = $state(0);
   let hpRatio = $state(0);
@@ -231,16 +238,37 @@
     {/if}
   {:else if index === TabIndex.Bowl}
     <div>
-      <div class="inventory">
-        {#each bowl.fishes as item}
-          {@const fish = fishData.get(item.key)}
-          <InventoryItem {...item}>
-            {#if fish}
-              {@render fishDescription(fish)}
-            {/if}
-          </InventoryItem>
-        {/each}
-      </div>
+      {#each groupedFishes as { grade, items } (grade)}
+        <h1 class="title"
+          class:fish--grade-0={grade === FishingGrade.Common}
+          class:fish--grade-1={grade === FishingGrade.Uncommon}
+          class:fish--grade-2={grade === FishingGrade.Heroic}
+          class:fish--grade-3={grade === FishingGrade.Legendary}
+          class:fish--grade-4={grade === FishingGrade.Mythic}
+        >
+          {#if grade === FishingGrade.Common}
+            일반 물고기
+          {:else if grade === FishingGrade.Uncommon}
+            고급 물고기
+          {:else if grade === FishingGrade.Heroic}
+            영웅 물고기
+          {:else if grade === FishingGrade.Legendary}
+            전설 물고기
+          {:else if grade === FishingGrade.Mythic}
+            신화 물고기
+          {/if}
+        </h1>
+        <div class="inventory">
+          {#each items as item}
+            {@const fish = fishData.get(item.key)}
+            <InventoryItem {...item}>
+              {#if fish}
+                {@render fishDescription(fish)}
+              {/if}
+            </InventoryItem>
+          {/each}
+        </div>
+      {/each}
     </div>
   {:else if index === TabIndex.Achievement}
     <div>
@@ -392,6 +420,7 @@
     grid-template-columns: repeat(auto-fill, 64px);
     gap: 1rem;
     justify-content: center;
+    margin-bottom: 4rem;
   }
   .store-lures {
     display: grid;
