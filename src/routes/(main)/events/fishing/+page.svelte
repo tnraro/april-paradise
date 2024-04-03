@@ -158,8 +158,21 @@
   let fishData = $derived(new Map(data.fishData.map(x => [x.key, x])));
 
   let groupedFishes = $derived.by(() => {
-    const groupedFishes = groupBy(bowl.fishes, (x) => fishData.get(x.key)?.grade ?? 0)
-    return Array.from(groupedFishes, ([key, items]) => ({ grade: key, items }))
+    const map = new Map(bowl.fishes.map(x => [x.key, x]));
+    const fishData = data.fishData.filter(x => !x.key.startsWith("losing-")).reduce((a, x) => {
+      if (a.find(y => y.key === x.key) == null){
+        a.push(x);
+      }
+      return a;
+    }, [] as FishingData[]);
+    const groupedFishes = groupBy(fishData, (x) => x.grade);
+    return Array.from(groupedFishes, ([key, items]) => ({
+      grade: key,
+      items: items.map(item => ({
+        ...item,
+        quantity: map.get(item.key)?.quantity ?? 0
+      }))
+    }))
       .sort((a, b) => b.grade - a.grade);
   });
 
