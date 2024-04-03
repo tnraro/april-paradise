@@ -19,9 +19,10 @@
     tick().then(async () => {
       t = quantity;
       const t2 = quantity;
-      const dir = Math.floor(length / 8);
-      q += length % 8;
-      for await (const _ of repeat(8, 50)) {
+      const it = Math.min(8, Math.abs(length));
+      const dir = Math.trunc(length / it);
+      q += length % it;
+      for await (const _ of repeat(it, 50)) {
         if (t !== t2) break;
         q += dir;
       }
