@@ -70,7 +70,6 @@ module default {
     }
     required key: str {
       annotation title := "업적 키";
-      constraint exclusive;
     }
 
     required createdAt: datetime {
@@ -84,6 +83,8 @@ module default {
         patient := __new__.key,
       }
     );
+    
+    constraint exclusive on ((.user, .key));
   }
 
   type InviteCode {
