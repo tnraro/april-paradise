@@ -61,11 +61,6 @@ module default {
 
     multi achievements := .<user[is Achievement];
     multi inventory := .<owner[is Item];
-
-    multi tickets := .<owner[is TicketItem];
-    multi fishes := .<owner[is FishItem];
-    multi garbages := .<owner[is GarbageItem];
-    multi ingredients := .<owner[is IngredientItem];
   }
 
   type Achievement {
@@ -129,30 +124,47 @@ module default {
     );
   }
 
-  abstract type Item {
+  type Item {
     required owner: User {
       default := global currentUser;
       on target delete delete source;
     }
-    required key: str {
-      annotation title := "아이템 키";
-      constraint exclusive;
-    }
+    required key: str;
+    required category: str;
     required createdAt: datetime {
       default := datetime_of_transaction();
     }
     trigger log_insert_item after insert for each do (
       insert Log {
-        table := "Item",
+        table := "Item::" ++ __new__.category,
         action := "insert",
         patient := __new__.key,
       }
     );
   }
-  type TicketItem extending Item {}
-  type FishItem extending Item {}
-  type GarbageItem extending Item {}
-  type IngredientItem extending Item {}
+  type Resource {
+    required owner: User {
+      default := global currentUser;
+      on target delete delete source;
+    }
+    required key: str;
+    required value: int64 {
+      constraint min_value(0);
+      default := 0;
+    }
+    required createdAt: datetime {
+      default := datetime_of_transaction();
+    }
+    trigger log_update_item after update for each do (
+      insert Log {
+        table := "Resource",
+        action := "update",
+        patient := __old__.key,
+        change := <str>__old__.value ++ "->" ++ <str>__new__.value,
+      }
+    );
+    constraint exclusive on ((.owner, .key));
+  }
 
   type Log {
     required table: str;

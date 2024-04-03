@@ -1,9 +1,14 @@
 import { createCipheriv, createDecipheriv, scryptSync } from "node:crypto";
 import { env } from "$env/dynamic/private";
 import { route } from "$lib/api/server";
+import { onCaughtFish } from "$lib/data/achievement/achievement";
+import { addAchievements } from "$lib/data/achievement/add-achievements.query";
 import { addFishItem } from "$lib/data/item/add-fish-item.query";
 import { addGarbageItem } from "$lib/data/item/add-garbage-item.query";
-import { getFishingData } from "$lib/data/sheets/sheets";
+import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
+import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
+import { addResource } from "$lib/data/resources/add-resource.query";
+import { getAchievementData, getFishingData } from "$lib/data/sheets/sheets";
 import { pick } from "$lib/shared/random/pick";
 import { z } from "zod";
 import type { RequestEvent } from "./$types";
@@ -26,6 +31,10 @@ export const POST = route(
       const next =
         cipher.update(JSON.stringify({ id, key }), "utf8", "base64url") +
         cipher.final("base64url");
+      await addResource(tx, {
+        key: body.lure,
+        value: -1,
+      });
 
       return {
         result: {
@@ -52,16 +61,44 @@ export const POST = route(
 export type PUT = typeof PUT;
 export const PUT = route(
   "put",
-  async (e: RequestEvent, body) => {
+  async ({ locals }: RequestEvent, body) => {
     const decipher = createDecipheriv("aes-128-gcm", KEY, env.IV);
     const fish: { key: string } = JSON.parse(
       decipher.update(body.next, "base64url", "utf8"),
     );
-    if (fish.key.startsWith("losing-")) {
-      addGarbageItem(e.locals.client, { key: fish.key });
-    } else {
-      addFishItem(e.locals.client, { key: fish.key });
-    }
+    return await locals.client.transaction(async (tx) => {
+      if (fish.key.startsWith("losing-")) {
+        await addGarbageItem(locals.client, { key: fish.key });
+      } else {
+        await addFishItem(locals.client, { key: fish.key });
+      }
+      const achievements = await onCaughtFish(tx, fish.key);
+      await addAchievements(tx, { achievements });
+      const map = new Map((await getAchievementData()).map((x) => [x.key, x]));
+      const money = achievements.reduce(
+        (sum, x) => {
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
+          const _x = map.get(x)!;
+          if (_x.reward.type === "chips") {
+            sum.chips += _x.reward.quantity;
+          }
+          if (_x.reward.type === "tokens") {
+            sum.tokens += _x.reward.quantity;
+          }
+          return sum;
+        },
+        { tokens: 0, chips: 0 },
+      );
+      if (money.tokens > 0) {
+        await addTokensByCurrentUser(tx, { tokens: money.tokens });
+      }
+      if (money.chips > 0) {
+        await addChipsByCurrentUser(tx, { chips: money.chips });
+      }
+      return {
+        achievements,
+      };
+    });
   },
   {
     body: z.object({

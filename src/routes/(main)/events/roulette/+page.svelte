@@ -9,11 +9,9 @@
 <main>
   <div class="machine">
     <Roulette
-      bind:tokens={data.user!.tokens}
-      bind:chips={data.user!.chips}
       table={data.rouletteData}
       onreward={() => {
-        invalidate(`header:${data.user!.key}`);
+        invalidate("header");
       }}
       onroll={async () => {
         const res = await api().events.roulette.post(undefined);
@@ -28,7 +26,13 @@
   main {
     display: grid;
     place-items: center;
-    background: linear-gradient(0deg, white, var(--sand-6) 30%, var(--sand-8) 35%, white);
+    background: linear-gradient(
+      0deg,
+      white,
+      var(--sand-6) 30%,
+      var(--sand-8) 35%,
+      white
+    );
     height: 100%;
   }
   .machine {

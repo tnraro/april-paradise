@@ -5,7 +5,7 @@ export const load = async ({ locals, depends }) => {
   const session = locals.auth.session;
   const user = await layout(session.client);
   if (user) {
-    depends(`header:${user.key}`);
+    depends("header");
 
     if (user.isAdmin) {
       return {
