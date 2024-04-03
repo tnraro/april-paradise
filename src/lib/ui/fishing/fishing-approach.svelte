@@ -1,8 +1,6 @@
 <script lang="ts">
   import type { FishingGrade } from "$lib/data/sheets/model";
   import { onDestroy, onMount } from "svelte";
-  import { backOut } from "svelte/easing";
-  import { scale } from "svelte/transition";
   import Background from "./fishing-approach/background.svelte";
   import { FishingState } from "./fishing-state.svelte";
 
@@ -41,32 +39,44 @@
   });
 </script>
 
-<div
-  class="_"
-  class:_--is-bite={s === FishingState.Biting}
-  in:scale={{ easing: backOut }}
->
-  <Background
-    {s}
-    t={time}
-    {grade}
-    y={0}
-    onbite={() => {
-      onbite?.();
-    }}
-  />
-</div>
+{#if s === FishingState.Waiting || s === FishingState.Approaching || s === FishingState.Biting}
+  <div
+    class="_"
+    class:_--is-waiting={s === FishingState.Waiting}
+    class:_--is-approaching={s === FishingState.Approaching}
+    class:_--is-biting={s === FishingState.Biting}
+  >
+    <Background
+      {s}
+      t={time}
+      {grade}
+      y={0}
+      onbite={() => {
+        onbite?.();
+      }}
+    />
+  </div>
+{/if}
 
 <style lang="scss">
   ._ {
-    border: 8px solid var(--slate-6);
+    border: 0.5rem solid var(--slate-6);
     width: 12rem;
     height: 12rem;
     border-radius: 99999rem;
     overflow: hidden;
-    &--is-bite {
-      animation: endurance 3s linear forwards;
+    &--is-biting {
+      animation: endurance 3s ease-out forwards;
     }
+    animation: scale 400ms cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  }
+  .__ {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 99999rem;
+    z-index: 1;
   }
   @keyframes -global-endurance {
     0% {
@@ -74,6 +84,14 @@
     }
     100% {
       border-color: var(--red-6);
+    }
+  }
+  @keyframes -global-scale {
+    0% {
+      transform: scale(0);
+    }
+    100% {
+      transform: scale(1);
     }
   }
 </style>
