@@ -1,7 +1,7 @@
 <script lang="ts">
   import { api } from "$lib/api/api.gen";
   import { type FishingData, FishingGrade, type Money } from "$lib/data/sheets/model.js";
-    import { groupBy } from "$lib/shared/util/group-by.js";
+  import { groupBy } from "$lib/shared/util/group-by.js";
   import { repeat } from "$lib/shared/util/repeat";
   import { sleep } from "$lib/shared/util/sleep";
   import AchievementComponent from "$lib/ui/achievement/achievement-component.svelte";

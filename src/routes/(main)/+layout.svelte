@@ -4,6 +4,7 @@
 
   let { children, data } = $props();
   const wallet = useWallet(data.user);
+  $effect(() => wallet.update(data.user));
 </script>
 
 <div class="_">

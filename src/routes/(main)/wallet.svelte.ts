@@ -25,5 +25,9 @@ export const useWallet = (initial?: Wallet | null) => {
     set tokens(value: number) {
       wallet.tokens = value;
     },
+    update(state?: Wallet | null) {
+      if (state == null) return;
+      wallet = state;
+    },
   };
 };

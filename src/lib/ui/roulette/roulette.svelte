@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { invalidate } from "$app/navigation";
   import type { Item, Money, RouletteData } from "$lib/data/sheets/model";
-  import { repeat } from "$lib/shared/util/repeat";
   import { useWallet } from "$routes/(main)/wallet.svelte";
   import { RouletteState } from "./roulette";
   import Arrow from "./roulette-arrow.svelte";
@@ -62,11 +62,7 @@
       t = setInterval(() => {
         bulbs = bulbs.map((bulb) => !bulb);
       }, 100) as unknown as number;
-      if (result.result.type === "chips") {
-        wallet.chips += result.result.quantity;
-      } else if (result.result.type === "tokens") {
-        wallet.tokens += result.result.quantity;
-      }
+      invalidate("header");
       _state = RouletteState.DroppingReward;
     }
   };
