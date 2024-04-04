@@ -12,12 +12,13 @@
     "lint": "pnpm biome lint . --apply",
     "format": "pnpm biome format . --write",
     "generate:edgeql": "pnpm exec generate queries",
-    "generate:api": "bun run scripts/api-gen/index.ts"
+    "generate:api": "bun run scripts/api-gen/index.ts",
+    "postinstall": "pnpm run generate:edgeql && pnpm run generate:api"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.6.3",
     "@edgedb/generate": "^0.4.1",
-    "@sveltejs/adapter-auto": "^3.2.0",
+    "@sveltejs/adapter-cloudflare": "^4.2.0",
     "@sveltejs/enhanced-img": "^0.1.9",
     "@sveltejs/kit": "^2.5.4",
     "@sveltejs/vite-plugin-svelte": "3.0.2",
