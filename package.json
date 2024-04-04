@@ -34,9 +34,9 @@
   "type": "module",
   "dependencies": {
     "@edgedb/auth-sveltekit": "^0.1.1",
-    "@googleapis/sheets": "^5.0.5",
     "@radix-ui/colors": "^3.0.0",
     "bits-ui": "^0.21.1",
+    "devalue": "^4.3.2",
     "edgedb": "^1.4.1",
     "formsnap": "^1.0.0",
     "sveltekit-superforms": "^2.11.0",

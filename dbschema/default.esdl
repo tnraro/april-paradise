@@ -87,6 +87,13 @@ module default {
     constraint exclusive on ((.user, .key));
   }
 
+  type StaticData {
+    required sheet: str {
+      constraint exclusive;
+    }
+    required data: str;
+  }
+
   type InviteCode {
     required code: uuid {
       default := uuid_generate_v4();

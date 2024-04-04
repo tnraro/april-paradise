@@ -1,4 +1,9 @@
-import { FishingGrade, type Ingredients, type Item, type Money } from "./model";
+import {
+  FishingGrade,
+  type Ingredients,
+  type Item,
+  type Money,
+} from "../../../src/lib/data/sheets/model";
 
 export type Result<T, F> = { ok: true; data: T } | { ok: false; error: F };
 export const parse = (text: string | null) => new Parser(text);
