@@ -3,5 +3,5 @@ import { createClient } from "edgedb";
 
 export const client = createClient({
   tlsSecurity: "insecure",
-  dsn: env.DSN,
+  dsn: env.EDGEDB_DSN,
 });
