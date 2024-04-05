@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite dev",
-    "build": "pnpm run --parallel /^generate:/ && vite build",
+    "build": "pnpm run --parallel /^gen:/ && vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -12,7 +12,7 @@
     "lint": "pnpm biome lint . --apply",
     "format": "pnpm biome format . --write",
     "generate:edgeql": "pnpm exec generate queries",
-    "generate:api": "bun run scripts/api-gen/index.ts"
+    "gen:api": "bun run scripts/api-gen/index.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.6.3",

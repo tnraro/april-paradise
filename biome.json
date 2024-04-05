@@ -1,6 +1,8 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.6.1/schema.json",
-  "files": {},
+  "files": {
+    "ignore": ["*.query.ts"]
+  },
   "vcs": {
     "enabled": true,
     "clientKind": "git",
