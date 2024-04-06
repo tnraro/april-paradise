@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
+  '@edgedb/generate@0.4.1':
+    hash: ijwmydid52rcezbewjzs4zj7l4
+    path: patches/@edgedb__generate@0.4.1.patch
   '@sveltejs/enhanced-img@0.2.0':
     hash: aofk6lxjefb7bopjvp2utobpsy
     path: patches/@sveltejs__enhanced-img@0.2.0.patch
@@ -41,7 +44,7 @@ devDependencies:
     version: 1.6.4
   '@edgedb/generate':
     specifier: ^0.4.1
-    version: 0.4.1(edgedb@1.4.1)
+    version: 0.4.1(patch_hash=ijwmydid52rcezbewjzs4zj7l4)(edgedb@1.4.1)
   '@sveltejs/adapter-auto':
     specifier: ^3.2.0
     version: 3.2.0(@sveltejs/kit@2.5.5)
@@ -197,7 +200,7 @@ packages:
       edgedb: 1.4.1
     dev: false
 
-  /@edgedb/generate@0.4.1(edgedb@1.4.1):
+  /@edgedb/generate@0.4.1(patch_hash=ijwmydid52rcezbewjzs4zj7l4)(edgedb@1.4.1):
     resolution: {integrity: sha512-5u+NSv4nE2CNUp60xVlY21nX/mAib9nsXmf/9idnGQad2yN+DhDQrlS/OWuRAC1cLAwFwg9MyQYu2KkyGQrRpA==}
     engines: {node: '>= 12.0.0'}
     hasBin: true
@@ -206,6 +209,7 @@ packages:
     dependencies:
       edgedb: 1.4.1
     dev: true
+    patched: true
 
   /@emnapi/runtime@1.1.1:
     resolution: {integrity: sha512-3bfqkzuR1KLx57nZfjr2NLnFOobvyS0aTszaEGCGqmYMVDRaGvgIZbjGSV/MHSSmLgQ/b9JFHQ5xm5WRZYd+XQ==}
