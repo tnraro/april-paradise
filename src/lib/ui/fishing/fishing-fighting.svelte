@@ -1,8 +1,8 @@
 <script lang="ts">
-  import FishingFishPortrait from "./fishing-fish-portrait.svelte";
+  import FishingFishGradePortrait from "./fishing-fish-grade-portrait.svelte";
   import type { CaughtFish } from "./fishing-state.svelte";
   interface Props {
-    fish: Pick<CaughtFish, "key">;
+    fish: Pick<CaughtFish, "grade">;
     hpRatio: number;
     enRatio: number;
     powerRatio: number;
@@ -12,7 +12,7 @@
 
 <div class="_">
   <div class="_fish">
-    <FishingFishPortrait {fish} silhouette={true} />
+    <FishingFishGradePortrait {fish} />
     <div class="range">
       <div
         class="range__bar range__bar--hp"

@@ -224,7 +224,7 @@
 {/snippet}
 {#snippet tab(index: number)}
   {#if index === TabIndex.Game}
-    께임
+    <enhanced:img class="pixel" src="$img/rod.png?w=64" alt="" />
   {:else if index === TabIndex.Bowl}
     <enhanced:img class="pixel" src="$img/fishing-bowl.png?w=64" alt="" />
   {:else if index === TabIndex.Achievement}
