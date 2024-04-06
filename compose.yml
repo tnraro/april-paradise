@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  edgedb:
+    image: docker.io/edgedb/edgedb
+    env_file: .env
+    volumes:
+      - ./dbschema:/dbschema
+      - ./.svelte-kit/edgedb:/var/lib/edgedb/data
+  app:
+    build:
+      context: .
+      dockerfile: Containerfile
+    env_file: .env
+    
