@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  edgedb:
+    image: docker.io/edgedb/edgedb
+    volumes:
+      - ./dbschema:/dbschema
+      - ./build/edgedb:/var/lib/edgedb/data
+  app:
+    depends_on:
+      - edgedb
+    image: april_paradise:latest
+    env_file: .env
+    
