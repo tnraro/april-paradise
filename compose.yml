@@ -7,6 +7,8 @@ services:
       - ./dbschema:/dbschema
       - ./build/edgedb:/var/lib/edgedb/data
   app:
+    depends_on:
+      - edgedb
     image: april_paradise:latest
     env_file: .env
     
