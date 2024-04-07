@@ -3,13 +3,10 @@ version: "3"
 services:
   edgedb:
     image: docker.io/edgedb/edgedb
-    env_file: .env
     volumes:
       - ./dbschema:/dbschema
-      - ./.svelte-kit/edgedb:/var/lib/edgedb/data
+      - ./build/edgedb:/var/lib/edgedb/data
   app:
-    build:
-      context: .
-      dockerfile: Containerfile
+    image: april_paradise:latest
     env_file: .env
     
