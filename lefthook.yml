@@ -8,3 +8,13 @@ pre-push:
   commands:
     check:
       run: pnpm check
+
+post-push:
+  only:
+    - ref: main
+  piped: true
+  commands:
+    build:
+      run: ./build.sh
+    push:
+      run: ./upload.sh
