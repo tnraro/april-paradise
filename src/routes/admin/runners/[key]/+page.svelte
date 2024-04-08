@@ -18,22 +18,7 @@
     }
   };
 
-  const reset = () => {
-    current = {
-      ...data.runner,
-    };
-  };
-  const submit = () => {
-    console.log(current);
-  };
-
   let { data } = $props();
-
-  let current = $state({
-    ...data.runner,
-  });
-
-  let isEqual = $derived(deepEqual(data.runner, current));
 
   let mail = $state<{
     id: string;
@@ -48,18 +33,18 @@
 
 <main>
   <header class="title">
-    <h1>{current.name}</h1>
-    <a class="x-id" href="https://twitter.com/{current.twitterId}"
-      >@{current.twitterId}</a
+    <h1>{data.runner.name}</h1>
+    <a class="x-id" href="https://twitter.com/{data.runner.twitterId}"
+      >@{data.runner.twitterId}</a
     >
   </header>
   <section>
     <h2>자원</h2>
-    <span>칩: {current.chips}</span>
-    <span>토큰: {current.tokens}</span>
+    <span>칩: {data.runner.chips}</span>
+    <span>토큰: {data.runner.tokens}</span>
   </section>
   <div class="identity">
-    계정 {current.hasIdentity ? "" : "안 "}만듦
+    계정 {data.runner.hasIdentity ? "" : "안 "}만듦
     <button onclick={copyInviteCode}>초대 코드 복사</button>
   </div>
   <section>
@@ -78,13 +63,7 @@
     />
   </section>
 </main>
-{#if !isEqual}
-  <Alert>
-    <div>수정됨</div>
-    <button class="blue" type="reset" onclick={reset}>재설정</button>
-    <button class="blue emphasis" onclick={submit}>저장</button>
-  </Alert>
-{/if}
+
 {#if mail}
   <Dialog onclose={() => (mail = undefined)}>
     {@const createdAt = new Date(mail.createdAt)}
