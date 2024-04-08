@@ -3,4 +3,5 @@ select global currentUser {
   tokens,
   chips,
   isAdmin,
+  mails := count(.<recipient[is Mail]),
 }

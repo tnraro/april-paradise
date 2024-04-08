@@ -39,6 +39,7 @@
 [data-menu-item] {
   @include mixin.select-none;
   display: flex;
+  align-items: center;
   color: unset;
   text-decoration: unset;
   padding: 0.5rem;

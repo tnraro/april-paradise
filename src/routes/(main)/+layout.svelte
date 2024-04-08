@@ -15,6 +15,9 @@
       {#if data.user}
         <Menubar.Menu>
           <Menubar.Trigger class="layout-menubar__user">
+            {#if data.user.mails > 0}
+              <span class="badge badge--mail"></span>
+            {/if}
             <div class="money">
               <AnimatingMoney type="tokens" quantity={wallet.tokens} />
               <AnimatingMoney type="chips" quantity={wallet.chips} />
@@ -24,7 +27,12 @@
             <Menubar.Item>
               {data.user.name}
             </Menubar.Item>
-            <Menubar.Item href="/mails">우편함</Menubar.Item>
+            <Menubar.Item href="/mails" class="layout-menubar__item">
+              {#if data.user.mails > 0}
+                <span class="badge badge--mail"></span>
+              {/if}
+              우편함
+            </Menubar.Item>
             {#if data.user.isAdmin}
               <Menubar.Item href="/admin">(총괄) 관리 페이지</Menubar.Item>
             {/if}
@@ -68,6 +76,10 @@
   :global(.layout-menubar__user) {
     display: flex;
     gap: 1rem;
+    position: relative;
+  }
+  :global(.layout-menubar__item) {
+    position: relative;
   }
   .money {
     display: flex;
@@ -75,5 +87,17 @@
   }
   .sign-in {
     text-decoration: none;
+  }
+  .badge {
+    position: absolute;
+
+    &--mail {
+      background: var(--red-9);
+      color: white;
+      border-radius: 99999rem;
+      width: 0.5rem;
+      height: 0.5rem;
+      transform: translate(-100%, -80%);
+    }
   }
 </style>
