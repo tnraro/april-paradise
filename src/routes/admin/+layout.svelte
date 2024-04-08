@@ -1,5 +1,9 @@
 <script lang="ts">
+  import { useItemData } from '$lib/ui/data/data.svelte.js';
+
   let { children, data } = $props();
+
+  useItemData(data.itemData);
 </script>
 
 <header>
