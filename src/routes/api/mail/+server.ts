@@ -17,7 +17,7 @@ export const POST = route(
       sender: z.string(),
       title: z.string(),
       body: z.string(),
-      rewards: z.string(),
+      rewards: z.string().min(1),
       recipients: z.array(z.string().uuid()),
     }),
   },
