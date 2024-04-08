@@ -1,6 +1,8 @@
 with user := global currentUser,
-update Mail
-filter .id = <uuid>$id and .recipient = user
-set {
-  isReceived := true,
-}
+select (
+  update Mail
+  filter .id = <uuid>$id and .recipient = user and not .isReceived
+  set {
+    isReceived := true,
+  }
+).reward
