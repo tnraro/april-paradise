@@ -1,6 +1,9 @@
+@use "mixin";
+
 [data-fs-label] {
   margin-bottom: -0.5rem;
 }
+
 [data-fs-error] {
   color: var(--red-11);
 }
@@ -11,4 +14,70 @@
   border-radius: 0.5rem;
   background: white;
   box-shadow: var(--height-3);
+}
+
+[data-menu-trigger] {
+  background: transparent;
+
+  &:hover {
+    background: var(--slate-2);
+  }
+
+  &:active {
+    background: var(--slate-3);
+  }
+}
+
+[data-menu-content] {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: var(--height-3);
+  padding: 0.25rem;
+  min-width: 10rem;
+}
+
+[data-menu-item] {
+  @include mixin.select-none;
+  display: flex;
+  color: unset;
+  text-decoration: unset;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--slate-2);
+  }
+
+  &:active {
+    background: var(--slate-3);
+  }
+}
+
+[data-menu-separator] {
+  display: flex;
+
+  &::before {
+    content: "";
+    background: var(--slate-6);
+    width: 90%;
+  }
+
+  &[data-orientation="vertical"] {
+    width: 1px;
+    align-items: center;
+
+    &::before {
+      height: 90%;
+    }
+  }
+
+  &[data-orientation="horizontal"] {
+    height: 1px;
+    justify-content: center;
+
+    &::before {
+      width: 90%;
+    }
+  }
 }
