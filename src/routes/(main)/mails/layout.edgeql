@@ -7,3 +7,4 @@ select Mail {
   createdAt,
 }
 filter .recipient = user
+order by .isReceived then .createdAt desc
