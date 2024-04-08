@@ -21,6 +21,8 @@
   let isNewReward = $state(false);
 
   let itemMap = $derived(new Map(items.map((x) => [x.key, x])));
+
+  let error = $state<string>();
 </script>
 
 <form
@@ -37,14 +39,22 @@
     const title = z.string().parse(data.get("title"));
     const body = z.string().parse(data.get("body"));
     const rewards = z.string().parse(data.get("rewards"));
-    await onsubmit?.({
-      sender,
-      title,
-      body,
-      rewards,
-    });
+    try {
+      await onsubmit?.({
+        sender,
+        title,
+        body,
+        rewards,
+      });
+      onclose?.();
+    } catch (e) {
+      if (e instanceof Error) {
+        if (e.message === "String must contain at least 1 character(s)") {
+          error = "보상을 추가하세요";
+        }
+      }
+    }
     isLoading = false;
-    onclose?.();
   }}
 >
   <label for="mail__title">제목</label>
@@ -88,6 +98,13 @@
         isNewReward = false;
       }}
     />
+  </Dialog>
+{/if}
+
+{#if error}
+  <Dialog onclose={() => (error = undefined)}>
+    <div>{error}</div>
+    <button onclick={() => (error = undefined)}>닫기</button>
   </Dialog>
 {/if}
 
