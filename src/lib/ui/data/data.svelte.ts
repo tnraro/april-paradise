@@ -3,6 +3,7 @@ import type {
   CocktailNpcData,
   CocktailStoreData,
   FishingData,
+  ItemData,
   LureData,
 } from "$lib/data/sheets/model";
 
@@ -26,3 +27,4 @@ export const useFishingData = createSingletonData<FishingData[]>();
 export const useLureData = createSingletonData<LureData[]>();
 export const useCocktailNpcData = createSingletonData<CocktailNpcData[]>();
 export const useCocktailStoreData = createSingletonData<CocktailStoreData[]>();
+export const useItemData = createSingletonData<ItemData[]>();

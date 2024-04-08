@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { useItemData } from "../data/data.svelte";
+  import { sendError } from "../error/send-error";
   import Chips from "../item/chips.svelte";
   import Items from "../item/items.svelte";
   import Tokens from "../item/tokens.svelte";
@@ -13,6 +15,8 @@
     hour: "numeric",
     minute: "numeric",
   });
+
+  const itemData = useItemData();
 
   interface Props {
     sender: string;
@@ -34,6 +38,7 @@
     onclick,
     disabled,
   }: Props = $props();
+  let itemMap = $derived(new Map(itemData.data?.map((x) => [x.key, x]) ?? []));
   let rewards = $derived(
     reward.length === 0
       ? []
@@ -61,9 +66,20 @@
                   quantity,
                 };
               }
+              const item = itemMap.get(key);
+              if (item == null) {
+                try {
+                  throw sendError("no item", key);
+                } catch (error) {}
+                return {
+                  type: "item",
+                  name: key,
+                  quantity,
+                };
+              }
               return {
                 type: "item",
-                name: key,
+                name: item.name,
                 quantity,
               };
             },

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useItemData } from "$lib/ui/data/data.svelte.js";
   import AnimatingMoney from "$lib/ui/item/animating-money.svelte";
   import { Menubar } from "bits-ui";
   import { useWallet } from "./wallet.svelte.js";
@@ -6,6 +7,7 @@
   let { children, data } = $props();
   const wallet = useWallet(data.user);
   $effect(() => wallet.update(data.user));
+  useItemData(data.itemData);
 </script>
 
 <div class="_">
