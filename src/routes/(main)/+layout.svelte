@@ -1,5 +1,6 @@
 <script lang="ts">
   import AnimatingMoney from "$lib/ui/item/animating-money.svelte";
+  import { Menubar } from "bits-ui";
   import { useWallet } from "./wallet.svelte.js";
 
   let { children, data } = $props();
@@ -9,20 +10,35 @@
 
 <div class="_">
   <div>
-    <header class="header">
+    <Menubar.Root class="layout-menubar">
       <a href="/">4월의 낙원호</a>
-      <div class="user">
-        {#if data.user}
-          <div class="money">
-            <AnimatingMoney type="tokens" quantity={wallet.tokens} />
-            <AnimatingMoney type="chips" quantity={wallet.chips} />
-          </div>
-          <span>{data.user.name}</span>
-        {:else}
-          <a class="sign-in" href="/auth/sign-in">로그인</a>
-        {/if}
-      </div>
-    </header>
+      {#if data.user}
+        <Menubar.Menu>
+          <Menubar.Trigger class="layout-menubar__user">
+            <div class="money">
+              <AnimatingMoney type="tokens" quantity={wallet.tokens} />
+              <AnimatingMoney type="chips" quantity={wallet.chips} />
+            </div>
+            <span class="name">{data.user.name}</span>
+          </Menubar.Trigger>
+          <Menubar.Content align="end" sideOffset={6}>
+            <Menubar.Item>
+              {data.user.name}
+            </Menubar.Item>
+            <Menubar.Item href="/mails">우편함</Menubar.Item>
+            {#if data.user.isAdmin}
+              <Menubar.Item href="/admin">(총괄) 관리 페이지</Menubar.Item>
+            {/if}
+            <Menubar.Separator />
+            <Menubar.Item href="/auth/sign-out">
+              로그아웃
+            </Menubar.Item>
+          </Menubar.Content>
+        </Menubar.Menu>
+      {:else}
+        <a class="sign-in" href="/auth/sign-in">로그인</a>
+      {/if}
+    </Menubar.Root>
   </div>
 
   <div class="__">
@@ -39,7 +55,7 @@
   .__ {
     overflow: auto;
   }
-  .header {
+  :global(.layout-menubar) {
     display: flex;
     position: fixed;
     top: 0;
@@ -50,12 +66,15 @@
     background: white;
     border-bottom: 2px solid var(--slate-3);
   }
-  .user {
+  :global(.layout-menubar__user) {
     display: flex;
     gap: 1rem;
-    background: var(--slate-2);
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
+  }
+  .name {
+    max-width: 6rem;
+    overflow: hidden;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
   }
   .money {
     display: flex;
