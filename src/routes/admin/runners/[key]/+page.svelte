@@ -1,8 +1,11 @@
 <script lang="ts">
-    import { api } from "$lib/api/api.gen.js";
+  import { api } from "$lib/api/api.gen.js";
   import { deepEqual } from "$lib/shared/util/deep-equal.js";
-    import { sendError } from "$lib/ui/error/send-error.js";
+  import { sendError } from "$lib/ui/error/send-error.js";
   import Alert from "$lib/ui/floating/alert.svelte";
+  import Dialog from "$lib/ui/floating/dialog.svelte";
+  import MailList from "$lib/ui/mail/mail-list.svelte";
+  import Mail from "$lib/ui/mail/mail.svelte";
 
   const copyInviteCode = async () => {
     const res = await api().runners.post({ key: data.runner.key });
@@ -13,7 +16,7 @@
       const url = `${location.origin}/invite?code=${code}`;
       await navigator.clipboard.writeText(url);
     }
-  }
+  };
 
   const reset = () => {
     current = {
@@ -31,23 +34,49 @@
   });
 
   let isEqual = $derived(deepEqual(data.runner, current));
+
+  let mail = $state<{
+    id: string;
+    sender: string;
+    title: string;
+    body: string;
+    reward: string;
+    isReceived: boolean;
+    createdAt: Date;
+  } | null>();
 </script>
 
 <main>
-  <div class="title">
+  <header class="title">
     <h1>{current.name}</h1>
     <a class="x-id" href="https://twitter.com/{current.twitterId}"
       >@{current.twitterId}</a
     >
-  </div>
-  <div>
+  </header>
+  <section>
     <h2>자원</h2>
     <span>칩: {current.chips}</span>
     <span>토큰: {current.tokens}</span>
-  </div>
+  </section>
   <div class="identity">
-    계정 {current.hasIdentity ? "" : "안 "}만듦 <button onclick={copyInviteCode}>초대 코드 복사</button>
+    계정 {current.hasIdentity ? "" : "안 "}만듦
+    <button onclick={copyInviteCode}>초대 코드 복사</button>
   </div>
+  <section>
+    <h2>우편</h2>
+    <MailList
+      mails={data.runner.mails}
+      onclick={async (id) => {
+        const res = await api().mail.id.get({ id });
+        if (!res.ok) {
+          sendError(res.error.message);
+        } else {
+          mail = res.data.mail;
+          console.log(mail);
+        }
+      }}
+    />
+  </section>
 </main>
 {#if !isEqual}
   <Alert>
@@ -55,6 +84,12 @@
     <button class="blue" type="reset" onclick={reset}>재설정</button>
     <button class="blue emphasis" onclick={submit}>저장</button>
   </Alert>
+{/if}
+{#if mail}
+  <Dialog onclose={() => (mail = undefined)}>
+    {@const createdAt = new Date(mail.createdAt)}
+    <Mail {...mail} {createdAt} />
+  </Dialog>
 {/if}
 
 <style lang="scss">
@@ -90,10 +125,6 @@
     transform: translate(-50%, 0);
     background: var(--slate-2);
     box-shadow: 0 0.25rem 0.5rem var(--slate-9);
-  }
-  h2 {
-    font-size: 1rem;
-    line-height: 1.5;
   }
   .x-id {
     font-size: 1rem;
