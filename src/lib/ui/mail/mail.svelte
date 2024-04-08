@@ -60,7 +60,6 @@
             },
           ),
   );
-  $inspect(rewards);
 </script>
 
 <div class="_">
@@ -122,6 +121,6 @@
     gap: 0.25rem;
   }
   .body {
-    white-space: pre;
+    white-space-collapse: preserve;
   }
 </style>
