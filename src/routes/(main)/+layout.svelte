@@ -19,7 +19,6 @@
               <AnimatingMoney type="tokens" quantity={wallet.tokens} />
               <AnimatingMoney type="chips" quantity={wallet.chips} />
             </div>
-            <span class="name">{data.user.name}</span>
           </Menubar.Trigger>
           <Menubar.Content align="end" sideOffset={6}>
             <Menubar.Item>
@@ -69,12 +68,6 @@
   :global(.layout-menubar__user) {
     display: flex;
     gap: 1rem;
-  }
-  .name {
-    max-width: 6rem;
-    overflow: hidden;
-    text-wrap: nowrap;
-    text-overflow: ellipsis;
   }
   .money {
     display: flex;

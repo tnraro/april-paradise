@@ -22,9 +22,18 @@
     isReceived: boolean;
     createdAt: Date;
     onclick?: () => void;
+    disabled?: boolean;
   }
-  let { sender, title, body, reward, isReceived, createdAt, onclick }: Props =
-    $props();
+  let {
+    sender,
+    title,
+    body,
+    reward,
+    isReceived,
+    createdAt,
+    onclick,
+    disabled,
+  }: Props = $props();
   let rewards = $derived(
     reward.length === 0
       ? []
@@ -88,7 +97,7 @@
       {#if isReceived}
         <button disabled>보상 받음</button>
       {:else}
-        <button class="green emphasis" {onclick}>보상 받기</button>
+        <button class="green emphasis" {onclick} {disabled}>보상 받기</button>
       {/if}
     </section>
   {/if}

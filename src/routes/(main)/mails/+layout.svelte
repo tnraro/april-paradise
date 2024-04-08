@@ -6,7 +6,7 @@
 </script>
 
 <div class="_">
-  <section class="section">
+  <section>
     <h1>우편함</h1>
     <MailList
       mails={data.mails}
@@ -15,9 +15,7 @@
       }}
     />
   </section>
-  <main class="section">
-    {@render children()}
-  </main>
+  {@render children()}
 </div>
 
 <style lang="scss">
@@ -26,8 +24,18 @@
     min-width: min(20rem, 90vw);
     display: flex;
     justify-content: center;
+    height: 100%;
+    position: relative;
   }
-  .section {
+  section {
     width: min(20rem, 90vw);
+    overflow-y: auto;
+    max-height: 100%;
+    padding: 1rem;
+  }
+  @media screen and (max-width: 40rem) {
+    section {
+      width: 100vw;
+    }
   }
 </style>
