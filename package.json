@@ -36,6 +36,7 @@
   "type": "module",
   "dependencies": {
     "@edgedb/auth-sveltekit": "^0.1.1",
+    "@googleapis/sheets": "^5.0.5",
     "@radix-ui/colors": "^3.0.0",
     "bits-ui": "^0.21.2",
     "devalue": "^4.3.2",

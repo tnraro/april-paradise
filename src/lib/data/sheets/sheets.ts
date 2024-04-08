@@ -16,7 +16,7 @@ import type {
 } from "./model";
 import { queryData } from "./query-data.query";
 
-export const getData = cacheFn(60, async <T>(sheet: string): Promise<T[]> => {
+export const getData = cacheFn(1, async <T>(sheet: string): Promise<T[]> => {
   const res = await queryData(client, { sheet });
   if (res == null) return [];
   return parse(res.data);
