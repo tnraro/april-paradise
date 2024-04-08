@@ -94,6 +94,40 @@ module default {
     required data: str;
   }
 
+  type Mail {
+    required sender: str;
+    required recipient: User {
+      on target delete delete source;
+    }
+    required title: str;
+    required body: str;
+    required reward: str;
+    required isReceived: bool {
+      default := false;
+    }
+    required createdAt: datetime {
+      default := datetime_of_transaction();
+    }
+
+    trigger log_insert_mail after insert for each do (
+      insert Log {
+        table := "Mail",
+        action := "insert",
+        patient := __new__.recipient.key ++ "::" ++ __new__.title,
+      }
+    );
+    trigger log_update_mail after update for each
+    when (__old__.isReceived != __new__.isReceived)
+    do (
+      insert Log {
+        table := "Mail",
+        action := "update",
+        patient := __old__.recipient.key ++ "::" ++ __old__.title,
+        change := <str>__old__.isReceived ++ "->" ++ <str>__new__.isReceived,
+      }
+    );
+  }
+
   type InviteCode {
     required code: uuid {
       default := uuid_generate_v4();
