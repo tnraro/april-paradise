@@ -2,7 +2,6 @@ import { route } from "$lib/api/server";
 import { addItem } from "$lib/data/item/add-item.query";
 import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
 import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
-import { addResource } from "$lib/data/resources/add-resource.query";
 import { getItemData } from "$lib/data/sheets/sheets";
 import type { RequestEvent } from "./$types";
 import { get } from "./get.query";
@@ -49,10 +48,12 @@ export const PUT = route("put", async (e: RequestEvent) => {
       } else {
         const item = items.get(key);
         if (item == null) throw new Error(`no item: ${key}`);
-        await addItem(tx, {
-          key: item.key,
-          category: item.category,
-        });
+        for (let i = 0; i < quantity; i++) {
+          await addItem(tx, {
+            key: item.key,
+            category: item.category,
+          });
+        }
       }
     }
 
