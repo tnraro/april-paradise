@@ -49,18 +49,20 @@
   </div>
   <section>
     <h2>우편</h2>
-    <MailList
-      mails={data.runner.mails}
-      onclick={async (id) => {
-        const res = await api().mail.id.get({ id });
-        if (!res.ok) {
-          sendError(res.error.message);
-        } else {
-          mail = res.data.mail;
-          console.log(mail);
-        }
-      }}
-    />
+    <div class="scroll-area">
+      <MailList
+        mails={data.runner.mails}
+        onclick={async (id) => {
+          const res = await api().mail.id.get({ id });
+          if (!res.ok) {
+            sendError(res.error.message);
+          } else {
+            mail = res.data.mail;
+            console.log(mail);
+          }
+        }}
+      />
+    </div>
   </section>
 </main>
 
@@ -84,6 +86,9 @@
     grid-template-columns: max-content 1fr;
     align-items: center;
     gap: 0.25rem 0.5rem;
+  }
+  .scroll-area {
+    height: 17.5rem;
   }
   .title {
     & h1 {

@@ -82,3 +82,11 @@
     }
   }
 }
+
+.scroll-area {
+  overflow: hidden auto;
+  
+  &.scroll-area--horizontal {
+    overflow: auto hidden;
+  }
+}
