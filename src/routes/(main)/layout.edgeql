@@ -3,5 +3,8 @@ select global currentUser {
   tokens,
   chips,
   isAdmin,
-  mails := count(.<recipient[is Mail]),
+  mails := count((
+    select .<recipient[is Mail]
+    filter not .isReceived
+  )),
 }
