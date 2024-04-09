@@ -1,4 +1,3 @@
-with user := global currentUser,
 select Mail {
   id,
   sender,
@@ -8,4 +7,3 @@ select Mail {
   isReceived,
   createdAt,
 }
-filter .id = <uuid>$id and (user.isAdmin or .recipient = user)

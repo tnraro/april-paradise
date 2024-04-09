@@ -1,6 +1,5 @@
 with data := <json>$data,
-recipients := <str>json_array_unpack(data["recipients"]),
-isAdmin := global currentUser.isAdmin ?? false
+recipients := <str>json_array_unpack(data["recipients"])
 for recipient in recipients
 union (
   insert Mail {
@@ -11,5 +10,3 @@ union (
     sender := <str>data["sender"],
   }
 )
-if isAdmin
-else {}
