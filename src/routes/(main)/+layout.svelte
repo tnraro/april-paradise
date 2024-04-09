@@ -40,9 +40,6 @@
       </Menubar.Menu>
       {#if data.user}
         <Menubar.Menu>
-          {#if data.user.mails > 0}
-            <span class="badge badge--mail"></span>
-          {/if}
           <div class="money">
             <AnimatingMoney type="tokens" quantity={wallet.tokens} />
             <AnimatingMoney type="chips" quantity={wallet.chips} />
@@ -50,6 +47,9 @@
         </Menubar.Menu>
         <Menubar.Menu>
           <Menubar.Trigger class="layout-menubar__user">
+            {#if data.user.mails > 0}
+              <span class="badge badge--mail"></span>
+            {/if}
             <Icon as="menu" />
           </Menubar.Trigger>
           <Menubar.Content align="end" sideOffset={6}>
