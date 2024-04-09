@@ -18,4 +18,5 @@ NODE_ENV=production pnpm build || exit 1
 
 docker compose build || exit 1
 
-docker compose restart
+docker compose down
+docker compose up -d
