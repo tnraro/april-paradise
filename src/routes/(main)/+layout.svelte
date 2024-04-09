@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from "$img/icon.svelte";
   import { useItemData } from "$lib/ui/data/data.svelte.js";
   import AnimatingMoney from "$lib/ui/item/animating-money.svelte";
   import { Menubar } from "bits-ui";
@@ -8,22 +9,48 @@
   const wallet = useWallet(data.user);
   $effect(() => wallet.update(data.user));
   useItemData(data.itemData);
+  let schedule = $derived.by(() => {
+    const now = Date.now();
+    return data.scheduleData
+      .filter(
+        (event) =>
+          event.pathname != null &&
+          now >= (event.start?.getTime() ?? 0) &&
+          now <= (event.end?.getTime() ?? 0),
+      )
+      .toSorted((a, b) => a.end.getTime() - b.end.getTime());
+  });
 </script>
 
 <div class="_">
   <div>
     <Menubar.Root class="layout-menubar">
-      <a href="/">4월의 낙원호</a>
+      <Menubar.Menu>
+        <Menubar.Trigger>4월의 낙원호</Menubar.Trigger>
+        <Menubar.Content align="end" sideOffset={6}>
+          <Menubar.Item href="/">홈</Menubar.Item>
+          <Menubar.Item href="/store" disabled>
+            상점
+          </Menubar.Item>
+          <Menubar.Separator />
+          {#each schedule as event (event.key)}
+            <Menubar.Item href={event.pathname}>{event.title}</Menubar.Item>
+          {/each}
+        </Menubar.Content>
+      </Menubar.Menu>
       {#if data.user}
         <Menubar.Menu>
+          {#if data.user.mails > 0}
+            <span class="badge badge--mail"></span>
+          {/if}
+          <div class="money">
+            <AnimatingMoney type="tokens" quantity={wallet.tokens} />
+            <AnimatingMoney type="chips" quantity={wallet.chips} />
+          </div>
+        </Menubar.Menu>
+        <Menubar.Menu>
           <Menubar.Trigger class="layout-menubar__user">
-            {#if data.user.mails > 0}
-              <span class="badge badge--mail"></span>
-            {/if}
-            <div class="money">
-              <AnimatingMoney type="tokens" quantity={wallet.tokens} />
-              <AnimatingMoney type="chips" quantity={wallet.chips} />
-            </div>
+            <Icon as="menu" />
           </Menubar.Trigger>
           <Menubar.Content align="end" sideOffset={6}>
             <Menubar.Item>
@@ -35,13 +62,15 @@
               {/if}
               우편함
             </Menubar.Item>
+            <Menubar.Item href="/inventory" disabled>
+              가방
+            </Menubar.Item>
             {#if data.user.isAdmin}
+              <Menubar.Separator />
               <Menubar.Item href="/admin">관리 페이지</Menubar.Item>
             {/if}
             <Menubar.Separator />
-            <Menubar.Item href="/auth/sign-out">
-              로그아웃
-            </Menubar.Item>
+            <Menubar.Item href="/auth/sign-out">로그아웃</Menubar.Item>
           </Menubar.Content>
         </Menubar.Menu>
       {:else}

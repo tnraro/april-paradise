@@ -16,13 +16,25 @@
     data: PageData;
   }
   let { data }: Props = $props();
+  
+  let schedule = $derived.by(() => {
+    const now = Date.now();
+    return data.scheduleData
+      .filter(
+        (event) =>
+          event.pathname != null &&
+          now >= (event.start?.getTime() ?? 0) &&
+          now <= (event.end?.getTime() ?? 0),
+      )
+      .toSorted((a, b) => a.end.getTime() - b.end.getTime());
+  });
 </script>
 
 <main class="_">
   <section>
     <h1>이벤트</h1>
     <div class="events">
-      {#each data.schedule as event (event.key)}
+      {#each schedule as event (event.key)}
         <a class="event" href={event.pathname}>
           <h2 class="event__title">{event.title}</h2>
           <p class="event__description">{event.description}</p>

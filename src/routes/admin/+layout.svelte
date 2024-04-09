@@ -1,5 +1,7 @@
 <script lang="ts">
+  import Icon from '$img/icon.svelte';
   import { useItemData } from '$lib/ui/data/data.svelte.js';
+  import { Menubar } from 'bits-ui';
 
   let { children, data } = $props();
 
@@ -15,7 +17,21 @@
     {/each}
   </nav>
   <div>
-    <span>{data.admin.key}</span>
+    <Menubar.Root>
+      {data.admin.key}
+      <Menubar.Menu>
+        <Menubar.Trigger>
+          <Icon as="menu" />
+        </Menubar.Trigger>
+        <Menubar.Content>
+          <Menubar.Item href="/">메인으로</Menubar.Item>
+          <Menubar.Separator />
+          <Menubar.Item href="/auth/sign-out">
+            로그아웃
+          </Menubar.Item>
+        </Menubar.Content>
+      </Menubar.Menu>
+    </Menubar.Root>
   </div>
 </header>
 
