@@ -36,7 +36,7 @@
               우편함
             </Menubar.Item>
             {#if data.user.isAdmin}
-              <Menubar.Item href="/admin">(총괄) 관리 페이지</Menubar.Item>
+              <Menubar.Item href="/admin">관리 페이지</Menubar.Item>
             {/if}
             <Menubar.Separator />
             <Menubar.Item href="/auth/sign-out">
