@@ -53,12 +53,17 @@
   border-radius: 0.25rem;
   cursor: pointer;
 
-  &:hover {
+  &:hover:not([data-disabled]) {
     background: var(--slate-2);
   }
 
-  &:active {
+  &:active:not([data-disabled]) {
     background: var(--slate-3);
+  }
+
+  &[data-disabled] {
+    color: var(--slate-9);
+    cursor: not-allowed;
   }
 }
 
