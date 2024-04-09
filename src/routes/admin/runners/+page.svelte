@@ -81,8 +81,6 @@
         });
         if (!res.ok) {
           sendError(res.error.message);
-        } else {
-          console.log(res.data);
         }
       }}
     />

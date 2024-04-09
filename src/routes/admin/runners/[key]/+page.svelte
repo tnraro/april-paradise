@@ -69,7 +69,6 @@
             sendError(res.error.message);
           } else {
             mail = res.data.mail;
-            console.log(mail);
           }
         }}
       />
