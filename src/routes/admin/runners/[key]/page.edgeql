@@ -1,3 +1,4 @@
+with user := global currentUser
 select User {
   key,
   id,
@@ -19,4 +20,6 @@ select User {
     createdAt,
   }
 }
-filter .key = <str>$key
+filter user.isAdmin
+  and .key = <str>$key
+  and (not .isAdmin or (.id = user.id))

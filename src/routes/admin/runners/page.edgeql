@@ -3,5 +3,6 @@ select User {
   id,
   chips,
   tokens,
+  isBanned,
   hasIdentity := exists .identity,
 } filter not .isAdmin

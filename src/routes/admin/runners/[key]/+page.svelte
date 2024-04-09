@@ -1,14 +1,15 @@
 <script lang="ts">
   import { api } from "$lib/api/api.gen.js";
-  import { deepEqual } from "$lib/shared/util/deep-equal.js";
   import { sendError } from "$lib/ui/error/send-error.js";
-  import Alert from "$lib/ui/floating/alert.svelte";
   import Dialog from "$lib/ui/floating/dialog.svelte";
+  import InventoryItem from "$lib/ui/inventory/inventory-item.svelte";
+  import Chips from "$lib/ui/item/chips.svelte";
+  import Tokens from "$lib/ui/item/tokens.svelte";
   import MailList from "$lib/ui/mail/mail-list.svelte";
   import Mail from "$lib/ui/mail/mail.svelte";
 
   const copyInviteCode = async () => {
-    const res = await api().runners.post({ key: data.runner.key });
+    const res = await api().runners.post({ key: data.user.key });
     if (!res.ok) {
       sendError(res.error.message);
     } else {
@@ -33,25 +34,35 @@
 
 <main>
   <header class="title">
-    <h1>{data.runner.name}</h1>
-    <a class="x-id" href="https://twitter.com/{data.runner.twitterId}"
-      >@{data.runner.twitterId}</a
-    >
+    <h1>{data.user.name}</h1>
+    {#if !data.user.isAdmin}
+      {#if data.user.twitterId}
+        <a class="x-id" href="https://twitter.com/{data.user.twitterId}"
+          >@{data.user.twitterId}</a
+        >
+      {/if}
+    {/if}
   </header>
+  {#if !data.user.isAdmin}
+    <div class="identity">
+      계정 {data.user.hasIdentity ? "" : "안 "}만듦
+      <button onclick={copyInviteCode}>초대 코드 복사</button>
+    </div>
+  {/if}
   <section>
     <h2>자원</h2>
-    <span>칩: {data.runner.chips}</span>
-    <span>토큰: {data.runner.tokens}</span>
+    <Tokens quantity={data.user.tokens} />
+    <Chips quantity={data.user.chips} />
   </section>
-  <div class="identity">
-    계정 {data.runner.hasIdentity ? "" : "안 "}만듦
-    <button onclick={copyInviteCode}>초대 코드 복사</button>
-  </div>
+  <section>
+    <h2>가방</h2>
+    <div class="scroll-area"></div>
+  </section>
   <section>
     <h2>우편</h2>
     <div class="scroll-area">
       <MailList
-        mails={data.runner.mails}
+        mails={data.user.mails}
         onclick={async (id) => {
           const res = await api().mail.id.get({ id });
           if (!res.ok) {

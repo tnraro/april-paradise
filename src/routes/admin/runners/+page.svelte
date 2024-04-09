@@ -49,8 +49,13 @@
           selected = set;
         }}
       />
-      <div class="runner__name" title={runner.name}>
-        {runner.name}
+      <div class="runner__identity">
+        <div class="runner__name" title={runner.name}>
+          {runner.name}
+        </div>
+        {#if runner.isBanned}
+          <div class="badge badge--banned">제명됨</div>
+        {/if}
       </div>
       <a
         class="x-id"
@@ -96,9 +101,14 @@
   .runner {
     padding: 0 1rem;
     display: grid;
-    grid-template-columns: max-content 6rem max-content 4rem 4rem;
+    grid-template-columns: max-content 8rem max-content 4rem 4rem;
     gap: 0 1ch;
 
+    &__identity {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
     &__name {
       font-weight: 700;
       word-break: keep-all;
@@ -131,5 +141,20 @@
     display: flex;
     background: var(--slate-3);
     gap: 0.5rem;
+  }
+  .badge {
+    border-radius: 0.25rem;
+    padding: 0 0.25rem;
+    font-size: 0.75rem;
+    word-break: keep-all;
+
+    &--admin {
+      background: var(--green-9);
+      color: var(--green-1);
+    }
+    &--banned {
+      background: var(--red-9);
+      color: var(--red-1);
+    }
   }
 </style>
