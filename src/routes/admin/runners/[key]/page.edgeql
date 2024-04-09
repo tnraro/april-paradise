@@ -14,11 +14,28 @@ select User {
     isReceived,
     createdAt,
   },
-  inventory: {
-    key,
-    category,
-    createdAt,
-  }
+  inventory := (
+    select (
+      group (
+        select (
+          group .items
+          by .key
+        ) {
+          item := .key.key,
+          category := assert_single(distinct .elements.category),
+          quantity := count(.elements),
+        }
+      )
+      by .category
+    ) {
+      category := .key.category,
+      items := .elements {
+        item,
+        category,
+        quantity,
+      }
+    }
+  ),
 }
 filter user.isAdmin
   and .key = <str>$key

@@ -1,8 +1,10 @@
 <script lang="ts">
   import { api } from "$lib/api/api.gen.js";
+  import { useItemData } from "$lib/ui/data/data.svelte";
   import { sendError } from "$lib/ui/error/send-error.js";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import InventoryItem from "$lib/ui/inventory/inventory-item.svelte";
+  import Inventory from "$lib/ui/inventory/inventory.svelte";
   import Chips from "$lib/ui/item/chips.svelte";
   import Tokens from "$lib/ui/item/tokens.svelte";
   import MailList from "$lib/ui/mail/mail-list.svelte";
@@ -20,6 +22,10 @@
   };
 
   let { data } = $props();
+
+  const itemData = useItemData();
+
+  let itemMap = $derived(new Map(itemData.data?.map((x) => [x.key, x]) ?? []));
 
   let mail = $state<{
     id: string;
@@ -56,22 +62,46 @@
   </section>
   <section>
     <h2>가방</h2>
-    <div class="scroll-area"></div>
+    <div class="scroll-area inventory">
+      {#if data.user.inventory.length > 0}
+        {#each data.user.inventory as inventory}
+          <h3>{inventory.category}</h3>
+          <Inventory>
+            {#each inventory.items as item (item.item)}
+              {@const i = itemMap.get(item.item)}
+              <InventoryItem
+                key={item.item}
+                name={i?.name}
+                quantity={item.quantity}
+              >
+                {i?.description}
+              </InventoryItem>
+            {/each}
+          </Inventory>
+        {/each}
+      {:else}
+        비어있습니다.
+      {/if}
+    </div>
   </section>
   <section>
     <h2>우편</h2>
     <div class="scroll-area">
-      <MailList
-        mails={data.user.mails}
-        onclick={async (id) => {
-          const res = await api().mail.id.get({ id });
-          if (!res.ok) {
-            sendError(res.error.message);
-          } else {
-            mail = res.data.mail;
-          }
-        }}
-      />
+      {#if data.user.mails.length > 0}
+        <MailList
+          mails={data.user.mails}
+          onclick={async (id) => {
+            const res = await api().mail.id.get({ id });
+            if (!res.ok) {
+              sendError(res.error.message);
+            } else {
+              mail = res.data.mail;
+            }
+          }}
+        />
+      {:else}
+        비어있습니다.
+      {/if}
     </div>
   </section>
 </main>
@@ -88,7 +118,6 @@
     display: grid;
     padding: 0 1rem;
     gap: 1rem;
-    justify-content: start;
   }
   address {
     font-style: unset;
@@ -130,5 +159,8 @@
   }
   .memo {
     width: 100%;
+  }
+  .inventory {
+    min-width: min(32rem, 100%);
   }
 </style>
