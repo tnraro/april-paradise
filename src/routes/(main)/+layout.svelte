@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from "$img/icon.svelte";
   import { useItemData } from "$lib/ui/data/data.svelte.js";
   import AnimatingMoney from "$lib/ui/item/animating-money.svelte";
   import { Menubar } from "bits-ui";
@@ -16,14 +17,17 @@
       <a href="/">4월의 낙원호</a>
       {#if data.user}
         <Menubar.Menu>
+          {#if data.user.mails > 0}
+            <span class="badge badge--mail"></span>
+          {/if}
+          <div class="money">
+            <AnimatingMoney type="tokens" quantity={wallet.tokens} />
+            <AnimatingMoney type="chips" quantity={wallet.chips} />
+          </div>
+        </Menubar.Menu>
+        <Menubar.Menu>
           <Menubar.Trigger class="layout-menubar__user">
-            {#if data.user.mails > 0}
-              <span class="badge badge--mail"></span>
-            {/if}
-            <div class="money">
-              <AnimatingMoney type="tokens" quantity={wallet.tokens} />
-              <AnimatingMoney type="chips" quantity={wallet.chips} />
-            </div>
+            <Icon as="menu" />
           </Menubar.Trigger>
           <Menubar.Content align="end" sideOffset={6}>
             <Menubar.Item>
