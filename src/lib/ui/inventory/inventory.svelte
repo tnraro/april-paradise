@@ -1,38 +1,21 @@
 <script lang="ts">
-  import InventoryItem from "./inventory-item.svelte";
-  import type { InventoryGroup } from "./inventory.types";
-
+  import type { Snippet } from "svelte";
+  
   interface Props {
-    groups: InventoryGroup[];
+    children: Snippet;
   }
-  let { groups }: Props = $props();
+  let { children }: Props = $props();
 </script>
 
 <div class="inventory">
-  {#each groups as group (group.name)}
-    <div class="inventory__group">
-      <h1>{group.name}</h1>
-      <div class="inventory__items">
-        {#each group.items as item}
-          <InventoryItem {...item} />
-        {/each}
-      </div>
-    </div>
-  {/each}
+  {@render children()}
 </div>
 
 <style lang="scss">
   .inventory {
     display: grid;
-    gap: 2rem;
-    &__group {
-      display: grid;
-      gap: 0.5rem;
-    }
-    &__items {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, 64px);
-      gap: 1rem;
-    }
+    grid-template-columns: repeat(auto-fill, 64px);
+    gap: 1rem;
+    justify-content: center;
   }
 </style>
