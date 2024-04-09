@@ -6,9 +6,14 @@ services:
     volumes:
       - ./dbschema:/dbschema
       - ./build/edgedb:/var/lib/edgedb/data
+    ports:
+      - 5402:5656
   app:
     depends_on:
       - edgedb
-    image: april_paradise:latest
+    build:
+      context: .
+      dockerfile: ./Containerfile
     env_file: .env
-    
+    ports:
+      - 5401:3000
