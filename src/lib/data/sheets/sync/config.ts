@@ -98,7 +98,6 @@ export const config = {
       height: parse(row.height).number().unwrap(),
       weight: parse(row.weight).number().unwrap(),
       gender: parse(row.gender).string().unwrap(),
-      isBanned: parse(row.isBanned).boolean().unwrap(),
     })),
     c("아이템", "A1:D", (row: Raw<ItemData>) => ({
       key: parse(row.key).string().unwrap(),
