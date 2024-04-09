@@ -61,6 +61,12 @@ module default {
 
     multi achievements := .<user[is Achievement];
     multi items := .<owner[is Item];
+
+    access policy user__all
+      allow all;
+    access policy user__banned_runner
+      deny all
+      using (global currentUser.isBanned ?? false);
   }
 
   type Achievement {
@@ -85,6 +91,16 @@ module default {
     );
     
     constraint exclusive on ((.user, .key));
+
+    access policy achievement__admin
+      allow all
+      using (global currentUser.isAdmin ?? false);
+    access policy achievement__self
+      allow insert, select
+      using (global currentUser ?= .user);
+    access policy achievement__banned_runner
+      deny all
+      using (global currentUser.isBanned ?? false);
   }
 
   type StaticData {
@@ -126,6 +142,16 @@ module default {
         change := <str>__old__.isReceived ++ "->" ++ <str>__new__.isReceived,
       }
     );
+
+    access policy mail__admin
+      allow all
+      using (global currentUser.isAdmin ?? false);
+    access policy mail__recipient
+      allow select, update
+      using (global currentUser ?= .recipient);
+    access policy mail__banned_runner
+      deny all
+      using (global currentUser.isBanned ?? false);
   }
 
   type InviteCode {
@@ -183,6 +209,16 @@ module default {
         patient := __new__.key,
       }
     );
+
+    access policy item__admin
+      allow all
+      using (global currentUser.isAdmin ?? false);
+    access policy item__self
+      allow all
+      using (global currentUser ?= .owner);
+    access policy item__banned_runner
+      deny all
+      using (global currentUser.isBanned ?? false);
   }
   type Resource {
     required owner: User {
@@ -206,6 +242,16 @@ module default {
       }
     );
     constraint exclusive on ((.owner, .key));
+
+    access policy resource__admin
+      allow all
+      using (global currentUser.isAdmin ?? false);
+    access policy resource__self
+      allow all
+      using (global currentUser ?= .owner);
+    access policy resource__banned_runner
+      deny all
+      using (global currentUser.isBanned ?? false);
   }
 
   type Log {
@@ -219,5 +265,11 @@ module default {
     required createdAt: datetime {
       default := datetime_of_transaction();
     }
+
+    access policy resource__admin
+      allow all
+      using (global currentUser.isAdmin ?? false);
+    access policy log__all
+      allow insert;
   }
 }
