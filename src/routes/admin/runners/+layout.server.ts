@@ -1,16 +1,16 @@
-import { wrapRunnerData, wrapRunners } from "$lib/data/sheets/utils";
+import { wrapUsers } from "$lib/data/sheets/utils";
 import { layout } from "./layout.query";
 
 export const load = async ({ locals, depends, params }) => {
   depends("admin:runners");
 
   const session = locals.auth.session;
-  const runners = await wrapRunners(layout(session.client));
+  const users = await wrapUsers(layout(session.client));
 
   return {
-    runners: runners.map((runner) => ({
-      ...runner,
-      selected: params.key === runner.key,
+    users: users.map((user) => ({
+      ...user,
+      selected: params.key === user.key,
     })),
     selected: params.key,
   };

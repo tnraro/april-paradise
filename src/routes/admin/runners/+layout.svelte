@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { invalidate } from '$app/navigation';
+  import { invalidate } from '$app/navigation';
   import { api } from '$lib/api/api.gen.js';
-    import { sendError } from '$lib/ui/error/send-error.js';
+  import { sendError } from '$lib/ui/error/send-error.js';
 
   const syncRunner = async () => {
     const res = await api().runners.put(undefined);
@@ -29,14 +29,21 @@
       >
         전체 보기
       </a>
-      {#each data.runners as runner (runner.id)}
+      {#each data.users as user (user.id)}
         <a
           role="tab"
-          class="tab"
-          aria-selected={runner.selected}
+          class="tab user"
+          aria-selected={user.selected}
           aria-controls="panel"
-          href="/admin/runners/{runner.key}">{runner.name}</a
-        >
+          href="/admin/runners/{user.key}">
+          <span class="user__name">{user.name}</span>
+          {#if user.isAdmin}
+            <span class="badge badge--admin">관리자</span>
+          {/if}
+          {#if user.isBanned}
+            <span class="badge badge--banned">제명됨</span>
+          {/if}
+        </a>
       {/each}
     </div>
   </div>
@@ -73,7 +80,33 @@
       background: var(--slate-4);
     }
   }
+  .user {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    &__name {
+      max-width: 6rem;
+      text-overflow: ellipsis;
+      text-wrap: nowrap;
+      overflow: hidden;
+    }
+  }
   .tabpanel {
     overflow: hidden scroll;
+  }
+  .badge {
+    border-radius: 0.25rem;
+    padding: 0 0.25rem;
+    font-size: 0.75rem;
+
+    &--admin {
+      background: var(--green-9);
+      color: var(--green-1);
+    }
+    &--banned {
+      background: var(--amber-9);
+      color: var(--amber-1);
+    }
   }
 </style>

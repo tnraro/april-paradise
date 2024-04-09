@@ -32,6 +32,9 @@ export const wrapRunnerData = async <T extends { key: string }>(
   };
 };
 
+/**
+ * @deprecated use wrapUsers
+ */
 export const wrapRunners = async <T extends { key: string }>(
   xs: T[] | Promise<T[]>,
 ) => {
@@ -40,4 +43,26 @@ export const wrapRunners = async <T extends { key: string }>(
     ...x,
     ...data.get(x.key)?.[0],
   }));
+};
+
+export const wrapUsers = async <T extends { key: string; isAdmin: boolean }>(
+  xs: T[] | Promise<T[]>,
+) => {
+  const data = groupBy(await getRunnerData(), (x) => x.key);
+  return (await xs).map((x) => {
+    if (x.isAdmin) {
+      return {
+        ...x,
+        name: x.key,
+      };
+    }
+    let runner = data.get(x.key)?.[0];
+    if (runner == null) {
+      console.warn("no runner:", x.key);
+    }
+    return {
+      ...x,
+      ...runner,
+    };
+  });
 };

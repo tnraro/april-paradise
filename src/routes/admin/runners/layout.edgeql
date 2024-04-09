@@ -1,4 +1,7 @@
 select User {
   id,
   key,
-} filter not .isAdmin
+  isAdmin,
+  isBanned,
+}
+order by .isAdmin then .isBanned
