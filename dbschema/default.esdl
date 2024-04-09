@@ -60,7 +60,7 @@ module default {
     );
 
     multi achievements := .<user[is Achievement];
-    multi inventory := .<owner[is Item];
+    multi items := .<owner[is Item];
   }
 
   type Achievement {
