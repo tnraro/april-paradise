@@ -105,8 +105,8 @@
       color: var(--green-1);
     }
     &--banned {
-      background: var(--amber-9);
-      color: var(--amber-1);
+      background: var(--red-9);
+      color: var(--red-1);
     }
   }
 </style>
