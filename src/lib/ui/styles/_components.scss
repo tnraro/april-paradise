@@ -16,6 +16,13 @@
   box-shadow: var(--height-3);
 }
 
+[data-menubar-root] {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  background: white;
+}
+
 [data-menu-trigger] {
   background: transparent;
 
@@ -85,7 +92,7 @@
 
 .scroll-area {
   overflow: hidden auto;
-  
+
   &.scroll-area--horizontal {
     overflow: auto hidden;
   }
