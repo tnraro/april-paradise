@@ -14,7 +14,7 @@
     "generate:edgeql": "pnpm exec generate queries",
     "generate:api": "bun run scripts/api-gen/index.ts",
     "gen": "pnpm run --parallel /^generate:/",
-    "push": "pnpm gen && git push && ./build.sh && bun ./upload.sh"
+    "upload": "bun ./upload.sh"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.6.4",

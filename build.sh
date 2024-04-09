@@ -1,9 +1,16 @@
+git pull
+
+edgedb migrate || exit 1
+
 rm -r .svelte-kit/out
 
-NODE_ENV=production pnpm build
+pnpm install || exit 1
 
-docker build --pull -t april_paradise .
+pnpm generate:api || exit 1
+pnpm generate:edgeql || exit 1
 
-mkdir -p build
-rm ./build/april_paradise.tar
-docker save -o ./build/april_paradise.tar april_paradise
+NODE_ENV=production pnpm build || exit 1
+
+docker compose build || exit 1
+
+docker compose restart
