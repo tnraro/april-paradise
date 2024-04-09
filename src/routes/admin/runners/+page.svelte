@@ -57,13 +57,6 @@
           <div class="badge badge--banned">제명됨</div>
         {/if}
       </div>
-      <a
-        class="x-id"
-        href="https://twitter.com/{runner.twitterId}"
-        target="_blank"
-        rel="noreferrer"
-        title="@{runner.twitterId}">𝕏</a
-      >
       <div class="money money--token" title="{runner.tokens} 토큰">
         <enhanced:img src="$img/token.png?w=16" />
         <span class="money__number">{runner.tokens}</span>
@@ -101,7 +94,7 @@
   .runner {
     padding: 0 1rem;
     display: grid;
-    grid-template-columns: max-content 8rem max-content 4rem 4rem;
+    grid-template-columns: max-content 8rem 4rem 4rem;
     gap: 0 1ch;
 
     &__identity {
