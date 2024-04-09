@@ -2,6 +2,7 @@
   import { api } from "$lib/api/api.gen";
   import { sendError } from "$lib/ui/error/send-error";
   import Dialog from "$lib/ui/floating/dialog.svelte";
+  import { Menubar } from "bits-ui";
   import SendMail from "../../../lib/ui/mail/send-mail.svelte";
 
   let { data } = $props();
@@ -11,7 +12,7 @@
   let isEdit = $state(false);
 </script>
 
-<div class="runners-menu">
+<Menubar.Root class="runners-menu">
   <input
     type="checkbox"
     checked={selected.size === data.runners.length}
@@ -24,13 +25,21 @@
       }
     }}
   />
-  <button
-    disabled={selected.size <= 0}
-    onclick={async () => {
-      isEdit = true;
-    }}>편집</button
-  >
-</div>
+  <Menubar.Menu>
+    <Menubar.Trigger>편집</Menubar.Trigger>
+    <Menubar.Content align="start" sideOffset={4}>
+      <Menubar.Item
+        disabled={selected.size <= 0}
+        onclick={async (e: { currentTarget: HTMLElement }) => {
+          if (e.currentTarget.dataset.disabled != null) return;
+          isEdit = true;
+        }}
+      >
+        우편 보내기
+      </Menubar.Item>
+    </Menubar.Content>
+  </Menubar.Menu>
+</Menubar.Root>
 
 <div class="_">
   {#each data.runners as runner (runner.id)}
@@ -126,7 +135,7 @@
       overflow: hidden;
     }
   }
-  .runners-menu {
+  :global(.runners-menu) {
     padding: 0.25rem 1rem;
     border-radius: 0.25rem;
     display: flex;
