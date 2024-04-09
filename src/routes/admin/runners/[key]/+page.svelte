@@ -9,6 +9,7 @@
   import Tokens from "$lib/ui/item/tokens.svelte";
   import MailList from "$lib/ui/mail/mail-list.svelte";
   import Mail from "$lib/ui/mail/mail.svelte";
+  import SendMail from "$lib/ui/mail/send-mail.svelte";
 
   const copyInviteCode = async () => {
     const res = await api().runners.post({ key: data.user.key });
@@ -36,6 +37,8 @@
     isReceived: boolean;
     createdAt: Date;
   } | null>();
+
+  let isMailEdit = $state(false);
 </script>
 
 <main>
@@ -86,6 +89,7 @@
   </section>
   <section>
     <h2>우편</h2>
+    <button onclick={() => (isMailEdit = true)}>새 우편 작성</button>
     <div class="scroll-area">
       {#if data.user.mails.length > 0}
         <MailList
@@ -110,6 +114,24 @@
   <Dialog onclose={() => (mail = undefined)}>
     {@const createdAt = new Date(mail.createdAt)}
     <Mail {...mail} {createdAt} />
+  </Dialog>
+{/if}
+
+{#if isMailEdit}
+  <Dialog>
+    <SendMail
+      items={data.itemData}
+      onclose={() => (isMailEdit = false)}
+      onsubmit={async (d) => {
+        const res = await api().mail.post({
+          ...d,
+          recipients: [data.user.id],
+        });
+        if (!res.ok) {
+          sendError(res.error.message);
+        }
+      }}
+    />
   </Dialog>
 {/if}
 

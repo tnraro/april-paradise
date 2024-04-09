@@ -72,7 +72,7 @@
 {#if isEdit}
   <Dialog>
     <SendMail
-      items={data.items}
+      items={data.itemData}
       onclose={() => (isEdit = false)}
       onsubmit={async (data) => {
         const res = await api().mail.post({
