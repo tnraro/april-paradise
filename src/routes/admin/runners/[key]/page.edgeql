@@ -3,6 +3,8 @@ select User {
   id,
   chips,
   tokens,
+  isAdmin,
+  isBanned,
   hasIdentity := exists .identity,
   mails := .<recipient[is Mail] {
     id,
@@ -10,6 +12,11 @@ select User {
     title,
     isReceived,
     createdAt,
+  },
+  inventory: {
+    key,
+    category,
+    createdAt,
   }
 }
-filter .key = <str>$key and not .isAdmin
+filter .key = <str>$key
