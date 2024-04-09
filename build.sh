@@ -1,3 +1,8 @@
+#!/bin/zsh
+
+export BUN_INSTALL="/home/tnraro/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
 git pull
 
 edgedb migrate || exit 1
