@@ -16,7 +16,7 @@ export const req = async <
   | { ok: true; data: Entry["returns"] }
   | { ok: false; error: { message: string } }
 > => {
-  const url = path.replaceAll(/(?<=\/)\[([^\]]+)\]/g, (_, $1) => params[$1]);
+  const url = path.replaceAll(/\/\[([^\]]+)\]/g, (_, $1) => `/${params[$1]}`);
   const res = await _fetch(url, {
     method,
     body: body != null ? JSON.stringify(body) : undefined,
