@@ -6,6 +6,7 @@ services:
     volumes:
       - ./dbschema:/dbschema
       - ./build/edgedb:/var/lib/edgedb/data
+    env_file: .env.edgedb
     ports:
       - 5402:5656
   app:
