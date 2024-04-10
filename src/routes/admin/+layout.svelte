@@ -24,10 +24,12 @@
           <Icon as="menu" />
         </Menubar.Trigger>
         <Menubar.Content>
-          <Menubar.Item href="/">메인으로</Menubar.Item>
+          <Menubar.Item href="/">
+            <Icon as="home" stroke-width={1} />메인으로
+          </Menubar.Item>
           <Menubar.Separator />
           <Menubar.Item href="/auth/sign-out">
-            로그아웃
+            <Icon as="log-out" stroke-width={1} />로그아웃
           </Menubar.Item>
         </Menubar.Content>
       </Menubar.Menu>
@@ -43,6 +45,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
     padding: 0.5rem 1rem;
+    align-items: center;
   }
   nav {
     display: flex;

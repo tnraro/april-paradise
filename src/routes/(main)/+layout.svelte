@@ -28,9 +28,11 @@
       <Menubar.Menu>
         <Menubar.Trigger>4월의 낙원호</Menubar.Trigger>
         <Menubar.Content align="end" sideOffset={6}>
-          <Menubar.Item href="/">홈</Menubar.Item>
+          <Menubar.Item href="/">
+            <Icon as="home" stroke-width={1} />홈
+          </Menubar.Item>
           <Menubar.Item href="/store" disabled>
-            상점
+            <Icon as="shopping-cart" stroke-width={1} />상점
           </Menubar.Item>
           <Menubar.Separator />
           {#each schedule as event (event.key)}
@@ -54,27 +56,33 @@
           </Menubar.Trigger>
           <Menubar.Content align="end" sideOffset={6}>
             <Menubar.Item>
-              {data.user.name}
+              <Icon as="user-circle2" stroke-width={1} />{data.user.name}
             </Menubar.Item>
             <Menubar.Item href="/mails" class="layout-menubar__item">
               {#if data.user.mails > 0}
                 <span class="badge badge--mail"></span>
               {/if}
-              우편함
+              <Icon as="inbox" stroke-width={1} />우편함
             </Menubar.Item>
             <Menubar.Item href="/inventory" disabled>
-              가방
+              <Icon as="package2" stroke-width={1} />가방
             </Menubar.Item>
             {#if data.user.isAdmin}
               <Menubar.Separator />
-              <Menubar.Item href="/admin">관리 페이지</Menubar.Item>
+              <Menubar.Item href="/admin">
+                <Icon as="wrench" stroke-width={1} />관리 페이지
+              </Menubar.Item>
             {/if}
             <Menubar.Separator />
-            <Menubar.Item href="/auth/sign-out">로그아웃</Menubar.Item>
+            <Menubar.Item href="/auth/sign-out">
+              <Icon as="log-out" stroke-width={1} />로그아웃
+            </Menubar.Item>
           </Menubar.Content>
         </Menubar.Menu>
       {:else}
-        <a class="sign-in" href="/auth/sign-in">로그인</a>
+        <a class="sign-in" href="/auth/sign-in">
+          <Icon as="log-out" stroke-width={1} />로그인
+        </a>
       {/if}
     </Menubar.Root>
   </div>
@@ -85,6 +93,7 @@
 </div>
 
 <style lang="scss">
+  @use "$lib/ui/styles/mixin";
   ._ {
     display: grid;
     grid-template-rows: 2.625rem 1fr;
@@ -99,7 +108,7 @@
     top: 0;
     width: 100%;
     justify-content: space-between;
-    padding: 0.25rem 2rem;
+    padding: 0.25rem 0.5rem;
     align-items: center;
     background: white;
     border-bottom: 2px solid var(--slate-3);
@@ -117,7 +126,14 @@
     gap: 0.5rem;
   }
   .sign-in {
-    text-decoration: none;
+    @include mixin.select-none;
+    display: flex;
+    align-items: center;
+    color: unset;
+    text-decoration: unset;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    gap: 0.5rem;
   }
   .badge {
     position: absolute;
