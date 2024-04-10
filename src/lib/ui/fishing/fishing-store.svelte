@@ -15,12 +15,15 @@
   const wallet = useWallet();
 
   const onclick = async (lure: LureData) => {
-    if (wallet.chips <= 0) {
-      return onerror?.("칩이 부족합니다");
-    }
     if (lure.price.type === "chips") {
+      if (wallet.chips < lure.price.quantity) {
+        return onerror?.("칩이 부족합니다");
+      }
       wallet.chips -= lure.price.quantity;
     } else if (lure.price.type === "tokens") {
+      if (wallet.tokens < lure.price.quantity) {
+        return onerror?.("칩이 부족합니다");
+      }
       wallet.tokens -= lure.price.quantity;
     }
     currentLures[lure.key as keyof Lures]++;
