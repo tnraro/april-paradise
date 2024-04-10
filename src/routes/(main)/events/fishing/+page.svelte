@@ -2,7 +2,6 @@
   import { api } from "$lib/api/api.gen";
   import { type FishingData, FishingGrade, type Money } from "$lib/data/sheets/model.js";
   import { groupBy } from "$lib/shared/util/group-by.js";
-  import { repeat } from "$lib/shared/util/repeat";
   import { sleep } from "$lib/shared/util/sleep";
   import AchievementComponent from "$lib/ui/achievement/achievement-component.svelte";
   import { useLureData } from "$lib/ui/data/data.svelte.js";
@@ -26,20 +25,6 @@
   import { useWallet } from "$routes/(main)/wallet.svelte.js";
   import { useBowl } from "./bowl.svelte.js";
   import { type Lures, useLures } from "./lures.svelte.js";
-  const vibrate = async (size: number) => {
-    const r = Math.random() * Math.PI * 2;
-    const s = Math.random() * size * size;
-    x = Math.cos(r) * s;
-    y = Math.sin(r) * s;
-    for await (const _ of repeat(size, 100)) {
-      x *= -0.5;
-      y *= -0.5;
-      const d = Math.sqrt(x * x + y * y);
-      navigator.vibrate((Math.max(25, d) / 25) * 100);
-    }
-    x = 0;
-    y = 0;
-  };
   const enum TabIndex {
     Game,
     Bowl,
@@ -68,9 +53,6 @@
       setTimeout(S.wait, 0);
       return res.data.result;
     },
-    onbite(fish) {
-      vibrate(fish.grade);
-    },
     async onpull(fish) {
       const hp = fish.hp ?? fish.grade * 5 + 3;
       const power = fish.power ?? fish.grade * 1 + 1;
@@ -90,12 +72,6 @@
         powerRatio = value.ratio;
         hpRatio = value.hp / hp;
         enRatio = value.endurance / endurance;
-        if (isPulling) {
-          const p = (value.damage * 1000) / delta;
-          if (p / power > 0.5) {
-            vibrate(p);
-          }
-        }
         if (done) {
           isPulling = false;
           if (enRatio >= 0.3 && value.ratio <= 0) {
@@ -180,9 +156,6 @@
   let powerRatio = $state(0);
   let hpRatio = $state(0);
   let enRatio = $state(0);
-
-  let x = $state(0);
-  let y = $state(0);
 
   let newAchievements = $state<
     {
