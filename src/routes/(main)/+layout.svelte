@@ -31,7 +31,7 @@
           <Menubar.Item href="/">
             <Icon as="home" stroke-width={1} />홈
           </Menubar.Item>
-          <Menubar.Item href="/store" disabled>
+          <Menubar.Item href="/store">
             <Icon as="shopping-cart" stroke-width={1} />상점
           </Menubar.Item>
           <Menubar.Separator />
