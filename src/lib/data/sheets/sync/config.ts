@@ -9,6 +9,7 @@ import type {
   RouletteData,
   RunnerData,
   ScheduleData,
+  StoreData,
 } from "../model";
 import { parse } from "./parse";
 import { type Raw, c } from "./utils";
@@ -104,6 +105,13 @@ export const config = {
       name: parse(row.name).string().unwrap(),
       category: parse(row.category).string().unwrap(),
       description: parse(row.description).string().unwrap(),
+    })),
+    c("통합상점", "A1:E", (row: Raw<StoreData>) => ({
+      key: parse(row.key).string().unwrap(),
+      name: parse(row.name).string().unwrap(),
+      category: parse(row.category).string().unwrap(),
+      price: parse(row.price).money().unwrap(),
+      stock: parse(row.stock).number().unwrap(),
     })),
   ],
 };

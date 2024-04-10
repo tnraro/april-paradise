@@ -97,3 +97,11 @@ export interface ItemData {
   category: string;
   description: string;
 }
+
+export interface StoreData {
+  key: string;
+  name: string;
+  category: string;
+  price: Money;
+  stock?: number;
+}

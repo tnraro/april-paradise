@@ -13,6 +13,7 @@ import type {
   RouletteData,
   RunnerData,
   ScheduleData,
+  StoreData,
 } from "./model";
 import { queryData } from "./query-data.query";
 
@@ -60,4 +61,8 @@ export const getRunnerData = async (): Promise<RunnerData[]> => {
 
 export const getItemData = async (): Promise<ItemData[]> => {
   return await getData<ItemData>("아이템");
+};
+
+export const getStoreData = async (): Promise<StoreData[]> => {
+  return await getData<StoreData>("통합상점");
 };
