@@ -35,7 +35,7 @@
     left: 50%;
     width: min(20rem, 90%);
     border-radius: 0.5rem;
-    transform: translate(-50%, 0);
+    transform: translate(-50%, 3rem);
     box-shadow: var(--height-4);
     transition: top 200ms ease-out;
     & > :global(*:first-child) {
