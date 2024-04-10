@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { invalidate } from "$app/navigation";
+  import { invalidateAll } from "$app/navigation";
   import type { Item, Money, RouletteData } from "$lib/data/sheets/model";
   import { useWallet } from "$routes/(main)/wallet.svelte";
   import { RouletteState } from "./roulette";
@@ -62,7 +62,7 @@
       t = setInterval(() => {
         bulbs = bulbs.map((bulb) => !bulb);
       }, 100) as unknown as number;
-      invalidate("header");
+      invalidateAll();
       _state = RouletteState.DroppingReward;
     }
   };
