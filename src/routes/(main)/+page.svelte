@@ -26,7 +26,7 @@
           now >= (event.start?.getTime() ?? 0) &&
           now <= (event.end?.getTime() ?? 0),
       )
-      .toSorted((a, b) => a.end.getTime() - b.end.getTime());
+      .sort((a, b) => a.end.getTime() - b.end.getTime());
   });
 </script>
 
