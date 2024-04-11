@@ -1,14 +1,12 @@
 <script lang="ts">
-  import { invalidateAll } from "$app/navigation";
-  import { api } from "$lib/api/api.gen";
   import { groupBy } from "$lib/shared/util/group-by";
-  import { sendError } from "$lib/ui/error/send-error.js";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import Drawer from "$lib/ui/floating/drawer.svelte";
-    import InventoryItemImage from "$lib/ui/inventory/inventory-item-image.svelte";
+    import AnimatingMoney from "$lib/ui/item/animating-money.svelte";
   import Chips from "$lib/ui/item/chips.svelte";
   import Tokens from "$lib/ui/item/tokens.svelte";
   import OrderItem from "$lib/ui/store/order-item.svelte";
+  import OrderListItem from "$lib/ui/store/order-list-item.svelte";
   import StoreItem from "$lib/ui/store/store-item.svelte";
   import Tab from "$lib/ui/tab/tab.svelte";
 
@@ -30,6 +28,7 @@
   let { data } = $props();
 
   let cart = $state.frozen(new Map<string, number>());
+  let tickets = $state.frozen(new Map<string, number>());
 
   let orderState = $state<OrderState>(OrderState.Idle);
 
@@ -40,7 +39,7 @@
   ]);
   let itemMap = $derived(new Map(data.storeData.map(item => [item.key, item])));
 
-  let sum = $derived([...cart].reduce((o, [key, quantity]) => {
+  let totalPrice = $derived([...cart].reduce((o, [key, quantity]) => {
     // biome-ignore lint/style/noNonNullAssertion: <explanation>
     const item = itemMap.get(key)!;
 
@@ -61,6 +60,8 @@
     chips: 0,
     tokens: 0,
   }));
+
+  let totalTickets = $derived([...tickets].reduce((o, ticket) => ticket[1], 0));
 </script>
 
 {#snippet tab(index: number)}
@@ -99,7 +100,7 @@
   {#if cart.size > 0}
     <Drawer>
       <div class="order__layout">
-        <div class="order__list">
+        <div class="order__list scroll-area">
           {#each cart as [key, quantity] (key)}
             {@const item = itemMap.get(key)!}
             {@const stock = (item.stock ?? Number.POSITIVE_INFINITY) - (data.inventory[key] ?? 0)}
@@ -122,11 +123,11 @@
         <div class="order__sum">
           <div>
             <h1 class="order__title">합계</h1>
-            {#if sum.chips > 0}
-              <Chips quantity={sum.chips} />
+            {#if totalPrice.chips > 0}
+              <Chips quantity={totalPrice.chips} />
             {/if}
-            {#if sum.tokens > 0}
-              <Tokens quantity={sum.tokens} />
+            {#if totalPrice.tokens > 0}
+              <Tokens quantity={totalPrice.tokens} />
             {/if}
           </div>
           <button class="blue emphasis" onclick={async () => {
@@ -137,12 +138,55 @@
     </Drawer>
   {/if}
 {:else if orderState === OrderState.Prepare}
-  <main>
-    {#each cart as [key, quantity] (key)}
-      <div>
-        <InventoryItemImage {key} />
+  <main class="prepare">
+    <div class="scroll-area">
+      {#each cart as [key, quantity] (key)}
+        {@const item = itemMap.get(key)!}
+        {@const havingItems = data.inventory[key] ?? 0}
+        {@const havingTickets = data.inventory["roulette-result-6"] ?? 0}
+        {@const stock = (item.stock ?? Number.POSITIVE_INFINITY) - havingItems}
+        {@const ticketCount = tickets.get(key) ?? 0}
+        <OrderListItem
+          {...item}
+          {quantity}
+          {stock}
+          tickets={ticketCount}
+  
+          onquantityinput={(value) => {
+            const map = new Map(cart);
+            map.set(item.key, value);
+            cart = map;
+          }}
+          onticketinput={(value) => {
+            const map = new Map(tickets);
+            map.set(item.key, value);
+            tickets = map;
+          }}
+          ondelete={() => {
+            const map = new Map(cart);
+            map.delete(item.key);
+            cart = map;
+            
+            const map2 = new Map(tickets);
+            map2.delete(item.key);
+            tickets = map2;
+          }}
+        />
+      {/each}
+    </div>
+    <div class="prepare__footer">
+      <div class="prepare__money">
+        <h1 class="prepare__title">합계</h1>
+        {#if totalPrice.chips > 0}
+          <AnimatingMoney type="chips" quantity={totalPrice.chips} />
+        {/if}
+        {#if totalPrice.tokens > 0}
+          <AnimatingMoney type="tokens" quantity={totalPrice.tokens} />
+        {/if}
       </div>
-    {/each}
+      <button onclick={() => orderState = OrderState.Idle}>뒤로가기</button>
+      <button class="blue emphasis">결제하기</button>
+    </div>
   </main>
 {/if}
 
@@ -155,7 +199,7 @@
 
 <style lang="scss">
   main {
-    margin: 1rem auto;
+    margin: 0 auto;
     width: min(20rem, 100vw);
   }
   .table {
@@ -187,10 +231,31 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, 6rem);
       gap: 1rem;
+      max-height: 10rem;
+      padding: 0.25rem;
     }
     &__sum {
       display: grid;
       grid-template-rows: 1fr max-content;
+    }
+    &__title {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+  }
+  .prepare {
+    display: grid;
+    grid-template-rows: 1fr max-content;
+    height: 100%;
+    &__money {
+      display: grid;
+      justify-items: end;
+      grid-column: 1 / 3;
+    }
+    &__footer {
+      display: grid;
+      padding: 1rem 0;
+      gap: 0.5rem;
     }
     &__title {
       font-size: 1rem;
