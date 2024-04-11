@@ -1,5 +1,8 @@
 <script lang="ts">
+  import { invalidateAll } from "$app/navigation";
+  import { api } from "$lib/api/api.gen.js";
   import { groupBy } from "$lib/shared/util/group-by";
+  import { sendError } from "$lib/ui/error/send-error.js";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import Drawer from "$lib/ui/floating/drawer.svelte";
   import InventoryItemImage from "$lib/ui/inventory/inventory-item-image.svelte";
@@ -196,7 +199,24 @@
       <div class="prepare__footer">
         <button onclick={() => orderState = OrderState.Idle}>돌아가기</button>
         <button class="blue emphasis" onclick={async () => {
-
+          const body = {
+            items: [...cart].map(([key, quantity]) => ({ key, quantity })),
+            tickets: discountedItems.map(x => x.key),
+          }
+          orderState = OrderState.Pending;
+          const res = await api().store.post(body);
+          if (!res.ok) {
+            try {
+              sendError(res.error.message);
+            } catch (_) {}
+            error = res.error.message;
+            orderState = OrderState.Prepare;
+          } else {
+            orderState = OrderState.Idle;
+            cart = new Map();
+            tickets = 0;
+            invalidateAll();
+          }
         }}>결제하기</button>
       </div>
     </div>
