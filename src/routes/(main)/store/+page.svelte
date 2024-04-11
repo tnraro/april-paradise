@@ -2,9 +2,9 @@
   import { groupBy } from "$lib/shared/util/group-by";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import Drawer from "$lib/ui/floating/drawer.svelte";
-    import AnimatingMoney from "$lib/ui/item/animating-money.svelte";
+  import InventoryItemImage from "$lib/ui/inventory/inventory-item-image.svelte";
+  import AnimatingMoney from "$lib/ui/item/animating-money.svelte";
   import Chips from "$lib/ui/item/chips.svelte";
-  import Tokens from "$lib/ui/item/tokens.svelte";
   import OrderItem from "$lib/ui/store/order-item.svelte";
   import OrderListItem from "$lib/ui/store/order-list-item.svelte";
   import StoreItem from "$lib/ui/store/store-item.svelte";
@@ -28,7 +28,7 @@
   let { data } = $props();
 
   let cart = $state.frozen(new Map<string, number>());
-  let tickets = $state.frozen(new Map<string, number>());
+  let tickets = $state(0);
 
   let orderState = $state<OrderState>(OrderState.Idle);
 
@@ -39,29 +39,24 @@
   ]);
   let itemMap = $derived(new Map(data.storeData.map(item => [item.key, item])));
 
-  let totalPrice = $derived([...cart].reduce((o, [key, quantity]) => {
+  let sortedCart = $derived([...cart].reduce((arr, [key, quantity]) => {
     // biome-ignore lint/style/noNonNullAssertion: <explanation>
     const item = itemMap.get(key)!;
-
-    if (item.price.type === "chips") {
-      return {
-        chips: o.chips + item.price.quantity * quantity,
-        tokens: o.tokens,
-      };
+    for (let i = 0; i < quantity; i++) {
+      arr.push({
+        key,
+        price: item.price.quantity,
+      });
     }
-    if (item.price.type === "tokens") {
-      return {
-        chips: o.chips,
-        tokens: o.tokens + item.price.quantity * quantity,
-      };
-    }
-    return o;
-  }, {
-    chips: 0,
-    tokens: 0,
-  }));
+    return arr;
+  }, [] as { key: string, price: number }[]).sort((a, b) => b.price - a.price));
 
-  let totalTickets = $derived([...tickets].reduce((o, ticket) => ticket[1], 0));
+  let discountedItems = $derived(sortedCart.slice(0, tickets));
+  let restItems = $derived(sortedCart.slice(tickets));
+
+  let totalDiscounted = $derived(discountedItems.reduce((sum, b) => sum + b.price, 0));
+  let totalPrice = $derived(restItems.reduce((sum, b) => sum + b.price, 0));
+
   let havingTickets = $derived(data.inventory["roulette-result-6"] ?? 0);
 </script>
 
@@ -124,12 +119,7 @@
         <div class="order__sum">
           <div>
             <h1 class="order__title">합계</h1>
-            {#if totalPrice.chips > 0}
-              <Chips quantity={totalPrice.chips} />
-            {/if}
-            {#if totalPrice.tokens > 0}
-              <Tokens quantity={totalPrice.tokens} />
-            {/if}
+            <Chips quantity={totalPrice} />
           </div>
           <button class="blue emphasis" onclick={async () => {
             orderState = OrderState.Prepare;
@@ -140,45 +130,75 @@
   {/if}
 {:else if orderState === OrderState.Prepare}
   <main class="prepare">
-    <div class="scroll-area">
-      {#each cart as [key, quantity] (key)}
-        {@const item = itemMap.get(key)!}
-        {@const havingItems = data.inventory[key] ?? 0}
-        {@const stock = (item.stock ?? Number.POSITIVE_INFINITY) - havingItems}
-        <OrderListItem
-          {...item}
-          {quantity}
-          {stock}
-  
-          onquantityinput={(value) => {
-            const map = new Map(cart);
-            map.set(item.key, value);
-            cart = map;
-          }}
-          ondelete={() => {
-            const map = new Map(cart);
-            map.delete(item.key);
-            cart = map;
-            
-            const map2 = new Map(tickets);
-            map2.delete(item.key);
-            tickets = map2;
-          }}
-        />
-      {/each}
-    </div>
-    <div class="prepare__footer">
-      <div class="prepare__money">
-        <h1 class="prepare__title">합계</h1>
-        {#if totalPrice.chips > 0}
-          <AnimatingMoney type="chips" quantity={totalPrice.chips} />
-        {/if}
-        {#if totalPrice.tokens > 0}
-          <AnimatingMoney type="tokens" quantity={totalPrice.tokens} />
+    <div class="prepare__sections scroll-area">
+      <div class="prepare__section">
+        {#each cart as [key, quantity] (key)}
+          {@const item = itemMap.get(key)!}
+          {@const havingItems = data.inventory[key] ?? 0}
+          {@const stock = (item.stock ?? Number.POSITIVE_INFINITY) - havingItems}
+          <OrderListItem
+            {...item}
+            {quantity}
+            {stock}
+    
+            onquantityinput={(value) => {
+              const map = new Map(cart);
+              map.set(item.key, value);
+              cart = map;
+            }}
+            ondelete={() => {
+              const map = new Map(cart);
+              map.delete(item.key);
+              cart = map;
+            }}
+          />
+        {/each}
+        <button onclick={() => orderState = OrderState.Idle}>추가하기</button>
+      </div>
+      <div class="prepare__section">
+        <h1 class="prepare__title"><InventoryItemImage key="roulette-result-6" size={24} pixel={false} />아이템 교환권</h1>
+        <div>
+          <input
+            type="number"
+            min="0"
+            max={havingTickets}
+            bind:value={tickets}
+          />
+          /
+          {havingTickets}
+        </div>
+        {#each discountedItems as item}
+          {@const i = itemMap.get(item.key)!}
+          <div class="prepare__discounted-item">
+            <InventoryItemImage key={item.key} size={24} pixel={false} />
+            <div>{i.name}</div>
+            <div>{-item.price}칩</div>
+          </div>
+        {/each}
+      </div>
+      <div class="prepare__section">
+        <div class="prepare__row">
+          <h1 class="prepare__title">결제금액</h1>
+          <AnimatingMoney type="chips" quantity={totalPrice} />
+        </div>
+        <hr />
+        <div class="prepare__row">
+          <div>주문금액</div>
+          <div>{totalPrice + totalDiscounted}칩</div>
+        </div>
+        {#if totalDiscounted > 0}
+          <div class="prepare__row">
+            <div>아이템 교환권</div>
+            <div>{-totalDiscounted}칩</div>
+          </div>
         {/if}
       </div>
-      <button onclick={() => orderState = OrderState.Idle}>뒤로가기</button>
-      <button class="blue emphasis">결제하기</button>
+      <div class="prepare__footer">
+        <button onclick={() => orderState = OrderState.Idle}>돌아가기</button>
+        <button class="blue emphasis" onclick={async () => {
+
+        }}>결제하기</button>
+      </div>
     </div>
   </main>
 {/if}
@@ -240,19 +260,38 @@
     display: grid;
     grid-template-rows: 1fr max-content;
     height: 100%;
-    &__money {
+    &__section {
       display: grid;
-      justify-items: end;
-      grid-column: 1 / 3;
+      border: 1px solid var(--slate-6);
+      border-radius: 1rem;
+      padding: 1rem;
+      gap: 1rem;
+
+      &s {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
     }
     &__footer {
       display: grid;
-      padding: 1rem 0;
+      grid-template-columns: 1fr 1fr;
       gap: 0.5rem;
     }
     &__title {
       font-size: 1rem;
       line-height: 1.5;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    &__discounted-item {
+      display: grid;
+      grid-template-columns: max-content 1fr max-content;
+    }
+    &__row {
+      display: grid;
+      grid-template-columns: 1fr max-content;
     }
   }
 </style>
