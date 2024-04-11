@@ -5,9 +5,9 @@ import { onCaughtFish } from "$lib/data/achievement/achievement";
 import { addAchievements } from "$lib/data/achievement/add-achievements.query";
 import { addFishItem } from "$lib/data/item/add-fish-item";
 import { addGarbageItem } from "$lib/data/item/add-garbage-item";
+import { addLureItem } from "$lib/data/item/add-lure-item";
 import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
 import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
-import { addResource } from "$lib/data/resources/add-resource.query";
 import { getAchievementData, getFishingData } from "$lib/data/sheets/sheets";
 import { pick } from "$lib/shared/random/pick";
 import { z } from "zod";
@@ -31,9 +31,9 @@ export const POST = route(
       const next =
         cipher.update(JSON.stringify({ id, key }), "utf8", "base64url") +
         cipher.final("base64url");
-      await addResource(tx, {
+      await addLureItem(tx, {
         key: body.lure,
-        value: -1,
+        quantity: -1,
       });
 
       return {
