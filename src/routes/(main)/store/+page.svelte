@@ -208,6 +208,7 @@
     &__footer {
       display: flex;
       margin-top: 0.5rem;
+      gap: 0.5rem;
 
       & button {
         flex: 1 1 0;
