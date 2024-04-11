@@ -6,33 +6,41 @@
 
   interface Props {
     key: string;
-    // name: string;
+    name: string;
     stock: number;
     price: Money;
     quantity: number;
-    tickets: number;
 
     onquantityinput?: (value: number) => void;
-    onticketinput?: (value: number) => void;
     ondelete?: () => void;
   }
   let {
     key,
+    name,
     stock,
     price,
-    quantity,
-    tickets,
+    quantity = $bindable(),
     onquantityinput,
-    onticketinput,
     ondelete,
   }: Props = $props();
 </script>
 
 <div class="order-list-item">
-  <InventoryItemImage {key} />
-  <div class="_content">
-    <div class="name">수량</div>
-    <div class="name">아이템 교환권</div>
+  <div class="_header">
+    <div class="_">
+      <h1 class="name">{name}</h1>
+      <p class="description">
+        가격: {price.type === "chips" ? "칩" : "토큰"}
+        {price.quantity}
+      </p>
+    </div>
+    <InventoryItemImage {key} />
+  </div>
+  <div class="_footer">
+    <AnimatingMoney type={price.type} quantity={price.quantity * quantity} />
+    <button class="red trash" onclick={ondelete}>
+      <Icon as="trash2" size={16} />
+    </button>
     <input
       class="n quantity"
       type="number"
@@ -40,33 +48,9 @@
       min="0"
       max={stock}
       oninput={(e) => {
-        const quantity = Math.max(0, Math.min(stock, Number(e.currentTarget.value)));
+        quantity = Math.max(0, Math.min(stock, Number(e.currentTarget.value)));
         onquantityinput?.(quantity);
       }}
-    />
-    <input
-      class="n tickets"
-      type="number"
-      value={tickets}
-      min="0"
-      max={quantity}
-      oninput={(e) => {
-        const tickets = Math.max(
-          0,
-          Math.min(quantity, Number(e.currentTarget.value)),
-        );
-        console.log(tickets)
-        onticketinput?.(tickets);
-      }}
-    />
-  </div>
-  <button class="red trash" onclick={ondelete}>
-    <Icon as="trash2" size={16} />
-  </button>
-  <div class="_footer">
-    <AnimatingMoney
-      type={price.type}
-      quantity={price.quantity * (quantity - tickets)}
     />
   </div>
 </div>
@@ -74,29 +58,34 @@
 <style lang="scss">
   .order-list-item {
     display: grid;
-    grid-template-columns: 4rem 1fr max-content;
     gap: 0.5rem;
-    align-items: center;
+    padding: 0.25rem;
   }
-  ._content {
+  ._header {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
+    grid-template-columns: 1fr 4rem;
     gap: 0 0.5rem;
   }
   ._footer {
-    display: flex;
-    align-items: center;
-    justify-content: end;
-    grid-column: 1 / 4;
+    display: grid;
+    grid-template-columns: 1fr max-content max-content;
+    gap: 0.5rem;
+  }
+  ._ {
+    display: grid;
   }
   .name {
     font-size: 1rem;
+    line-height: 1.5;
   }
-  .times {
-    grid-row: 1 / 3;
+  .description {
+    color: var(--slate-11);
   }
   .n {
     text-align: right;
+    max-width: 6rem;
+  }
+  .trash {
+    align-items: center;
   }
 </style>

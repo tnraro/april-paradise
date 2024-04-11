@@ -15,5 +15,6 @@
     display: inline-flex;
     gap: 0.25rem;
     color: var(--blue-11);
+    align-items: center;
   }
 </style>

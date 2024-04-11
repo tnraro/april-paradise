@@ -62,6 +62,7 @@
   }));
 
   let totalTickets = $derived([...tickets].reduce((o, ticket) => ticket[1], 0));
+  let havingTickets = $derived(data.inventory["roulette-result-6"] ?? 0);
 </script>
 
 {#snippet tab(index: number)}
@@ -143,24 +144,16 @@
       {#each cart as [key, quantity] (key)}
         {@const item = itemMap.get(key)!}
         {@const havingItems = data.inventory[key] ?? 0}
-        {@const havingTickets = data.inventory["roulette-result-6"] ?? 0}
         {@const stock = (item.stock ?? Number.POSITIVE_INFINITY) - havingItems}
-        {@const ticketCount = tickets.get(key) ?? 0}
         <OrderListItem
           {...item}
           {quantity}
           {stock}
-          tickets={ticketCount}
   
           onquantityinput={(value) => {
             const map = new Map(cart);
             map.set(item.key, value);
             cart = map;
-          }}
-          onticketinput={(value) => {
-            const map = new Map(tickets);
-            map.set(item.key, value);
-            tickets = map;
           }}
           ondelete={() => {
             const map = new Map(cart);
