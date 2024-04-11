@@ -17,11 +17,11 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.6.4",
-    "@edgedb/generate": "^0.4.1",
+    "@edgedb/generate": "^0.5.2",
     "@sveltejs/adapter-node": "^5.0.1",
     "@sveltejs/enhanced-img": "^0.2.0",
     "@sveltejs/kit": "^2.5.5",
-    "@sveltejs/vite-plugin-svelte": "3.0.2",
+    "@sveltejs/vite-plugin-svelte": "3.1.0",
     "@types/node": "^20.12.7",
     "lefthook": "^1.6.10",
     "sass": "^1.74.1",
@@ -30,7 +30,7 @@
     "tslib": "^2.6.2",
     "typescript": "^5.4.5",
     "vite": "^5.2.8",
-    "vitest": "^1.4.0"
+    "vitest": "^1.5.0"
   },
   "type": "module",
   "dependencies": {
@@ -47,8 +47,7 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "@sveltejs/enhanced-img@0.2.0": "patches/@sveltejs__enhanced-img@0.2.0.patch",
-      "@edgedb/generate@0.4.1": "patches/@edgedb__generate@0.4.1.patch"
+      "@sveltejs/enhanced-img@0.2.0": "patches/@sveltejs__enhanced-img@0.2.0.patch"
     }
   }
 }
