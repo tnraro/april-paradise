@@ -6,8 +6,6 @@ export const meta: StylebookMeta<typeof Component, Component> = {
   variants: {
     default: {
       key: "ingredient-0",
-      name: "럼",
-      price: { type: "chips", quantity: 100 },
       quantity: 10,
     },
   },

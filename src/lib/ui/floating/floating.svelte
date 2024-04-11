@@ -37,6 +37,6 @@
   {/if}
 {:else if type === FloatingType.Drawer}
   {#if isOpen}
-    <Drawer onclose={close}>Drawer</Drawer>
+    <Drawer>Drawer</Drawer>
   {/if}
 {/if}

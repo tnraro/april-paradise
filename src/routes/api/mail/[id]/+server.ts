@@ -48,12 +48,11 @@ export const PUT = route("put", async (e: RequestEvent) => {
       } else {
         const item = items.get(key);
         if (item == null) throw new Error(`no item: ${key}`);
-        for (let i = 0; i < quantity; i++) {
-          await addItem(tx, {
-            key: item.key,
-            category: item.category,
-          });
-        }
+        await addItem(tx, {
+          key: item.key,
+          category: item.category,
+          quantity: quantity,
+        });
       }
     }
 

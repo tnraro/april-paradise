@@ -24,7 +24,7 @@ export const onCaughtFish = async (client: Executor, fishKey: string) => {
     const fishes = await getFishes(client, {
       category: "fish",
     });
-    const fishMap = new Map(fishes.map((fish) => [fish.item, fish.quantity]));
+    const fishMap = new Map(fishes.map((fish) => [fish.key, fish.quantity]));
     const sum = fishes.reduce((sum, fish) => sum + fish.quantity, 0);
 
     const keys = [
@@ -55,7 +55,7 @@ export const onCaughtFish = async (client: Executor, fishKey: string) => {
           if (grade < FishingGrade.Legendary) return false;
           const targetFishes = groupBy(
             fishes,
-            (x) => `${fishingDataMap.get(x.item)?.grade ?? 0}`,
+            (x) => `${fishingDataMap.get(x.key)?.grade ?? 0}`,
           );
           return (
             (targetFishes.get(`${FishingGrade.Legendary}`)?.length ?? 0) >= 5 &&
