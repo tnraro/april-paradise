@@ -36,7 +36,6 @@
     transform: translate(-50%, -50%);
     background: white;
     box-shadow: var(--height-4);
-    z-index: 4;
     overflow: auto;
   }
 </style>

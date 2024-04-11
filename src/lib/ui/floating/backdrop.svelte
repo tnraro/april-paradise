@@ -36,7 +36,6 @@
     width: 100%;
     height: 100%;
     background: var(--slate-a9);
-    z-index: 1;
     backdrop-filter: blur(4px);
   }
 </style>

@@ -33,7 +33,6 @@
     border-radius: 0.5rem 0.5rem 0 0;
     background: white;
     box-shadow: var(--height-4);
-    z-index: 4;
     overflow: auto;
   }
 </style>
