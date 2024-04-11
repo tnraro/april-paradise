@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { api } from "$lib/api/api.gen";
+  import { invalidateAll } from "$app/navigation";
+  import { api } from "$lib/api/api.gen";
   import { groupBy } from "$lib/shared/util/group-by";
   import Drawer from "$lib/ui/floating/drawer.svelte";
   import InventoryItemImage from "$lib/ui/inventory/inventory-item-image.svelte";
@@ -142,7 +143,10 @@
             const res = await api().store.post([...cart].map(([key, quantity]) => ({ key, quantity })));
             if (!res.ok) {
               throw res;
+            } else {
+              await invalidateAll();
             }
+            cart = new Map();
             orderState = OrderState.Idle;
           }}>주문하기</button>
         {:else if orderState === OrderState.Pending}
