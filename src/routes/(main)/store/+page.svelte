@@ -110,7 +110,7 @@
             {quantity}
             oninput={(value) => {
               const map = new Map(cart);
-              map.set(item.key, Math.min(value, stock));
+              map.set(item.key, Math.max(Math.min(value, stock), 1));
               cart = map;
             }}
             ondelete={() => {
