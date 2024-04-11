@@ -303,21 +303,21 @@
       <FishingFishPortrait fish={S.caughtFish} />
       <FishingCaughtFish fish={S.caughtFish} />
       <FishingCatchphrase fish={S.caughtFish} />
-      <button onclick={S.idle}>그렇군요</button>
+      <button onclick={S.idle}>아싸! 얼른 자랑하자.</button>
     </div>
   </Dialog>
 {:else if S.state === FishingState.Missing}
   <Dialog>
     <div class="caught-fish-dialog">
       물고기를 놓쳤다!
-      <button onclick={S.idle}>그렇군요</button>
+      <button onclick={S.idle}>닫기</button>
     </div>
   </Dialog>
 {:else if S.state === FishingState.Snapped}
   <Dialog>
     <div class="caught-fish-dialog">
       낚시줄이 끊어졌다!
-      <button onclick={S.idle}>그렇군요</button>
+      <button onclick={S.idle}>닫기</button>
     </div>
   </Dialog>
 {/if}
@@ -329,7 +329,7 @@
         onclick={() => {
           errorMessage = undefined;
           S.idle();
-        }}>그렇군요</button
+        }}>닫기</button
       >
     </div>
   </Dialog>

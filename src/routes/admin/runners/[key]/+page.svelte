@@ -18,7 +18,8 @@
     } else {
       const code = res.data.code;
       const url = `${location.origin}/invite?code=${code}`;
-      await navigator.clipboard.writeText(url);
+      const template = `${data.user.name}님, 카락실에 오신 걸 환영합니다^^*\n간단하게 가입을 도와드리겠습니다. 즐거운 시간 되세요~!\n\n${url}`;
+      await navigator.clipboard.writeText(template);
     }
   };
 
