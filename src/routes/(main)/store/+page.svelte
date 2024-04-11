@@ -5,6 +5,7 @@
   import { sendError } from "$lib/ui/error/send-error.js";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import Drawer from "$lib/ui/floating/drawer.svelte";
+    import InventoryItemImage from "$lib/ui/inventory/inventory-item-image.svelte";
   import Chips from "$lib/ui/item/chips.svelte";
   import Tokens from "$lib/ui/item/tokens.svelte";
   import OrderItem from "$lib/ui/store/order-item.svelte";
@@ -23,6 +24,7 @@
   };
   const enum OrderState {
     Idle,
+    Prepare,
     Pending,
   }
   let { data } = $props();
@@ -59,8 +61,6 @@
     chips: 0,
     tokens: 0,
   }));
-
-  let hasExchangeTicket = $derived(data.inventory["roulette-result-6"] > 0);
 </script>
 
 {#snippet tab(index: number)}
@@ -77,82 +77,73 @@
       <StoreItem
         {...item}
         {stock}
-        {hasExchangeTicket}
         {quantity}
         onadd={() => {
           const map = new Map(cart);
-          map.set(item.key, quantity + 1);
+          const value = map.get(item.key) ?? 0;
+          map.set(item.key, value + 1);
           cart = map;
-        }}
-        onexchange={() => {
-
         }}
       />
     {/each}
   </div>
 {/snippet}
 
-<main>
-  <h1>상점</h1>
-  <Tab prefix="store" n={categories.length} {tab} {tabpanel} />
-  <div class="store__footer" />
-</main>
+{#if orderState === OrderState.Idle}
+  <main>
+    <h1>상점</h1>
+    <Tab prefix="store" n={categories.length} {tab} {tabpanel} />
+    <div class="store__footer" />
+  </main>
 
-{#if cart.size > 0}
-  <Drawer>
-    <div class="order__layout">
-      <div class="order__list">
-        {#each cart as [key, quantity] (key)}
-          {@const item = itemMap.get(key)!}
-          {@const stock = (item.stock ?? Number.POSITIVE_INFINITY) - (data.inventory[key] ?? 0)}
-          <OrderItem
-            {key}
-            {quantity}
-            oninput={(value) => {
-              const map = new Map(cart);
-              map.set(item.key, Math.max(Math.min(value, stock), 1));
-              cart = map;
-            }}
-            ondelete={() => {
-              const map = new Map(cart);
-              map.delete(item.key);
-              cart = map;
-            }}
-          />
-        {/each}
-      </div>
-      <div class="order__sum">
-        <div>
-          <h1 class="order__title">합계</h1>
-          {#if sum.chips > 0}
-            <Chips quantity={sum.chips} />
-          {/if}
-          {#if sum.tokens > 0}
-            <Tokens quantity={sum.tokens} />
-          {/if}
+  {#if cart.size > 0}
+    <Drawer>
+      <div class="order__layout">
+        <div class="order__list">
+          {#each cart as [key, quantity] (key)}
+            {@const item = itemMap.get(key)!}
+            {@const stock = (item.stock ?? Number.POSITIVE_INFINITY) - (data.inventory[key] ?? 0)}
+            <OrderItem
+              {key}
+              quantity={quantity}
+              oninput={(value) => {
+                const map = new Map(cart);
+                map.set(item.key, Math.max(Math.min(value, stock), 1));
+                cart = map;
+              }}
+              ondelete={() => {
+                const map = new Map(cart);
+                map.delete(item.key);
+                cart = map;
+              }}
+            />
+          {/each}
         </div>
-        {#if orderState === OrderState.Idle}
+        <div class="order__sum">
+          <div>
+            <h1 class="order__title">합계</h1>
+            {#if sum.chips > 0}
+              <Chips quantity={sum.chips} />
+            {/if}
+            {#if sum.tokens > 0}
+              <Tokens quantity={sum.tokens} />
+            {/if}
+          </div>
           <button class="blue emphasis" onclick={async () => {
-            orderState = OrderState.Pending;
-            const res = await api().store.post([...cart].map(([key, quantity]) => ({ key, quantity })));
-            if (!res.ok) {
-              try {
-                sendError(res.error.message);
-              } catch (_) {}
-              orderState = OrderState.Idle;
-              error = res.error.message;
-            } else {
-              await invalidateAll();
-              cart = new Map();
-              orderState = OrderState.Idle;
-            }
+            orderState = OrderState.Prepare;
           }}>주문하기</button>
-        {:else if orderState === OrderState.Pending}
-          <button class="blue emphasis" disabled>처리 중</button>
-        {/if}
+        </div>
       </div>
-    </div>
-  </Drawer>
+    </Drawer>
+  {/if}
+{:else if orderState === OrderState.Prepare}
+  <main>
+    {#each cart as [key, quantity] (key)}
+      <div>
+        <InventoryItemImage {key} />
+      </div>
+    {/each}
+  </main>
 {/if}
 
 {#if error}
