@@ -70,6 +70,7 @@
   <h2>{L(category)}</h2>
   <div class="table">
     {#each items as item}
+      {@const ornament = Math.round(item.price.quantity * 0.876) * 10}
       <div class="item">
         <div class="item__header">
           <InventoryItemImage key={item.key} />
@@ -77,8 +78,8 @@
         <div class="item__content">
           <div class="item__name">{item.name}</div>
           <div class="item__ornament">
-            {Math.round((1 - item.price.quantity / 149) * 100)}%
-            <span class="item__ornament--line-through">{149}</span>
+            {Math.round((1 - item.price.quantity / ornament) * 100)}%
+            <span class="item__ornament--line-through">{ornament}</span>
           </div>
           {#if item.price.type === "chips"}
             <div class="money money--chips">
