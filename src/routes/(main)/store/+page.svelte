@@ -59,6 +59,8 @@
     chips: 0,
     tokens: 0,
   }));
+
+  let hasExchangeTicket = $derived(data.inventory["roulette-result-6"] > 0);
 </script>
 
 {#snippet tab(index: number)}
@@ -106,7 +108,9 @@
             map.set(item.key, quantity + 1);
             cart = map;
           }}>담기</button>
-          <button>교환</button>
+          {#if hasExchangeTicket}
+            <button>교환</button>
+          {/if}
         </div>
       </div>
     {/each}

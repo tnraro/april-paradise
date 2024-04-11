@@ -1,11 +1,23 @@
 import { getStoreData } from "$lib/data/sheets/sheets";
+import { page } from "./page.query";
 
-export const load = async () => {
+export const load = async ({ locals }) => {
   const storeData = await getStoreData();
-  // 아이템 교환권 개수
-  // 스톡이 있는 아이템들 개수
+  const items = await page(locals.client, {
+    items: [
+      "roulette-result-6",
+      ...storeData.filter((x) => x.stock).map((x) => x.key),
+    ],
+  });
 
   return {
     storeData,
+    inventory: items.reduce(
+      (o, item) => {
+        o[item.key] = item.quantity;
+        return o;
+      },
+      {} as Record<string, number>,
+    ),
   };
 };
