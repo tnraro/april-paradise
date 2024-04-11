@@ -47,7 +47,8 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "@sveltejs/enhanced-img@0.2.0": "patches/@sveltejs__enhanced-img@0.2.0.patch"
+      "@sveltejs/enhanced-img@0.2.0": "patches/@sveltejs__enhanced-img@0.2.0.patch",
+      "@edgedb/generate@0.5.2": "patches/@edgedb__generate@0.5.2.patch"
     }
   }
 }

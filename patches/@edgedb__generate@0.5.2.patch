@@ -1,0 +1,13 @@
+diff --git a/dist/queries.js b/dist/queries.js
+index af59bf02527395c1fe73770493ad7026a8f2e806..df54fff6ab7ad63755c7c0bf4691f18fd24d1cb4 100644
+--- a/dist/queries.js
++++ b/dist/queries.js
+@@ -114,7 +114,7 @@ async function getMatches(root, schemaDir) {
+     return edgedb_1.adapter.walk(root, {
+         match: [/[^\/]\.edgeql$/],
+         skip: [
+-            /node_modules/,
++            /\.(?:git|svelte-kit)|node_modules|build/,
+             RegExp(`${schemaDir}\\${edgedb_1.adapter.path.sep}migrations`),
+             RegExp(`${schemaDir}\\${edgedb_1.adapter.path.sep}fixups`),
+         ],
