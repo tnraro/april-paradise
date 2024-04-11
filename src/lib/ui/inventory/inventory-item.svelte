@@ -18,7 +18,7 @@
   {#if hasItem}
     <Tooltip.Root openDelay={0} disableHoverableContent={true}>
       <Tooltip.Trigger class="inventory-item__trigger">
-        <InventoryItemImage key={key} />
+        <InventoryItemImage {key} silhouette={!hasItem} />
       </Tooltip.Trigger>
       <Tooltip.Content side="bottom" sideOffset={4}>
         {#if children}
@@ -27,7 +27,7 @@
       </Tooltip.Content>
     </Tooltip.Root>
   {:else}
-    <InventoryItemImage key={key} />
+    <InventoryItemImage {key} silhouette={!hasItem} />
   {/if}
   {#if name}
     <div class="item__name">{hasItem ? name : "???"}</div>

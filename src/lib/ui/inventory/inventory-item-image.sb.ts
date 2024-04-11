@@ -16,5 +16,17 @@ export const meta: StylebookMeta<typeof Component, Component> = {
     unknown: {
       key: "unknown",
     },
+    slihouette: {
+      key: "fish-9",
+      silhouette: true,
+    },
+    notPixel: {
+      key: "fish-9",
+      pixel: false,
+    },
+    small: {
+      key: "fish-9",
+      size: 24,
+    },
   },
 };
