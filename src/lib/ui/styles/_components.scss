@@ -103,3 +103,21 @@
     overflow: auto hidden;
   }
 }
+
+[data-toggle-group-root] {
+  display: flex;
+  border-radius: 0.5rem;
+  background: var(--slate-3);
+  padding: 0.25rem 0.5rem;
+  gap: 0.25rem;
+
+  &[data-orientation=vertical] {
+    flex-direction: column;
+  }
+}
+
+[data-toggle-group-item] {
+  &[data-state=on] {
+    background: var(--slate-5);
+  }
+}

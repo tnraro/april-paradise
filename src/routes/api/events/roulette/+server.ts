@@ -1,5 +1,5 @@
 import { route } from "$lib/api/server";
-import { addTicketItem } from "$lib/data/item/add-ticket-item.query";
+import { addTicketItem } from "$lib/data/item/add-ticket-item";
 import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
 import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
 import { getRouletteData } from "$lib/data/sheets/sheets";

@@ -199,6 +199,10 @@ module default {
     }
     required key: str;
     required category: str;
+    required quantity: int64 {
+      constraint min_value(0);
+      default := 0;
+    }
     required createdAt: datetime {
       default := datetime_of_transaction();
     }
@@ -209,6 +213,15 @@ module default {
         patient := __new__.key,
       }
     );
+    trigger log_update_item after update for each do (
+      insert Log {
+        table := "Item::" ++ __new__.category,
+        action := "update",
+        patient := __old__.key,
+        change := <str>__old__.quantity ++ "->" ++ <str>__new__.quantity,
+      }
+    );
+    constraint exclusive on ((.owner, .key));
 
     access policy item__admin
       allow all

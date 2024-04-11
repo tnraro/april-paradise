@@ -1,7 +1,7 @@
 import { route } from "$lib/api/server";
+import { addLureItem } from "$lib/data/item/add-lure-item";
 import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
 import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
-import { addResource } from "$lib/data/resources/add-resource.query";
 import { getLureData } from "$lib/data/sheets/sheets";
 import { lures } from "$lib/shared/config/lures";
 import { error } from "@sveltejs/kit";
@@ -31,9 +31,9 @@ export const POST = route(
               tokens: -lureData.price.quantity * quantity,
             });
           }
-          await addResource(tx, {
+          await addLureItem(tx, {
             key,
-            value: quantity,
+            quantity,
           });
         }
       });

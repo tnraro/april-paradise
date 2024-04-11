@@ -8,5 +8,9 @@ export const meta: StylebookMeta<typeof Component, Component> = {
       key: "sample-fish",
       quantity: 53,
     },
+    zero: {
+      key: "fish-0",
+      quantity: 0,
+    },
   },
 };
