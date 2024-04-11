@@ -3,6 +3,8 @@ import { addItem } from "$lib/data/item/add-item.query";
 import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
 import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
 import { getStoreData } from "$lib/data/sheets/sheets";
+import { error } from "@sveltejs/kit";
+import { ConstraintViolationError } from "edgedb";
 import { z } from "zod";
 import type { RequestEvent } from "./$types";
 
@@ -62,5 +64,16 @@ export const POST = route(
         }),
       )
       .min(1),
+    err(e, re, body) {
+      if (e instanceof ConstraintViolationError) {
+        if (e.message.includes("chips")) {
+          error(400, "칩이 부족합니다");
+        }
+        if (e.message.includes("tokens")) {
+          error(400, "토큰이 부족합니다");
+        }
+      }
+      throw e;
+    },
   },
 );

@@ -2,6 +2,8 @@
   import { invalidateAll } from "$app/navigation";
   import { api } from "$lib/api/api.gen";
   import { groupBy } from "$lib/shared/util/group-by";
+  import { sendError } from "$lib/ui/error/send-error.js";
+  import Dialog from "$lib/ui/floating/dialog.svelte";
   import Drawer from "$lib/ui/floating/drawer.svelte";
   import InventoryItemImage from "$lib/ui/inventory/inventory-item-image.svelte";
   import Chips from "$lib/ui/item/chips.svelte";
@@ -28,6 +30,8 @@
   let cart = $state.frozen(new Map<string, number>());
 
   let orderState = $state<OrderState>(OrderState.Idle);
+
+  let error = $state<string>();
 
   let categories = $derived([
     ...groupBy(data.storeData, (store) => store.category),
@@ -142,12 +146,16 @@
             orderState = OrderState.Pending;
             const res = await api().store.post([...cart].map(([key, quantity]) => ({ key, quantity })));
             if (!res.ok) {
-              throw res;
+              try {
+                sendError(res.error.message);
+              } catch (_) {}
+              orderState = OrderState.Idle;
+              error = res.error.message;
             } else {
               await invalidateAll();
+              cart = new Map();
+              orderState = OrderState.Idle;
             }
-            cart = new Map();
-            orderState = OrderState.Idle;
           }}>주문하기</button>
         {:else if orderState === OrderState.Pending}
           <button class="blue emphasis" disabled>처리 중</button>
@@ -155,6 +163,13 @@
       </div>
     </div>
   </Drawer>
+{/if}
+
+{#if error}
+  <Dialog onclose={() => (error = undefined)}>
+    {error}
+    <button onclick={() => (error = undefined)}>닫기</button>
+  </Dialog>
 {/if}
 
 <style lang="scss">
