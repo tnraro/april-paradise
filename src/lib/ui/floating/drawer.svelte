@@ -3,16 +3,13 @@
   import { fly } from "svelte/transition";
   import { focusTrap } from "../actions/focus-trap";
   import { portal } from "../actions/portal";
-  import Backdrop from "./backdrop.svelte";
 
   interface Props {
     children: Snippet;
-    onclose?: () => void;
   }
-  let { children, onclose }: Props = $props();
+  let { children }: Props = $props();
 </script>
 
-<Backdrop {onclose} />
 <div
   in:fly={{ duration: 200, y: 500 }}
   out:fly={{ duration: 200, y: 500 }}
@@ -31,7 +28,7 @@
     bottom: 0;
     left: 0;
     width: 100vw;
-    max-height: 100dvh;
+    max-height: 50dvh;
     padding: 1rem;
     border-radius: 0.5rem 0.5rem 0 0;
     background: white;
