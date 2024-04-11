@@ -9,7 +9,8 @@
       | "log-out"
       | "home"
       | "wrench"
-      | "shopping-cart";
+      | "shopping-cart"
+      | "trash2";
     size?: number;
     "stroke-width"?: number;
   }

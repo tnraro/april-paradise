@@ -125,11 +125,20 @@
       <div class="order__list">
         {#each cart as [key, quantity] (key)}
           {@const item = itemMap.get(key)!}
-          <OrderItem {key} {quantity} oninput={(value) => {
-            const map = new Map(cart);
-            map.set(item.key, value);
-            cart = map;
-          }} />
+          <OrderItem
+            {key}
+            {quantity}
+            oninput={(value) => {
+              const map = new Map(cart);
+              map.set(item.key, value);
+              cart = map;
+            }}
+            ondelete={() => {
+              const map = new Map(cart);
+              map.delete(item.key);
+              cart = map;
+            }}
+          />
         {/each}
       </div>
       <div class="order__sum">
