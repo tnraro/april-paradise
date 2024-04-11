@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "bun -b vite dev",
-    "build": "bun -b vite build",
+    "dev": "vite dev",
+    "build": "vite build",
     "preview": "bun -b vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -13,12 +13,12 @@
     "format": "pnpm biome format . --write",
     "generate:edgeql": "pnpm exec generate queries",
     "generate:api": "bun run scripts/api-gen/index.ts",
-    "gen": "pnpm run --parallel /^generate:/",
-    "upload": "bun ./upload.sh"
+    "gen": "pnpm run --parallel /^generate:/"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.6.4",
     "@edgedb/generate": "^0.4.1",
+    "@sveltejs/adapter-node": "^5.0.1",
     "@sveltejs/enhanced-img": "^0.2.0",
     "@sveltejs/kit": "^2.5.5",
     "@sveltejs/vite-plugin-svelte": "3.0.2",
@@ -26,7 +26,6 @@
     "lefthook": "^1.6.8",
     "sass": "^1.74.1",
     "svelte": "5.0.0-next.94",
-    "svelte-adapter-bun": "^0.5.2",
     "svelte-check": "^3.6.9",
     "tslib": "^2.6.2",
     "typescript": "^5.4.4",
