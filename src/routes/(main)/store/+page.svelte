@@ -1,23 +1,59 @@
 <script lang="ts">
+    import { api } from "$lib/api/api.gen";
   import { groupBy } from "$lib/shared/util/group-by";
+  import Drawer from "$lib/ui/floating/drawer.svelte";
   import InventoryItemImage from "$lib/ui/inventory/inventory-item-image.svelte";
+  import Chips from "$lib/ui/item/chips.svelte";
+  import Tokens from "$lib/ui/item/tokens.svelte";
+  import OrderItem from "$lib/ui/store/order-item.svelte";
   import Tab from "$lib/ui/tab/tab.svelte";
 
   const L = (category: string) => {
     switch (category) {
       case "lure":
-        return "루어";
+        return "미끼";
       case "ingredient":
         return "재료";
       case "misc":
         return "기타";
     }
   };
+  const enum OrderState {
+    Idle,
+    Pending,
+  }
   let { data } = $props();
 
+  let cart = $state.frozen(new Map<string, number>());
+
+  let orderState = $state<OrderState>(OrderState.Idle);
+
   let categories = $derived([
-    ...groupBy(data.storeData, (store) => store.category)
+    ...groupBy(data.storeData, (store) => store.category),
   ]);
+  let itemMap = $derived(new Map(data.storeData.map(item => [item.key, item])));
+
+  let sum = $derived([...cart].reduce((o, [key, quantity]) => {
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    const item = itemMap.get(key)!;
+
+    if (item.price.type === "chips") {
+      return {
+        chips: o.chips + item.price.quantity * quantity,
+        tokens: o.tokens,
+      };
+    }
+    if (item.price.type === "tokens") {
+      return {
+        chips: o.chips,
+        tokens: o.tokens + item.price.quantity * quantity,
+      };
+    }
+    return o;
+  }, {
+    chips: 0,
+    tokens: 0,
+  }));
 </script>
 
 {#snippet tab(index: number)}
@@ -51,10 +87,20 @@
             </div>
           {/if}
           <div class="item__ornament--bold">무료 배송</div>
+          {#if item.stock != null}
+            {#if item.stock > 0}
+              <div class="item__">재고: {item.stock}</div>
+            {/if}
+          {/if}
         </div>
         <div class="item__footer">
-          <button class="blue">담기</button>
-          <!-- <button>교환</button> -->
+          <button class="blue" onclick={() => {
+            const map = new Map(cart);
+            const quantity = map.get(item.key) ?? 0;
+            map.set(item.key, quantity + 1);
+            cart = map;
+          }}>담기</button>
+          <button>교환</button>
         </div>
       </div>
     {/each}
@@ -63,10 +109,49 @@
 
 <main>
   <h1>상점</h1>
-  <div>
-    <Tab prefix="store" n={categories.length} {tab} {tabpanel} />
-  </div>
+  <Tab prefix="store" n={categories.length} {tab} {tabpanel} />
+  <div class="store__footer" />
 </main>
+
+{#if cart.size > 0}
+  <Drawer>
+    <div class="order__layout">
+      <div class="order__list">
+        {#each cart as [key, quantity] (key)}
+          {@const item = itemMap.get(key)!}
+          <OrderItem {key} {quantity} oninput={(value) => {
+            const map = new Map(cart);
+            map.set(item.key, value);
+            cart = map;
+          }} />
+        {/each}
+      </div>
+      <div class="order__sum">
+        <div>
+          <h1 class="order__title">합계</h1>
+          {#if sum.chips > 0}
+            <Chips quantity={sum.chips} />
+          {/if}
+          {#if sum.tokens > 0}
+            <Tokens quantity={sum.tokens} />
+          {/if}
+        </div>
+        {#if orderState === OrderState.Idle}
+          <button class="blue emphasis" onclick={async () => {
+            orderState = OrderState.Pending;
+            const res = await api().store.post([...cart].map(([key, quantity]) => ({ key, quantity })));
+            if (!res.ok) {
+              throw res;
+            }
+            orderState = OrderState.Idle;
+          }}>주문하기</button>
+        {:else if orderState === OrderState.Pending}
+          <button class="blue emphasis" disabled>처리 중</button>
+        {/if}
+      </div>
+    </div>
+  </Drawer>
+{/if}
 
 <style lang="scss">
   main {
@@ -129,7 +214,30 @@
     padding: 0.25rem 0.5rem;
     gap: 0.25rem;
   }
-  :global(.store__tab[aria-selected=true]) {
+  :global(.store__tab[aria-selected="true"]) {
     background: var(--slate-5);
+  }
+  .store__footer {
+    height: 100vh;
+  }
+  .order {
+    &__layout {
+      display: grid;
+      grid-template-columns: 1fr 6rem;
+      gap: 1rem;
+    }
+    &__list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 6rem);
+      gap: 1rem;
+    }
+    &__sum {
+      display: grid;
+      grid-template-rows: 1fr max-content;
+    }
+    &__title {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
   }
 </style>

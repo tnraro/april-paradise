@@ -11,8 +11,9 @@
      * @default true
      */
     pixel?: boolean;
+    size?: number;
   }
-  let { key, pixel = true, silhouette = false }: Props = $props();
+  let { key, pixel = true, silhouette = false, size = 64 }: Props = $props();
 
   let src = $state<string>();
 
@@ -24,19 +25,26 @@
 </script>
 
 {#if src}
-  <enhanced:img class="img" class:pixel class:silhouette {src} />
+  <enhanced:img
+    class="img"
+    class:pixel
+    class:silhouette
+    {src}
+    style:---size="{size}px"
+  />
 {:else}
   <enhanced:img
     class="img pixel"
     class:silhouette
     src="$img/items/sample-fish.png?w=64"
+    style:---size="{size}px"
   />
 {/if}
 
 <style lang="scss">
   .img {
-    width: 64px;
-    height: 64px;
+    width: var(---size);
+    height: var(---size);
     border-radius: 0.5rem;
   }
   .silhouette {
