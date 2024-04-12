@@ -105,3 +105,12 @@ export interface StoreData {
   price: Money;
   stock?: number;
 }
+
+export interface CocktailRouteData {
+  key: string;
+  title: string;
+  npc: string;
+  script: string;
+  next: string[];
+  triggerType: string;
+}

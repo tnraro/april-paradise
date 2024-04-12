@@ -1,6 +1,7 @@
 import type {
   AchievementData,
   CocktailNpcData,
+  CocktailRouteData,
   CocktailStoreData,
   FishingData,
   IndexData,
@@ -112,6 +113,16 @@ export const config = {
       category: parse(row.category).string().unwrap(),
       price: parse(row.price).money().unwrap(),
       stock: parse(row.stock).number().unwrap(),
+    })),
+    c("칵테일루트", "A1:F", (row: Raw<CocktailRouteData>) => ({
+      key: parse(row.key).string().unwrap(),
+      title: parse(row.title).string().unwrap(),
+      npc: parse(row.npc).string().unwrap(),
+      script: parse(row.script).string().unwrap(),
+      next: parse(row.next)
+        .array(/\s*\n\s*/)
+        .unwrap(),
+      triggerType: parse(row.triggerType).string().unwrap(),
     })),
   ],
 };

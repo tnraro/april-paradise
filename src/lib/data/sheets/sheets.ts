@@ -5,6 +5,7 @@ import { client } from "../client";
 import type {
   AchievementData,
   CocktailNpcData,
+  CocktailRouteData,
   CocktailStoreData,
   FishingData,
   IndexData,
@@ -65,4 +66,8 @@ export const getItemData = async (): Promise<ItemData[]> => {
 
 export const getStoreData = async (): Promise<StoreData[]> => {
   return await getData<StoreData>("통합상점");
+};
+
+export const getCocktailRouteData = async (): Promise<CocktailRouteData[]> => {
+  return await getData<CocktailRouteData>("칵테일루트");
 };

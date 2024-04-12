@@ -197,6 +197,17 @@ export class Parser<T = never> {
     };
     return this;
   }
+  array(delimiter: string | RegExp): Parser<T | string[]> {
+    if (this.#result.ok) return this;
+    if (this.#result.error == null) return this;
+    const text = this.#result.error;
+
+    this.#result = {
+      ok: true,
+      data: text.split(delimiter) as T,
+    };
+    return this;
+  }
   unwrap() {
     if (this.#result.ok) return this.#result.data;
     return null as unknown as T;
