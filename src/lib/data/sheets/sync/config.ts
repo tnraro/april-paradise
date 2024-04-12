@@ -114,7 +114,7 @@ export const config = {
       price: parse(row.price).money().unwrap(),
       stock: parse(row.stock).number().unwrap(),
     })),
-    c("칵테일루트", "A1:F", (row: Raw<CocktailRouteData>) => ({
+    c("칵테일루트", "A1:G", (row: Raw<CocktailRouteData>) => ({
       key: parse(row.key).string().unwrap(),
       title: parse(row.title).string().unwrap(),
       npc: parse(row.npc).string().unwrap(),
@@ -123,6 +123,7 @@ export const config = {
         .array(/\s*\n\s*/)
         .unwrap(),
       triggerType: parse(row.triggerType).string().unwrap(),
+      back: parse(row.back).string().unwrap(),
     })),
   ],
 };

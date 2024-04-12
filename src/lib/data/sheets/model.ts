@@ -113,4 +113,5 @@ export interface CocktailRouteData {
   script: string;
   next: string[];
   triggerType: string;
+  back: string;
 }
