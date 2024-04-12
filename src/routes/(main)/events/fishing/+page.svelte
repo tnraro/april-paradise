@@ -194,7 +194,6 @@
   <div class="fish__description">
     {fish.description}
   </div>
-  <div>미끼: {fish.lure}</div>
 {/snippet}
 {#snippet tab(index: number)}
   {#if index === TabIndex.Game}
