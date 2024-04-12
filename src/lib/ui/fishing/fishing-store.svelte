@@ -31,13 +31,13 @@
       ...buffer,
       [lure.key]: (buffer?.[lure.key as keyof Lures] ?? 0) + 1,
     };
-    if (!isPending) {
+    if (!pending) {
       send();
     }
   };
   const send = async () => {
     if (buffer == null) return;
-    isPending = true;
+    pending = true;
     const payload = buffer;
     buffer = undefined;
     const res = await api().events.fishing.lure.post(payload);
@@ -47,7 +47,7 @@
         onerror?.(res.error.message);
       }
     } catch (error) {}
-    isPending = false;
+    pending = false;
     send();
   };
   const rollback = (payload: Payload) => {
@@ -75,10 +75,10 @@
   }
   interface Props {
     onerror?: (message: string) => void;
+    pending: boolean;
   }
-  let { onerror }: Props = $props();
+  let { onerror, pending = $bindable() }: Props = $props();
   let buffer: Payload | undefined;
-  let isPending = $state(false);
 </script>
 
 <div class="store">

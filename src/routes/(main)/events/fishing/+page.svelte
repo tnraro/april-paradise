@@ -1,5 +1,6 @@
 <script lang="ts">
   import background from "$img/fishing/background.png?enhanced&w=1024";
+  import Icon from "$img/icon.svelte";
   import { api } from "$lib/api/api.gen";
   import { type FishingData, FishingGrade, type Money } from "$lib/data/sheets/model.js";
   import { groupBy } from "$lib/shared/util/group-by.js";
@@ -187,6 +188,8 @@
       }
     });
   });
+
+  let pending = $state(false);
 </script>
 
 {#snippet fishDescription(fish: FishingData)}  
@@ -210,7 +213,16 @@
   {#if index === TabIndex.Game}
     {#if S.state === FishingState.Idle}
       <FishingLures bind:value={selectedLure} {currentLures} />
-      <button class="blue emphasis tab__btn" onclick={() => S.cast(selectedLure)}>던지기</button>
+      {#if pending}
+        <button class="tab__btn" disabled={true}>
+          동기화 중
+          <div class="animate-spin">
+            <Icon as="loader-circle" />
+          </div>
+        </button>
+      {:else}
+        <button class="blue emphasis tab__btn" onclick={() => S.cast(selectedLure)} disabled={pending}>던지기</button>
+      {/if}
     {:else if S.state === FishingState.Biting}
       <button class="blue emphasis tab__btn" onclick={S.pull}>낚아채기</button>
     {:else if S.state === FishingState.Pulling}
@@ -266,7 +278,7 @@
   {:else if index === TabIndex.Store}
     <div>
       <h1 class="title">미끼 상점</h1>
-      <FishingStore onerror={S.error} />
+      <FishingStore onerror={S.error} bind:pending />
     </div>
   {/if}
 {/snippet}
