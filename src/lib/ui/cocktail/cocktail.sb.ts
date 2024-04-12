@@ -12,6 +12,7 @@ export const meta: StylebookMeta<typeof Component, Component> = {
       next: ["0"],
       triggerType: null,
       back: null,
+      visiteds: [],
     },
     npc: {
       key: "조사-갑판-스태프에 대해 물어보기",
@@ -22,6 +23,7 @@ export const meta: StylebookMeta<typeof Component, Component> = {
       next: null,
       triggerType: null,
       back: "갑판3",
+      visiteds: [],
     },
     탐색: {
       key: "승무원실",
@@ -42,6 +44,7 @@ export const meta: StylebookMeta<typeof Component, Component> = {
       ],
       triggerType: "탐색",
       back: "탐색하기",
+      visiteds: [],
     },
     조사: {
       key: "라운지3",
@@ -57,6 +60,7 @@ export const meta: StylebookMeta<typeof Component, Component> = {
       ],
       triggerType: "조사",
       back: "조사하기",
+      visiteds: [],
     },
   },
 };
