@@ -62,9 +62,15 @@ export const onCaughtFish = async (client: Executor, fishKey: string) => {
             (targetFishes.get(`${FishingGrade.Mythic}`)?.length ?? 0) >= 5
           );
         }
-        case "achievement-3":
+        case "achievement-3": {
           // 강태공
-          return fishes.length === fishingData.length;
+          const fishSet = new Set(
+            fishingData
+              .filter((x) => x.key.startsWith("fish-"))
+              .map((x) => x.key),
+          );
+          return fishes.length === fishSet.size;
+        }
         case "achievement-4":
           // 반짝반짝
           return fishKey === "fish-1";
