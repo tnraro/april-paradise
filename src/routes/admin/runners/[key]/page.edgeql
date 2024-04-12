@@ -17,20 +17,14 @@ select User {
   inventory := (
     select (
       group (
-        select (
-          group .items
-          by .key
-        ) {
-          item := .key.key,
-          category := assert_single(distinct .elements.category),
-          quantity := count(.elements),
-        }
+        select .items
+        filter .quantity > 0
       )
       by .category
     ) {
       category := .key.category,
       items := .elements {
-        item,
+        item := .key,
         category,
         quantity,
       }
