@@ -96,7 +96,7 @@
         {#each next as k}
           {#if triggerType}
             <CocktailTrigger
-              title="{title}-{k}"
+              title={k}
               {triggerType}
               disabled={s === State.Pending}
               done={visitedSet.has(`${title}-${k}`)}

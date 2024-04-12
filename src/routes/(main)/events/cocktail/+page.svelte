@@ -2,12 +2,11 @@
   import { invalidateAll } from "$app/navigation";
   import { api } from "$lib/api/api.gen";
   import { josa2 } from "$lib/shared/util/josa";
-    import CocktailNpc from "$lib/ui/cocktail/cocktail-npc.svelte";
+  import CocktailNpc from "$lib/ui/cocktail/cocktail-npc.svelte";
   import Cocktail from "$lib/ui/cocktail/cocktail.svelte";
   import { sendError } from "$lib/ui/error/send-error";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import InventoryItemImage from "$lib/ui/inventory/inventory-item-image.svelte";
-    import AnimatingText from "$lib/ui/text/animating-text.svelte";
 
   const close탐색 = () => {
     gainedItem = undefined;
