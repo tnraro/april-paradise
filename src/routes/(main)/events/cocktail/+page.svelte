@@ -40,7 +40,7 @@
 
   let done = $derived.by(() => {
     if (data.visiteds.length === 0) return false;
-    const N = data.visiteds[0].type === "탐색" ? 5 : 3;
+    const N = data.visiteds[0].type === "탐색" ? 10 : 5;
     return data.visiteds.length >= N;
   });
 </script>
