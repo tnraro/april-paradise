@@ -10,9 +10,14 @@
 
   let routeMap = $derived(new Map(data.routeData.map((x) => [x.key, x])));
   let s = $state<string>("entry");
-  let route = $derived(routeMap.get(s));
-  $inspect(s, route);
-
+  let route = $derived.by(() => {
+    const m = routeMap.get(s);
+    if (m == null) return null;
+    return {
+      ...m,
+      visiteds: data.visiteds,
+    };
+  });
   let error = $state<string>();
 
   let gainedItem = $state<{ key: string, name: string } | null>();

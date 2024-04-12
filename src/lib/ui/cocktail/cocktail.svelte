@@ -16,6 +16,11 @@
     next: string[] | null;
     triggerType: string | null;
     back: string | null;
+    visiteds: {
+      type: string;
+      title: string;
+      key: string;
+    }[];
     onnext?: (value: string) => void;
     ontrigger?: (type: string, value: string) => void | Promise<void>;
   }
@@ -27,6 +32,7 @@
     next,
     triggerType,
     back,
+    visiteds,
     onnext,
     ontrigger,
   }: Props = $props();
@@ -37,6 +43,9 @@
   let single = $derived(next != null && next.length === 1);
 
   let s = $state<State>(State.Idle);
+
+  let preferredType = $derived(visiteds.at(0)?.type);
+  let visitedSet = $derived(new Set(visiteds.map(x => `${x.title}-${x.key}`)));
 </script>
 
 <div class="cocktail">
@@ -86,15 +95,16 @@
   <Dialog onclose={() => (open = false)}>
     <div class="select">
       {#if next}
-        {#each next as key}
+        {#each next as k}
           {#if triggerType}
             <CocktailTrigger
-              title="{title}-{key}"
+              title="{title}-{k}"
               {triggerType}
               disabled={s === State.Pending}
+              done={visitedSet.has(`${title}-${k}`)}
               onclick={async () => {
                 s = State.Pending;
-                await ontrigger?.(triggerType!, `${triggerType}-${title}-${key}`);
+                await ontrigger?.(triggerType!, `${triggerType}-${title}-${k}`);
               }}
               ondone={() => {
                 s = State.Idle;
@@ -103,9 +113,10 @@
           {:else}
             <button
               class="option"
+              disabled={key === "1" && (preferredType == null ? false : k.slice(0, 2) !== preferredType)}
               onclick={() => {
-                onnext?.(key);
-              }}>{key}</button>
+                onnext?.(k);
+              }}>{k}</button>
           {/if}
         {/each}
       {/if}
