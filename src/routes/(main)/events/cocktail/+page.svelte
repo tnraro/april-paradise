@@ -1,8 +1,10 @@
 <script lang="ts">
   import { api } from "$lib/api/api.gen";
+  import { josa2 } from "$lib/shared/util/josa";
   import Cocktail from "$lib/ui/cocktail/cocktail.svelte";
   import { sendError } from "$lib/ui/error/send-error";
-    import Dialog from "$lib/ui/floating/dialog.svelte";
+  import Dialog from "$lib/ui/floating/dialog.svelte";
+  import InventoryItemImage from "$lib/ui/inventory/inventory-item-image.svelte";
 
   let { data } = $props();
 
@@ -12,6 +14,8 @@
   $inspect(s, route);
 
   let error = $state<string>();
+
+  let gainedItem = $state<{ key: string, name: string } | null>();
 </script>
 
 <main>
@@ -30,7 +34,10 @@
               error = res.error.message;
               sendError(res.error.message);
             } else {
-
+              if (type === "탐색") {
+                const r = res.data.result;
+                gainedItem = r;
+              }
             }
           }}
         />
@@ -43,6 +50,19 @@
   <Dialog onclose={() => error = undefined}>
     <div>{error}</div>
     <button onclick={() => error = undefined}>닫기</button>
+  </Dialog>
+{/if}
+
+{#if typeof gainedItem !== "undefined"}
+  <Dialog onclose={() => gainedItem = undefined}>
+    {#if gainedItem}
+      <InventoryItemImage key={gainedItem.key} />
+      <div>{josa2(gainedItem.name, "이", "가")} 나왔다!</div>
+    {:else}
+      ... 아무것도 찾지 못했다.
+      다른 곳을 찾아보자.
+    {/if}
+    <button onclick={() => gainedItem = undefined}>닫기</button>
   </Dialog>
 {/if}
 

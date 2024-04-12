@@ -19,10 +19,10 @@ export const POST = route(
       const rev = body.type === "탐색" ? "조사" : "탐색";
       const key3 = `cocktail-${rev}`;
       const N = body.type === "탐색" ? 5 : 3;
-      const n = await getResource(tx, { key });
-      if (n > 0) error(400, "이미 다녀온 장소입니다");
       const n2 = await getResource(tx, { key: key2 });
       if (n2 >= N) error(400, "횟수가 모두 소진되었습니다");
+      const n = await getResource(tx, { key });
+      if (n > 0) error(400, "이미 다녀온 장소입니다");
       const n3 = await getResource(tx, { key: key3 });
       if (n3 > 0) error(400, `이미 ${josa2(rev, "을", "를")} 고르셨습니다`);
       await addResource(tx, {
