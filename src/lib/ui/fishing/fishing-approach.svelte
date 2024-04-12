@@ -69,14 +69,6 @@
     }
     animation: scale 400ms cubic-bezier(0.18, 0.89, 0.32, 1.28);
   }
-  .__ {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    border-radius: 99999rem;
-    z-index: 1;
-  }
   @keyframes -global-endurance {
     0% {
       border-color: var(--slate-6);

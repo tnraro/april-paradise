@@ -13,10 +13,10 @@
   <Lure lure={lure.key} />
   <div class="lure__name">{lure.name}</div>
   <div>
-    <enhanced:img src="$img/exchange.png?w=24" />
+    <enhanced:img alt="" src="$img/exchange.png?w=24" />
   </div>
   <div class="lure__price">
-    <enhanced:img src="$img/chip.png?w=24" />
+    <enhanced:img alt="" src="$img/chip.png?w=24" />
     ×{lure.price.quantity}
   </div>
 </button>
@@ -43,7 +43,7 @@
       border: 4px solid var(--blue-7);
     }
     &:active,
-    &[disabled] {
+    &:disabled {
       border: 4px solid var(--blue-6);
       background: var(--blue-11);
     }

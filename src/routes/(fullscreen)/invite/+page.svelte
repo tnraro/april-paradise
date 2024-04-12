@@ -29,7 +29,7 @@
 
 {#if s === State.Idle}
   <div class="_">
-    <enhanced:img src="$img/logo.png?enhanced&w=320" />
+    <enhanced:img alt="" src="$img/logo.png?enhanced&w=320" />
   </div>
 {:else if s === State.Notice}
   <Dialog>

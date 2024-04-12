@@ -274,7 +274,7 @@
 
 <main>
   <div class="_">
-    <enhanced:img class="_bg" src={background} />
+    <enhanced:img alt="" class="_bg" src={background} />
     <div class="_display">
       {#if S.state === FishingState.Waiting ||
            S.state === FishingState.Approaching ||

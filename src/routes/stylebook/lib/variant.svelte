@@ -21,12 +21,4 @@
     padding: 1rem;
     overflow-x: auto;
   }
-  .props {
-    background: var(--slate-2);
-    border-radius: 0.25rem;
-    padding: 1rem;
-    width: fit-content;
-    max-width: 100%;
-    overflow-x: auto;
-  }
 </style>

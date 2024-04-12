@@ -142,13 +142,6 @@
     padding: 0 1rem;
     gap: 1rem;
   }
-  address {
-    font-style: unset;
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    align-items: center;
-    gap: 0.25rem 0.5rem;
-  }
   .scroll-area {
     height: 17.5rem;
   }
@@ -157,21 +150,6 @@
       margin-bottom: -0.5rem;
     }
   }
-  .alert {
-    display: grid;
-    position: fixed;
-    bottom: 1rem;
-    left: 50%;
-    width: min(90%, 20rem);
-    grid-template-columns: 1fr repeat(2, max-content);
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    transform: translate(-50%, 0);
-    background: var(--slate-2);
-    box-shadow: 0 0.25rem 0.5rem var(--slate-9);
-  }
   .x-id {
     font-size: 1rem;
   }
@@ -179,9 +157,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-  }
-  .memo {
-    width: 100%;
   }
   .inventory {
     min-width: min(32rem, 100%);

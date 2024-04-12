@@ -125,11 +125,6 @@
   textarea {
     resize: vertical;
   }
-  .mail__reward-selector {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-  }
   .rewards {
     flex-wrap: wrap;
     gap: 0.5rem;

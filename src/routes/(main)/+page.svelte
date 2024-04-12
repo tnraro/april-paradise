@@ -67,9 +67,6 @@
     &:not(:last-child) {
       border-bottom: 1px solid var(--slate-6);
     }
-
-    &__title {
-    }
     &__description {
       color: var(--slate-11);
       text-overflow: ellipsis;

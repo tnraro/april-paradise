@@ -6,7 +6,7 @@
 </script>
 
 <span class="tokens">
-  <enhanced:img src="$img/token.png?w=24" />
+  <enhanced:img alt="" src="$img/token.png?w=24" />
   토큰 {quantity}
 </span>
 

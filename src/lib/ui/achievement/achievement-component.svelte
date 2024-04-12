@@ -60,10 +60,6 @@
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     background: white;
-
-    &--is-done {
-      color: var(--slate-11);
-    }
   }
   .badge {
     padding: 0 0.25rem;

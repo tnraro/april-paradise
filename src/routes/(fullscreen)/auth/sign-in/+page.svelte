@@ -53,9 +53,6 @@
     align-items: end;
     gap: 0.5rem;
   }
-  label {
-    margin-bottom: -0.5rem;
-  }
   .error {
     color: var(--red-11);
     word-break: keep-all;

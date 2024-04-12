@@ -27,12 +27,12 @@
     </div>
     {#if price.type === "chips"}
       <div class="money money--chips">
-        <enhanced:img src="$img/chip.png?w=16" />
+        <enhanced:img alt="" src="$img/chip.png?w=16" />
         {price.quantity}
       </div>
     {:else if price.type === "tokens"}
       <div class="money money--tokens">
-        <enhanced:img src="$img/token.png?w=16" />
+        <enhanced:img alt="" src="$img/token.png?w=16" />
         {price.quantity}
       </div>
     {/if}

@@ -15,7 +15,6 @@
   <path class="line" d="M-60-30 L {x} {y}" />
 {/if}
 
-<!-- <path class="float__anchor" d="M{x} {y + 3} L {x} {y + 5 + l} C {x + 2} {y + 6 + l} {x} {y + 8 + l} {x - 1} {y + 6 + l}" /> -->
 <circle class="float__body" cx={x} cy={y + 3} r="1.2" />
 <path
   class="float__head"
@@ -34,11 +33,6 @@
     }
     &__head {
       fill: var(--red-9);
-    }
-    &__anchor {
-      stroke: black;
-      stroke-width: 0.5;
-      fill: transparent;
     }
   }
 </style>

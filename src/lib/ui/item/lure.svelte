@@ -14,7 +14,7 @@
 </script>
 
 {#if src}
-  <enhanced:img class="lure" {src} />
+  <enhanced:img alt="" class="lure" {src} />
 {/if}
 
 <style>

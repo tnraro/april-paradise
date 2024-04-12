@@ -17,8 +17,6 @@
   />
 </g>
 
-<!-- transform="translate(21, 59.5)" -->
-
 <style lang="scss">
   .arrow {
     filter: drop-shadow(1px 1px 0 var(--red-12));

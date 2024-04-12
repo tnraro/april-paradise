@@ -30,7 +30,7 @@
   let { fish }: Props = $props();
 </script>
 
-<enhanced:img src={getFishImage(fish.grade)} />
+<enhanced:img alt="" src={getFishImage(fish.grade)} />
 
 <style>
 </style>

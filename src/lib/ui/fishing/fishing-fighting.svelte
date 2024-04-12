@@ -25,7 +25,7 @@
     </div>
   </div>
   <div class="_rod">
-    <enhanced:img class="fish pixel" src="$img/rod.png?w=64" />
+    <enhanced:img alt="" class="fish pixel" src="$img/rod.png?w=64" />
     <div class="range">
       <div
         class="range__bar range__bar--power"

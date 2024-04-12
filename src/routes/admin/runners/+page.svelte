@@ -67,11 +67,11 @@
         {/if}
       </div>
       <div class="money money--token" title="{runner.tokens} 토큰">
-        <enhanced:img src="$img/token.png?w=16" />
+        <enhanced:img alt="" src="$img/token.png?w=16" />
         <span class="money__number">{runner.tokens}</span>
       </div>
       <div class="money money--chip" title="{runner.chips} 칩">
-        <enhanced:img src="$img/chip.png?w=16" />
+        <enhanced:img alt="" src="$img/chip.png?w=16" />
         <span class="money__number">{runner.chips}</span>
       </div>
     </div>
@@ -148,10 +148,6 @@
     font-size: 0.75rem;
     word-break: keep-all;
 
-    &--admin {
-      background: var(--green-9);
-      color: var(--green-1);
-    }
     &--banned {
       background: var(--red-9);
       color: var(--red-1);

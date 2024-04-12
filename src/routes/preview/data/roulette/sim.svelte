@@ -66,12 +66,6 @@
 </div>
 
 <style>
-  ._ {
-    display: grid;
-    grid-template-columns: repeat(3, max-content);
-    gap: 0.25rem 0.5rem;
-    align-items: center;
-  }
   .__sim {
     display: grid;
     grid-template-columns: repeat(2, max-content);

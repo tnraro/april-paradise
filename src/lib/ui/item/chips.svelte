@@ -6,7 +6,7 @@
 </script>
 
 <span class="chips">
-  <enhanced:img src="$img/chip.png?w=24" />
+  <enhanced:img alt="" src="$img/chip.png?w=24" />
   칩 {quantity}
 </span>
 

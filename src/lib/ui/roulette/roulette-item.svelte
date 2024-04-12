@@ -31,7 +31,6 @@
 
 <style lang="scss">
   .slot {
-    animation: roll 0s linear infinite;
     &_bg {
       fill: white;
     }

@@ -41,7 +41,7 @@
 {#if _state === State.Pending}
   <div class="skeleton" style:---size="{size}px" />
 {:else if _state === State.Success}
-  <enhanced:img
+  <enhanced:img alt=""
     class="img"
     class:pixel
     class:silhouette
@@ -49,7 +49,7 @@
     style:---size="{size}px"
   />
 {:else if _state === State.Failed}
-  <enhanced:img
+  <enhanced:img alt=""
     class="img"
     class:pixel
     class:silhouette

@@ -11,8 +11,3 @@
 {:else}
   <span class="items">{name}×{quantity}</span>
 {/if}
-
-<style>
-  .items {
-  }
-</style>

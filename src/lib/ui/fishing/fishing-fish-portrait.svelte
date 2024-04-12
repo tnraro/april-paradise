@@ -16,9 +16,9 @@
 </script>
 
 {#if src}
-  <enhanced:img class="fish pixel" class:fish--silhouette={silhouette} {src} />
+  <enhanced:img alt="" class="fish pixel" class:fish--silhouette={silhouette} {src} />
 {:else}
-  <enhanced:img
+  <enhanced:img alt=""
     class="fish pixel"
     class:fish--silhouette={silhouette}
     src="$img/items/sample-fish.png?w=64"
