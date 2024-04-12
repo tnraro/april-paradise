@@ -64,7 +64,7 @@
               {/if}
               <Icon as="inbox" stroke-width={1} />우편함
             </Menubar.Item>
-            <Menubar.Item href="/inventory" disabled>
+            <Menubar.Item href="/inventory">
               <Icon as="package2" stroke-width={1} />가방
             </Menubar.Item>
             {#if data.user.isAdmin}

@@ -15,15 +15,13 @@
 </script>
 
 <div class="item">
-  {#if hasItem}
+  {#if hasItem && children}
     <Tooltip.Root openDelay={0} disableHoverableContent={true}>
       <Tooltip.Trigger class="inventory-item__trigger">
         <InventoryItemImage {key} silhouette={!hasItem} />
       </Tooltip.Trigger>
       <Tooltip.Content side="bottom" sideOffset={4}>
-        {#if children}
-          {@render children()}
-        {/if}
+        {@render children()}
       </Tooltip.Content>
     </Tooltip.Root>
   {:else}
