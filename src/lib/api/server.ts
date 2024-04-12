@@ -28,11 +28,24 @@ export const route = <
       console.error("err", e);
       error(500);
     }
+    let t = performance.now();
     try {
       const set = {} as ResponseInit;
       const res = await handler(re, _body, set);
+      console.info(
+        re.request.method,
+        re.request.url,
+        "takes",
+        performance.now() - t,
+      );
       return json(res, set);
     } catch (e) {
+      console.info(
+        re.request.method,
+        re.request.url,
+        "takes",
+        performance.now() - t,
+      );
       if (isHttpError(e)) throw e;
       options?.err?.(e, re, _body);
       console.error("err", e);
