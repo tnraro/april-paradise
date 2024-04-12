@@ -1,7 +1,12 @@
 <script lang="ts">
-  import { sendError } from "../error/send-error";
   import Dialog from "../floating/dialog.svelte";
   import AnimatingText from "../text/animating-text.svelte";
+    import CocktailTrigger from "./cocktail-trigger.svelte";
+
+  const enum State {
+    Idle,
+    Pending,
+  }
 
   interface Props {
     key: string;
@@ -12,7 +17,7 @@
     triggerType: string | null;
     back: string | null;
     onnext?: (value: string) => void;
-    ontrigger?: (type: string, value: string) => void;
+    ontrigger?: (type: string, value: string) => void | Promise<void>;
   }
   let {
     key,
@@ -30,6 +35,8 @@
   let open = $state(false);
 
   let single = $derived(next != null && next.length === 1);
+
+  let s = $state<State>(State.Idle);
 </script>
 
 <div class="cocktail">
@@ -81,22 +88,24 @@
       {#if next}
         {#each next as key}
           {#if triggerType}
+            <CocktailTrigger
+              title="{title}-{key}"
+              {triggerType}
+              disabled={s === State.Pending}
+              onclick={async () => {
+                s = State.Pending;
+                await ontrigger?.(triggerType!, `${triggerType}-${title}-${key}`);
+              }}
+              ondone={() => {
+                s = State.Idle;
+              }}
+            />
+          {:else}
             <button
               class="option"
               onclick={() => {
-                if (triggerType != null) {
-                  ontrigger?.(triggerType, `${triggerType}-${title}-${key}`);
-                }
-              }}>
-              <span>{key}</span>
-              <span>{triggerType}</span>
-            </button>
-          {:else}
-          <button
-            class="option"
-            onclick={() => {
-              onnext?.(key);
-            }}>{key}</button>
+                onnext?.(key);
+              }}>{key}</button>
           {/if}
         {/each}
       {/if}
