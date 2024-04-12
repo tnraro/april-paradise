@@ -1,0 +1,36 @@
+diff --git a/dist/server.js b/dist/server.js
+index 2db3caebae426332ed9aa281ef518d49cc958af9..26c9c6a1093db0e4ed1fd843a2e6f84815cf340c 100644
+--- a/dist/server.js
++++ b/dist/server.js
+@@ -47,6 +47,7 @@ export class ServerRequestAuth extends ClientAuth {
+         const [email, password] = extractParams(data, ["email", "password"], "email or password missing");
+         const result = await (await this.core).signupWithEmailPassword(email, password, `${this.config.authRoute}/emailpassword/verify`);
+         this.cookies.set(this.config.pkceVerifierCookieName, result.verifier, {
++            maxAge: 2678400,
+             httpOnly: true,
+             sameSite: "strict",
+             path: "/",
+@@ -70,6 +71,7 @@ export class ServerRequestAuth extends ClientAuth {
+         const [email, password] = extractParams(data, ["email", "password"], "email or password missing");
+         const tokenData = await (await this.core).signinWithEmailPassword(email, password);
+         this.cookies.set(this.config.authCookieName, tokenData.auth_token, {
++            maxAge: 2678400,
+             httpOnly: true,
+             sameSite: "strict",
+             path: "/",
+@@ -83,6 +85,7 @@ export class ServerRequestAuth extends ClientAuth {
+         const [email] = extractParams(data, ["email"], "email missing");
+         const { verifier } = await (await this.core).sendPasswordResetEmail(email, new URL(this.config.passwordResetPath, this.config.baseUrl).toString());
+         this.cookies.set(this.config.pkceVerifierCookieName, verifier, {
++            maxAge: 2678400,
+             httpOnly: true,
+             sameSite: "strict",
+             path: "/",
+@@ -96,6 +99,7 @@ export class ServerRequestAuth extends ClientAuth {
+         const [resetToken, password] = extractParams(data, ["reset_token", "password"], "reset_token or password missing");
+         const tokenData = await (await this.core).resetPasswordWithResetToken(resetToken, verifier, password);
+         this.cookies.set(this.config.authCookieName, tokenData.auth_token, {
++            maxAge: 2678400,
+             httpOnly: true,
+             sameSite: "lax",
+             path: "/",

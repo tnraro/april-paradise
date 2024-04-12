@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
+  '@edgedb/auth-sveltekit@0.1.1':
+    hash: 2hpwkpjufpoa3cmwvmoynm5vnq
+    path: patches/@edgedb__auth-sveltekit@0.1.1.patch
   '@edgedb/generate@0.5.2':
     hash: 7baspgzrz5pos3anwdo77ctihe
     path: patches/@edgedb__generate@0.5.2.patch
@@ -15,7 +18,7 @@ patchedDependencies:
 dependencies:
   '@edgedb/auth-sveltekit':
     specifier: ^0.1.1
-    version: 0.1.1(edgedb@1.5.0)
+    version: 0.1.1(patch_hash=2hpwkpjufpoa3cmwvmoynm5vnq)(edgedb@1.5.0)
   '@googleapis/sheets':
     specifier: ^5.0.5
     version: 5.0.5
@@ -197,7 +200,7 @@ packages:
       jwt-decode: 3.1.2
     dev: false
 
-  /@edgedb/auth-sveltekit@0.1.1(edgedb@1.5.0):
+  /@edgedb/auth-sveltekit@0.1.1(patch_hash=2hpwkpjufpoa3cmwvmoynm5vnq)(edgedb@1.5.0):
     resolution: {integrity: sha512-EDhPxB9AGnpORU7Ha+WmjhuqQTpcDzuOQS2dcxJut5qvKOwbl/NfLQR+d3e75GHs0h2BFS8IJPPOxjyDpTw34g==}
     peerDependencies:
       edgedb: ^1.3.6
@@ -205,6 +208,7 @@ packages:
       '@edgedb/auth-core': 0.1.0(edgedb@1.5.0)
       edgedb: 1.5.0
     dev: false
+    patched: true
 
   /@edgedb/generate@0.5.2(patch_hash=7baspgzrz5pos3anwdo77ctihe)(edgedb@1.5.0):
     resolution: {integrity: sha512-X6+JoYNWHxEKuhC3hEXA5BcjqUXusASbwwAG75133Bg34egGiawGuZF2VELHwhz2snKOJtA2Dg3t7BMwsyhi5A==}

@@ -48,7 +48,8 @@
   "pnpm": {
     "patchedDependencies": {
       "@sveltejs/enhanced-img@0.2.0": "patches/@sveltejs__enhanced-img@0.2.0.patch",
-      "@edgedb/generate@0.5.2": "patches/@edgedb__generate@0.5.2.patch"
+      "@edgedb/generate@0.5.2": "patches/@edgedb__generate@0.5.2.patch",
+      "@edgedb/auth-sveltekit@0.1.1": "patches/@edgedb__auth-sveltekit@0.1.1.patch"
     }
   }
 }
