@@ -10,7 +10,10 @@
       | "home"
       | "wrench"
       | "shopping-cart"
-      | "trash2";
+      | "trash2"
+      | "loader-circle"
+      | "x"
+      | "check";
     size?: number;
     "stroke-width"?: number;
   }
