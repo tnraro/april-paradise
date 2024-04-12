@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { invalidateAll } from "$app/navigation";
   import Icon from "$img/icon.svelte";
 
   const enum State {
@@ -28,7 +27,6 @@
     try {
       await onclick?.();
       s = State.Done;
-      invalidateAll();
     } catch (_) {
       s = State.Error;
     }

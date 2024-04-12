@@ -67,9 +67,7 @@
     />
   </section>
   <footer>
-    {#if back}
-      <button onclick={() => onnext?.(back!)}>뒤로</button>
-    {/if}
+    <button disabled={!back} onclick={() => onnext?.(back!)}>뒤로</button>
     {#if done}
       {#if next}
         <button
