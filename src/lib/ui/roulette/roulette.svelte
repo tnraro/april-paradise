@@ -1,6 +1,7 @@
 <script lang="ts">
   import { invalidateAll } from "$app/navigation";
   import type { Item, Money, RouletteData } from "$lib/data/sheets/model";
+  import { sleep } from "$lib/shared/util/sleep";
   import { useWallet } from "$routes/(main)/wallet.svelte";
   import { RouletteState } from "./roulette";
   import Arrow from "./roulette-arrow.svelte";
@@ -33,8 +34,21 @@
         } else {
           _state = RouletteState.NotEnoughTokens;
         }
+        result = undefined;
+        Promise.all([onroll?.(), sleep(2000)])
+          .then(([res]) => {
+            result = res?.result;
+            _state = RouletteState.Rolling;
+          })
+          .catch((error) => {
+            console.error(error);
+            clearInterval(t);
+            _state = RouletteState.NotEnoughTokens;
+            speed = 0;
+          });
         break;
       case RouletteState.InsertingToken:
+      case RouletteState.Pending:
         break;
       case RouletteState.Rolling:
         done();
@@ -67,19 +81,8 @@
     }
   };
   const roll = () => {
-    _state = RouletteState.Rolling;
+    _state = RouletteState.Pending;
     speed = 4;
-    result = undefined;
-    onroll?.()
-      .then((res) => {
-        result = res.result;
-      })
-      .catch((error) => {
-        console.error(error);
-        clearInterval(t);
-        _state = RouletteState.NotEnoughTokens;
-        speed = 0;
-      });
     let i = 0;
     bulbs = bulbs.map(() => false);
     t = setInterval(() => {
@@ -121,6 +124,8 @@
       case RouletteState.Idle:
       case RouletteState.InsertingToken:
         return "토큰을 넣어주세요";
+      case RouletteState.Pending:
+        return "";
       case RouletteState.Rolling:
         return "버튼을 눌러 멈추세요";
       case RouletteState.DroppingReward:
@@ -163,7 +168,15 @@
 
     <Lcd text={lcdText} />
     <text class="gaze" x="24" y="85">여길 눌러! -&gt;</text>
-    <Button {onclick} x={32} y={84} width={10} height={10} />
+    <Button
+      {onclick}
+      x={32}
+      y={84}
+      width={10}
+      height={10}
+      pressed={_state === RouletteState.InsertingToken ||
+        _state === RouletteState.Pending}
+    />
 
     {#if _state === RouletteState.InsertingToken}
       <InsertingToken onanimationend={roll} />

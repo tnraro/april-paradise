@@ -6,6 +6,7 @@
     y?: number;
     width?: number;
     height?: number;
+    pressed?: boolean;
   }
   let {
     onclick,
@@ -14,6 +15,7 @@
     y = 0,
     width = 100,
     height = 100,
+    pressed,
   }: Props = $props();
 </script>
 
@@ -42,7 +44,7 @@
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
   <!-- svelte-ignore a11y-no-static-element-interactions -->
-  <g class="button" tabindex="0" {onclick}>
+  <g class="button" class:button--pressed={pressed} tabindex="0" {onclick}>
     <rect
       class="button_bg"
       x={width * -0.5}
@@ -75,7 +77,8 @@
     &:hover {
       fill: var(--red-10);
     }
-    &:active {
+    &:active,
+    &--pressed {
       transform: translate(0, 0);
       filter: none;
       transition:
