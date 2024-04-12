@@ -11,16 +11,17 @@
     triggerType: string;
     title: string;
     disabled?: boolean;
+    done?: boolean;
     onclick?: () => void | Promise<void>;
     ondone?: () => void;
   }
-  let { triggerType, title, disabled, onclick, ondone }: Props = $props();
+  let { triggerType, title, disabled, done, onclick, ondone }: Props = $props();
   let s = $state<State>(State.Idle);
 </script>
 
 <button
   class="_"
-  disabled={disabled || s === State.Pending || s === State.Error}
+  disabled={disabled || s !== State.Idle || done}
   onclick={async () => {
     s = State.Pending;
     try {
@@ -33,19 +34,32 @@
   }}
 >
   <span>{title}</span>
-  {#if s === State.Idle}
+  {#if done || s === State.Done}
+    <Icon as="check" />
+  {:else if s === State.Idle}
     <span>{triggerType}</span>
   {:else if s === State.Pending}
-    <Icon as="loader-circle" />
+    <div class="spin">
+      <Icon as="loader-circle" />
+    </div>
   {:else if s === State.Error}
     <Icon as="x" />
-  {:else if s === State.Done}
-    <Icon as="check" />
   {/if}
 </button>
 
 <style>
   ._ {
     justify-content: space-between;
+  }
+  .spin {
+    animation: spin 1s infinite;
+  }
+  @keyframes -global-spin {
+    0% {
+      transform: rotate(0turn);
+    }
+    100% {
+      transform: rotate(1turn);
+    }
   }
 </style>

@@ -9,7 +9,7 @@ export const meta: StylebookMeta<typeof Component, Component> = {
       title: "entry",
       triggerType: "탐색",
       onclick: async () => {
-        await sleep(1000);
+        await sleep(5000);
       },
     },
     조사: {
@@ -25,6 +25,11 @@ export const meta: StylebookMeta<typeof Component, Component> = {
       onclick: async () => {
         throw 53;
       },
+    },
+    done: {
+      title: "entry",
+      triggerType: "조사",
+      done: true,
     },
   },
 };
