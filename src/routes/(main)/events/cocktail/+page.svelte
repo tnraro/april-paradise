@@ -21,34 +21,44 @@
   let error = $state<string>();
 
   let gainedItem = $state<{ key: string, name: string } | null>();
+
+  let done = $derived.by(() => {
+    if (data.visiteds.length === 0) return false;
+    const N = data.visiteds[0].type === "탐색" ? 5 : 3;
+    return data.visiteds.length >= N;
+  });
 </script>
 
 <main>
-  <div class="_">
-    {#if route}
-      {#key route.key}
-        <Cocktail
-          {...route}
-          onnext={(next) => (s = next)}
-          ontrigger={async (type, key) => {
-            const res = await api().events.cocktail.post({
-              type: type as "탐색" | "조사",
-              key,
-            });
-            if (!res.ok) {
-              error = res.error.message;
-              sendError(res.error.message);
-            } else {
-              if (type === "탐색") {
-                const r = res.data.result;
-                gainedItem = r;
+  {#if done}
+    {data.visiteds[0].type} 기회를 모두 소진했습니다!
+  {:else}
+    <div class="_">
+      {#if route}
+        {#key route.key}
+          <Cocktail
+            {...route}
+            onnext={(next) => (s = next)}
+            ontrigger={async (type, key) => {
+              const res = await api().events.cocktail.post({
+                type: type as "탐색" | "조사",
+                key,
+              });
+              if (!res.ok) {
+                error = res.error.message;
+                sendError(res.error.message);
+              } else {
+                if (type === "탐색") {
+                  const r = res.data.result;
+                  gainedItem = r;
+                }
               }
-            }
-          }}
-        />
-      {/key}
-    {/if}
-  </div>
+            }}
+          />
+        {/key}
+      {/if}
+    </div>
+  {/if}
 </main>
 
 {#if error}
