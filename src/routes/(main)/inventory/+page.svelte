@@ -28,13 +28,21 @@
           <Inventory>
             {#each inventory.items as item (item.key)}
               {@const i = itemMap.get(item.key)}
-              <InventoryItem
-                key={item.key}
-                name={i?.name}
-                quantity={item.quantity}
-              >
-                {i?.description}
-              </InventoryItem>
+              {#if i?.description}
+                <InventoryItem
+                  key={item.key}
+                  name={i?.name}
+                  quantity={item.quantity}
+                >
+                  {i?.description}
+                </InventoryItem>
+              {:else}
+                <InventoryItem
+                  key={item.key}
+                  name={i?.name}
+                  quantity={item.quantity}
+                />
+              {/if}
             {/each}
           </Inventory>
         </section>
