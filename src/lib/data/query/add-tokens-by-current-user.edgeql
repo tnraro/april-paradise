@@ -1,5 +1,5 @@
-with user := global currentUser
-update user
+update User
+filter .identity = global ext::auth::ClientTokenIdentity
 set {
-  tokens := user.tokens + <int64>$tokens
+  tokens := .tokens + <int64>$tokens
 }
