@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from "$img/icon.svelte";
   import type { ItemData } from "$lib/data/sheets/model";
   import { z } from "zod";
   import Dialog from "../floating/dialog.svelte";
@@ -82,7 +83,14 @@
   <input type="hidden" />
   <div class="form__footer">
     <button type="reset" onclick={onclose}>취소</button>
-    <button class="blue emphasis" disabled={isLoading}>우편 발송</button>
+    <button class="submit blue emphasis" disabled={isLoading}>
+      우편 발송
+      {#if isLoading}
+        <div class="animate-spin">
+          <Icon as="loader-circle" />
+        </div>
+      {/if}
+    </button>
   </div>
 </form>
 
@@ -133,5 +141,8 @@
     background: var(--slate-5);
     border-radius: 0.25rem;
     padding: 0 0.25rem;
+  }
+  .submit {
+    justify-content: space-between;
   }
 </style>

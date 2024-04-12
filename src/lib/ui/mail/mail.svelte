@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from "$img/icon.svelte";
   import { useItemData } from "../data/data.svelte";
   import { sendError } from "../error/send-error";
   import Chips from "../item/chips.svelte";
@@ -25,7 +26,7 @@
     reward: string;
     isReceived: boolean;
     createdAt: Date;
-    onclick?: () => void;
+    onclick?: () => void | Promise<void>;
     disabled?: boolean;
   }
   let {
@@ -85,6 +86,7 @@
             },
           ),
   );
+  let pending = $state(false);
 </script>
 
 <div class="_">
@@ -113,7 +115,22 @@
       {#if isReceived}
         <button disabled>보상 받음</button>
       {:else}
-        <button class="green emphasis" {onclick} {disabled}>보상 받기</button>
+        <button
+          class="reward__button green emphasis"
+          onclick={async () => {
+            pending = true;
+            await onclick?.();
+            pending = false;
+          }}
+          disabled={disabled || pending}
+        >
+          보상 받기
+          {#if pending}
+            <div class="animate-spin">
+              <Icon as="loader-circle" />
+            </div>
+          {/if}
+        </button>
       {/if}
     </section>
   {/if}
@@ -144,6 +161,9 @@
   .reward {
     display: grid;
     gap: 0.25rem;
+    &__button {
+      justify-content: space-between;
+    }
   }
   .body {
     white-space-collapse: preserve;

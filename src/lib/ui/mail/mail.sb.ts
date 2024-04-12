@@ -1,3 +1,4 @@
+import { sleep } from "$lib/shared/util/sleep";
 import type { StylebookMeta } from "$lib/ui/stylebook";
 import Component from "./mail.svelte";
 
@@ -35,6 +36,17 @@ export const meta: StylebookMeta<typeof Component, Component> = {
       reward: "인형:5000",
       createdAt: new Date("2023-12-04"),
       isReceived: true,
+    },
+    pending: {
+      sender: "제니",
+      title: "자, 네게만 보내는 편지란다",
+      body: "잘먹고건강하렴",
+      reward: "인형:5000",
+      createdAt: new Date("2023-12-04"),
+      isReceived: false,
+      onclick: async () => {
+        await sleep(1000);
+      },
     },
   },
 };

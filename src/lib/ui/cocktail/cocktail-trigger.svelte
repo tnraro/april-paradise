@@ -39,7 +39,7 @@
   {:else if s === State.Idle}
     <span>{triggerType}</span>
   {:else if s === State.Pending}
-    <div class="spin">
+    <div class="animate-spin">
       <Icon as="loader-circle" />
     </div>
   {:else if s === State.Error}
@@ -50,16 +50,5 @@
 <style>
   ._ {
     justify-content: space-between;
-  }
-  .spin {
-    animation: spin 1s infinite;
-  }
-  @keyframes -global-spin {
-    0% {
-      transform: rotate(0turn);
-    }
-    100% {
-      transform: rotate(1turn);
-    }
   }
 </style>

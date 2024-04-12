@@ -1,5 +1,6 @@
 <script lang="ts">
   import { invalidateAll } from "$app/navigation";
+  import Icon from "$img/icon.svelte";
   import { api } from "$lib/api/api.gen.js";
   import { groupBy } from "$lib/shared/util/group-by";
   import { sendError } from "$lib/ui/error/send-error.js";
@@ -26,7 +27,6 @@
   const enum OrderState {
     Idle,
     Prepare,
-    Pending,
   }
   let { data } = $props();
 
@@ -61,6 +61,8 @@
   let totalPrice = $derived(restItems.reduce((sum, b) => sum + b.price, 0));
 
   let havingTickets = $derived(data.inventory["roulette-result-6"] ?? 0);
+
+  let pending = $state(false);
 </script>
 
 {#snippet tab(index: number)}
@@ -198,26 +200,38 @@
       </div>
       <div class="prepare__footer">
         <button onclick={() => orderState = OrderState.Idle}>돌아가기</button>
-        <button class="blue emphasis" onclick={async () => {
-          const body = {
-            items: [...cart].map(([key, quantity]) => ({ key, quantity })),
-            tickets: discountedItems.map(x => x.key),
-          }
-          orderState = OrderState.Pending;
-          const res = await api().store.post(body);
-          if (!res.ok) {
-            try {
-              sendError(res.error.message);
-            } catch (_) {}
-            error = res.error.message;
-            orderState = OrderState.Prepare;
-          } else {
-            orderState = OrderState.Idle;
-            cart = new Map();
-            tickets = 0;
-            invalidateAll();
-          }
-        }}>결제하기</button>
+        <button
+          class="prepare__submit blue emphasis"
+          onclick={async () => {
+            const body = {
+              items: [...cart].map(([key, quantity]) => ({ key, quantity })),
+              tickets: discountedItems.map(x => x.key),
+            }
+            pending = true;
+            const res = await api().store.post(body);
+            if (!res.ok) {
+              try {
+                sendError(res.error.message);
+              } catch (_) {}
+              error = res.error.message;
+              orderState = OrderState.Prepare;
+            } else {
+              orderState = OrderState.Idle;
+              cart = new Map();
+              tickets = 0;
+              invalidateAll();
+            }
+            pending = false;
+          }}
+          disabled={pending}
+        >
+          결제하기
+          {#if pending}
+            <div class="animate-spin">
+              <Icon as="loader-circle" />
+            </div>
+          {/if}
+        </button>
       </div>
     </div>
   </main>
@@ -312,6 +326,9 @@
     &__row {
       display: grid;
       grid-template-columns: 1fr max-content;
+    }
+    &__submit {
+      justify-content: space-between;
     }
   }
 </style>
