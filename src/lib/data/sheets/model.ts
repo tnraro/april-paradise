@@ -115,3 +115,9 @@ export interface CocktailRouteData {
   triggerType: string;
   back: string;
 }
+
+export interface CocktailIngredientData {
+  key: string;
+  name: string;
+  probability: number;
+}

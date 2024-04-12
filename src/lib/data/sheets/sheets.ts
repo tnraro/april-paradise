@@ -4,6 +4,7 @@ import { cacheFn } from "../cache/cache-fn";
 import { client } from "../client";
 import type {
   AchievementData,
+  CocktailIngredientData,
   CocktailNpcData,
   CocktailRouteData,
   CocktailStoreData,
@@ -70,4 +71,10 @@ export const getStoreData = async (): Promise<StoreData[]> => {
 
 export const getCocktailRouteData = async (): Promise<CocktailRouteData[]> => {
   return await getData<CocktailRouteData>("칵테일루트");
+};
+
+export const getCocktailIngredientData = async (): Promise<
+  CocktailIngredientData[]
+> => {
+  return await getData<CocktailIngredientData>("칵테일확률");
 };

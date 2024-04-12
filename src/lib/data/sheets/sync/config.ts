@@ -1,5 +1,6 @@
 import type {
   AchievementData,
+  CocktailIngredientData,
   CocktailNpcData,
   CocktailRouteData,
   CocktailStoreData,
@@ -124,6 +125,11 @@ export const config = {
         .unwrap(),
       triggerType: parse(row.triggerType).string().unwrap(),
       back: parse(row.back).string().unwrap(),
+    })),
+    c("칵테일확률", "A1:D", (row: Raw<CocktailIngredientData>) => ({
+      key: parse(row.key).string().unwrap(),
+      name: parse(row.name).string().unwrap(),
+      probability: parse(row.probability).number().unwrap(),
     })),
   ],
 };
