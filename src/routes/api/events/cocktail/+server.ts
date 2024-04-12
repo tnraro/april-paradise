@@ -1,6 +1,9 @@
 import { route } from "$lib/api/server";
+import { addItem } from "$lib/data/item/add-item.query";
 import { addResource } from "$lib/data/resources/add-resource.query";
 import { getResource } from "$lib/data/resources/get-resource.query";
+import { getCocktailIngredientData } from "$lib/data/sheets/sheets";
+import { pick } from "$lib/shared/random/pick";
 import { josa2 } from "$lib/shared/util/josa";
 import { error } from "@sveltejs/kit";
 import { z } from "zod";
@@ -19,7 +22,7 @@ export const POST = route(
       const n = await getResource(tx, { key });
       if (n > 0) error(400, "이미 다녀온 장소입니다");
       const n2 = await getResource(tx, { key: key2 });
-      if (n2 > N) error(400, "횟수가 모두 소진되었습니다");
+      if (n2 >= N) error(400, "횟수가 모두 소진되었습니다");
       const n3 = await getResource(tx, { key: key3 });
       if (n3 > 0) error(400, `이미 ${josa2(rev, "을", "를")} 고르셨습니다`);
       await addResource(tx, {
@@ -30,6 +33,34 @@ export const POST = route(
         key: key2,
         value: 1,
       });
+      if (body.type === "탐색") {
+        const cocktailData = await getCocktailIngredientData();
+        const result = pick(cocktailData);
+        console.info(result.name, result.key);
+        if (result.key.startsWith("ingredient-")) {
+          await addItem(tx, {
+            key: result.key,
+            category: "ingredient",
+            quantity: 1,
+          });
+        } else if (result.key.startsWith("misc-")) {
+          await addItem(tx, {
+            key: result.key,
+            category: "misc",
+            quantity: 1,
+          });
+        } else {
+          return {
+            result: null,
+          };
+        }
+        return {
+          result: {
+            key: result.key,
+            name: result.name,
+          },
+        };
+      }
       return {};
     });
   },
