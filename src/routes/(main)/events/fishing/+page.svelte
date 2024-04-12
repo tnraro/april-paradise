@@ -1,4 +1,5 @@
 <script lang="ts">
+  import background from "$img/fishing/background.png?enhanced&w=1024";
   import { api } from "$lib/api/api.gen";
   import { type FishingData, FishingGrade, type Money } from "$lib/data/sheets/model.js";
   import { groupBy } from "$lib/shared/util/group-by.js";
@@ -272,22 +273,25 @@
 {/snippet}
 
 <main>
-  <div class="imgs">
-    {#if S.state === FishingState.Waiting ||
-         S.state === FishingState.Approaching ||
-         S.state === FishingState.Biting}
-      {#if S.caughtFish}
-        <FishingApproach
-          s={S.state}
-          grade={S.caughtFish.grade ?? 0}
-          onbite={S.bite}
-        />
+  <div class="_">
+    <enhanced:img class="_bg" src={background} />
+    <div class="_display">
+      {#if S.state === FishingState.Waiting ||
+           S.state === FishingState.Approaching ||
+           S.state === FishingState.Biting}
+        {#if S.caughtFish}
+          <FishingApproach
+            s={S.state}
+            grade={S.caughtFish.grade ?? 0}
+            onbite={S.bite}
+          />
+        {/if}
+      {:else if S.state === FishingState.Pulling}
+        {#if S.caughtFish} 
+          <FishingFighting fish={S.caughtFish} {hpRatio} {enRatio} {powerRatio} />
+        {/if}
       {/if}
-    {:else if S.state === FishingState.Pulling}
-      {#if S.caughtFish} 
-        <FishingFighting fish={S.caughtFish} {hpRatio} {enRatio} {powerRatio} />
-      {/if}
-    {/if}
+    </div>
   </div>
   <div class="tabs">
     <Tab prefix="fishing" n={4} {tab} {tabpanel} />
@@ -357,12 +361,20 @@
     max-width: 23rem;
     margin: 0 auto;
   }
-  .imgs {
-    display: grid;
-    place-items: center;
-    background: url("$img/fishing/background.png");
-    background-position: center;
-    background-size: cover;
+  ._ {
+    position: relative;
+    &bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    &display{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+    }
   }
   .title {
     margin-bottom: 1rem;
