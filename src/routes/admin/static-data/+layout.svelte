@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { invalidateAll } from '$app/navigation';
   import { api } from '$lib/api/api.gen.js';
   import { sendError } from '$lib/ui/error/send-error';
   import Dialog from '$lib/ui/floating/dialog.svelte';
@@ -24,6 +25,7 @@
     error = res.error.message;
     sendError(res.error.message);
   }
+  invalidateAll();
 }} disabled={isLoading}>데이터 동기화</button>
 
 {@render children()}

@@ -1,7 +1,5 @@
 import { parse } from "devalue";
 import type { Executor } from "edgedb";
-import { cacheFn } from "../cache/cache-fn";
-import { client } from "../client";
 import type {
   AchievementData,
   CocktailIngredientData,
@@ -19,11 +17,21 @@ import type {
 } from "./model";
 import { queryData } from "./query-data.query";
 
-export const getData = cacheFn(1, async <T>(sheet: string): Promise<T[]> => {
-  const res = await queryData(client, { sheet });
-  if (res == null) return [];
-  return parse(res.data);
-});
+let m = new Map<string, unknown[]>();
+
+export const initData = async (client: Executor) => {
+  const data = await queryData(client);
+  m = new Map(data.map((x) => [x.sheet, parse(x.data)]));
+};
+
+export const setData = (ranges: { sheet: string; data: unknown[] }[]) => {
+  m = new Map(ranges.map((x) => [x.sheet, x.data]));
+};
+
+export const getData = async <T>(sheet: string): Promise<T[]> => {
+  // biome-ignore lint/style/noNonNullAssertion: <explanation>
+  return m.get(sheet)! as T[];
+};
 
 export const getIndexData = async (): Promise<IndexData[]> => {
   return await getData<IndexData>("index");

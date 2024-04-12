@@ -1,3 +1,4 @@
 select StaticData {
+  sheet,
   data,
-} filter .sheet = <str>$sheet
+}

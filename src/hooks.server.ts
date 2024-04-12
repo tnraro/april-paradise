@@ -1,5 +1,6 @@
 import { options } from "$lib/data/auth";
 import { client } from "$lib/data/client";
+import { initData } from "$lib/data/sheets/sheets";
 import serverAuth, {
   type AuthRouteHandlers,
 } from "@edgedb/auth-sveltekit/server";
@@ -31,3 +32,5 @@ export const handle = sequence(
   createServerAuthClient,
   createAuthRouteHook(authRouteHandlers),
 );
+
+await initData(client);

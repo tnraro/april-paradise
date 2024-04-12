@@ -1,6 +1,5 @@
 import { env } from "$env/dynamic/private";
 import { auth, sheets } from "@googleapis/sheets";
-import { stringify } from "devalue";
 import { config } from "./config";
 
 const googleSheets = sheets({
@@ -30,17 +29,15 @@ export const fetch = async () => {
 
       return {
         sheet: c.sheet,
-        data: stringify(
-          rows.map((row) =>
-            c.map(
-              titles.reduce(
-                (o, key, i) => {
-                  const value = row[i]?.trim();
-                  o[key] = value ? value : null;
-                  return o;
-                },
-                {} as Parameters<typeof c.map>[0],
-              ),
+        data: rows.map((row) =>
+          c.map(
+            titles.reduce(
+              (o, key, i) => {
+                const value = row[i]?.trim();
+                o[key] = value ? value : null;
+                return o;
+              },
+              {} as Parameters<typeof c.map>[0],
             ),
           ),
         ),
