@@ -19,7 +19,13 @@
       const code = res.data.code;
       const url = `${location.origin}/invite?code=${code}`;
       const template = `${data.user.name}님, 카락실에 오신 걸 환영합니다^^*\n간단하게 가입을 도와드리겠습니다. 즐거운 시간 되세요~!\n\n${url}`;
-      await navigator.clipboard.writeText(template);
+      try {
+        await navigator.clipboard.writeText(template);
+        message = "복사되었습니다!";
+      } catch (_) {
+        message = "무언가 잘못되었습니다";
+        error = template;
+      }
     }
   };
 
@@ -40,6 +46,9 @@
   } | null>();
 
   let isMailEdit = $state(false);
+
+  let message = $state<string>();
+  let error = $state<string>();
 </script>
 
 <main>
@@ -57,6 +66,9 @@
     <div class="identity">
       계정 {data.user.hasIdentity ? "" : "안 "}만듦
       <button onclick={copyInviteCode}>초대 코드 복사</button>
+      {#if error}
+        <textarea>{error}</textarea>
+      {/if}
     </div>
   {/if}
   <section>
@@ -133,6 +145,13 @@
         }
       }}
     />
+  </Dialog>
+{/if}
+
+{#if message}
+  <Dialog onclose={() => (message = undefined)}>
+    {message}
+    <button onclick={() => (message = undefined)}>닫기</button>
   </Dialog>
 {/if}
 

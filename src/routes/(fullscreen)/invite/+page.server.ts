@@ -29,7 +29,7 @@ export const load = async ({ url, locals }) => {
     };
   } catch (e) {
     console.error(e);
-    error(400);
+    redirect(303, "/");
   }
 };
 
