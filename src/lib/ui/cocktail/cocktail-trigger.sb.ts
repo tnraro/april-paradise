@@ -31,5 +31,10 @@ export const meta: StylebookMeta<typeof Component, Component> = {
       triggerType: "조사",
       done: true,
     },
+    left: {
+      title: "entry",
+      triggerType: "조사",
+      left: 53,
+    },
   },
 };

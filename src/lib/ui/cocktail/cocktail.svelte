@@ -1,7 +1,8 @@
 <script lang="ts">
   import Dialog from "../floating/dialog.svelte";
   import AnimatingText from "../text/animating-text.svelte";
-    import CocktailTrigger from "./cocktail-trigger.svelte";
+  import CocktailTrigger from "./cocktail-trigger.svelte";
+  import { getCocktailTriggerN } from "./config";
 
   const enum State {
     Idle,
@@ -46,6 +47,8 @@
 
   let preferredType = $derived(visiteds.at(0)?.type);
   let visitedSet = $derived(new Set(visiteds.map(x => `${x.title}-${x.key}`)));
+  let N = $derived(getCocktailTriggerN(preferredType));
+  let left = $derived(N - visitedSet.size);
 </script>
 
 <div class="cocktail">
@@ -100,6 +103,7 @@
               {triggerType}
               disabled={s === State.Pending}
               done={visitedSet.has(`${title}-${k}`)}
+              {left}
               onclick={async () => {
                 s = State.Pending;
                 await ontrigger?.(triggerType!, `${triggerType}-${title}-${k}`);
@@ -111,7 +115,7 @@
           {:else}
             <button
               class="option"
-              disabled={key === "1" && (preferredType == null ? false : k.slice(0, 2) !== preferredType)}
+              disabled={key === "1" && (preferredType == null ? false : !k.includes(preferredType))}
               onclick={() => {
                 onnext?.(k);
               }}>{k}</button>
