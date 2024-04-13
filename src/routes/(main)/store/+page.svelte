@@ -21,9 +21,15 @@
       case "ingredient":
         return "재료";
       case "misc":
-        return "기타";
+        return "갈맥 상점";
     }
   };
+  const D = (category: string) => {
+    switch (category) {
+      case "ingredient":
+        return "너의 취향은? 이벤트 진행용";
+    }
+  }
   const enum OrderState {
     Idle,
     Prepare,
@@ -71,7 +77,12 @@
 {/snippet}
 {#snippet tabpanel(index: number)}
   {@const [category, items] = categories[index]}
-  <h2>{L(category)}</h2>
+  <h2>
+    {L(category)}
+    {#if D(category)}
+      <span class="description">{D(category)}</span>
+    {/if}
+  </h2>
   <div class="table">
     {#each items as item}
       {@const quantity = cart.get(item.key) ?? 0}
@@ -330,5 +341,9 @@
     &__submit {
       justify-content: space-between;
     }
+  }
+  .description {
+    font-size: 1rem;
+    color: var(--red-11);
   }
 </style>
