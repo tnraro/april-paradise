@@ -1,10 +1,13 @@
 FROM docker.io/oven/bun:1 AS install
 RUN mkdir -p /temp/prod
+RUN echo "Asia/Seoul" > /etc/timezone
 COPY package.json /temp/prod
 RUN cd /temp/prod && bun install
 
 FROM docker.io/oven/bun:1-distroless AS release
 WORKDIR /app
+COPY --from=install /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+COPY --from=install /etc/timezone /etc/timezone
 COPY --from=install /temp/prod/node_modules node_modules
 COPY .svelte-kit/out .
 
