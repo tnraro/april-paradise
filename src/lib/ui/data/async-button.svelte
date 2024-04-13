@@ -25,7 +25,7 @@
 
 <button
   class="blue emphasis"
-  disabled={s === State.Pending || s === State.Done}
+  disabled={s !== State.Idle}
   onclick={async () => {
     _s = State.Pending;
     try {

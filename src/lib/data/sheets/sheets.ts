@@ -6,10 +6,12 @@ import type {
   CocktailNpcData,
   CocktailRouteData,
   CocktailStoreData,
+  DemandData,
   FishingData,
   IndexData,
   ItemData,
   LureData,
+  RewardData,
   RouletteData,
   RunnerData,
   ScheduleData,
@@ -85,4 +87,10 @@ export const getCocktailIngredientData = async (): Promise<
   CocktailIngredientData[]
 > => {
   return await getData<CocktailIngredientData>("칵테일확률");
+};
+export const getRewardData = async (): Promise<RewardData[]> => {
+  return await getData<RewardData>("보상");
+};
+export const getDemandData = async (): Promise<DemandData[]> => {
+  return await getData<DemandData>("조르기");
 };

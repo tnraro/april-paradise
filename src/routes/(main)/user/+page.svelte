@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { invalidateAll } from "$app/navigation";
   import Icon from "$img/icon.svelte";
   import { api } from "$lib/api/api.gen.js";
   import AsyncButton from "$lib/ui/data/async-button.svelte";
@@ -22,6 +23,7 @@
           if (!res.ok) {
             throw res;
           }
+          await invalidateAll();
         }}
       />
     </section>

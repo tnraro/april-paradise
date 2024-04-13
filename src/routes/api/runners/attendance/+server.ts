@@ -1,7 +1,9 @@
 import { route } from "$lib/api/server";
+import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
+import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
 import { addResource } from "$lib/data/resources/add-resource.query";
 import { getResource } from "$lib/data/resources/get-resource.query";
-import { getScheduleData } from "$lib/data/sheets/sheets";
+import { getRewardData } from "$lib/data/sheets/sheets";
 import { error } from "@sveltejs/kit";
 import type { RequestEvent } from "./$types";
 
@@ -36,10 +38,23 @@ export const POST = route("post", async ({ locals }: RequestEvent) => {
     if (count > 0) {
       error(400, "이미 출석 했습니다");
     }
+    const rewardData = await getRewardData();
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    const { reward } = rewardData.find((x) => x.key === "reward-0")!;
+
     await addResource(tx, {
       key,
       value: 1,
     });
+    if (reward.type === "tokens") {
+      await addTokensByCurrentUser(tx, {
+        tokens: reward.quantity,
+      });
+    } else if (reward.type === "chips") {
+      await addChipsByCurrentUser(tx, {
+        chips: reward.quantity,
+      });
+    }
     return {};
   });
 });
