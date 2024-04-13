@@ -12,10 +12,12 @@
     title: string;
     disabled?: boolean;
     done?: boolean;
+    left?: number;
     onclick?: () => void | Promise<void>;
     ondone?: () => void;
   }
-  let { triggerType, title, disabled, done, onclick, ondone }: Props = $props();
+  let { triggerType, title, disabled, done, left, onclick, ondone }: Props =
+    $props();
   let s = $state<State>(State.Idle);
 </script>
 
@@ -37,7 +39,10 @@
   {#if done || s === State.Done}
     <Icon as="check" />
   {:else if s === State.Idle}
-    <span>{triggerType}</span>
+    <span
+      >{triggerType}{#if left != null}
+        ({left}회 남음){/if}</span
+    >
   {:else if s === State.Pending}
     <div class="animate-spin">
       <Icon as="loader-circle" />

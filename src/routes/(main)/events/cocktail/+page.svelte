@@ -4,6 +4,7 @@
   import { josa2 } from "$lib/shared/util/josa";
   import CocktailNpc from "$lib/ui/cocktail/cocktail-npc.svelte";
   import Cocktail from "$lib/ui/cocktail/cocktail.svelte";
+  import { getCocktailTriggerN } from "$lib/ui/cocktail/config.js";
   import { sendError } from "$lib/ui/error/send-error";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import InventoryItemImage from "$lib/ui/inventory/inventory-item-image.svelte";
@@ -27,7 +28,9 @@
   let s = $state<string>("entry");
   let route = $derived.by(() => {
     const m = routeMap.get(s);
-    if (m == null) return null;
+    if (m == null) {
+      throw sendError(s, { s, routeData: data.routeData });
+    }
     return {
       ...m,
       visiteds: data.visiteds,
@@ -40,7 +43,7 @@
 
   let done = $derived.by(() => {
     if (data.visiteds.length === 0) return false;
-    const N = data.visiteds[0].type === "탐색" ? 10 : 5;
+    const N = getCocktailTriggerN(data.visiteds[0].type);
     return data.visiteds.length >= N;
   });
 </script>

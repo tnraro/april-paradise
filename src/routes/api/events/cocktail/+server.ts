@@ -5,6 +5,7 @@ import { getResource } from "$lib/data/resources/get-resource.query";
 import { getCocktailIngredientData } from "$lib/data/sheets/sheets";
 import { pick } from "$lib/shared/random/pick";
 import { josa2 } from "$lib/shared/util/josa";
+import { getCocktailTriggerN } from "$lib/ui/cocktail/config";
 import { error } from "@sveltejs/kit";
 import { z } from "zod";
 import type { RequestEvent } from "./$types";
@@ -18,7 +19,7 @@ export const POST = route(
       const key2 = `cocktail-${body.type}`;
       const rev = body.type === "탐색" ? "조사" : "탐색";
       const key3 = `cocktail-${rev}`;
-      const N = body.type === "탐색" ? 10 : 5;
+      const N = getCocktailTriggerN(body.type);
       const n2 = await getResource(tx, { key: key2 });
       if (n2 >= N) error(400, "횟수가 모두 소진되었습니다");
       const n = await getResource(tx, { key });
