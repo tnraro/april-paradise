@@ -55,7 +55,7 @@
             <Icon as="menu" />
           </Menubar.Trigger>
           <Menubar.Content align="end" sideOffset={6}>
-            <Menubar.Item>
+            <Menubar.Item href="/user" >
               <Icon as="user-circle2" stroke-width={1} />{data.user.name}
             </Menubar.Item>
             <Menubar.Item href="/mails" class="layout-menubar__item">

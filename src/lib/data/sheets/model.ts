@@ -121,3 +121,15 @@ export interface CocktailIngredientData {
   name: string;
   probability: number;
 }
+
+export interface RewardData {
+  key: string;
+  name: string;
+  reward: Money;
+}
+
+export interface DemandData {
+  key: string;
+  name: string;
+  reward: Money;
+}
