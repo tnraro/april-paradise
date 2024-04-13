@@ -47,7 +47,7 @@
 
   let preferredType = $derived(visiteds.at(0)?.type);
   let visitedSet = $derived(new Set(visiteds.map(x => `${x.title}-${x.key}`)));
-  let N = $derived(getCocktailTriggerN(preferredType));
+  let N = $derived(getCocktailTriggerN(triggerType));
   let left = $derived(N - visitedSet.size);
 </script>
 

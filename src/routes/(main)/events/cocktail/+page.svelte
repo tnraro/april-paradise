@@ -109,7 +109,7 @@
 {#if 조사}
   {@const m = routeMap.get(조사)}
   {#if m}
-    <Dialog onclose={close조사}>
+    <Dialog>
       <div class="__">
         <CocktailNpc npc={m.npc} script={m.script} onclick={close조사} />
       </div>
