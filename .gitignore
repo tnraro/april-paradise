@@ -12,3 +12,6 @@ vite.config.ts.timestamp-*
 *.query.ts
 /src/lib/api/api.gen.ts
 credentials.json
+
+# Sentry Config File
+.env.sentry-build-plugin
