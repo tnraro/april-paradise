@@ -1,9 +1,9 @@
 import { route } from "$lib/api/server";
 import { addItem } from "$lib/data/item/add-item.query";
-import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
-import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
+import { addChips } from "$lib/data/query/add-chips.query";
+import { addTokens } from "$lib/data/query/add-tokens.query";
+import { getCurrentUser } from "$lib/data/query/get-current-user.query";
 import { getStoreData } from "$lib/data/sheets/sheets";
-import { groupBy } from "$lib/shared/util/group-by";
 import { page } from "$routes/(main)/store/page.query";
 import { error } from "@sveltejs/kit";
 import { ConstraintViolationError } from "edgedb";
@@ -76,25 +76,30 @@ export const POST = route(
         },
       );
       console.info(config, totalTickets);
+      const currentUser = await getCurrentUser(tx);
+      if (currentUser == null) error(401);
       if (body.tickets.length > 0) {
         await addItem(tx, {
           key: "roulette-result-6",
           quantity: -body.tickets.length,
           category: "ticket",
+          owner: currentUser,
         });
       }
       if (config.chips > 0) {
-        await addChipsByCurrentUser(tx, {
+        await addChips(tx, {
           chips: -config.chips + totalTickets.chips,
+          user: currentUser,
         });
       }
       if (config.tokens > 0) {
-        await addTokensByCurrentUser(tx, {
+        await addTokens(tx, {
           tokens: -config.tokens + totalTickets.tokens,
+          user: currentUser,
         });
       }
       for (const item of config.items) {
-        await addItem(tx, item);
+        await addItem(tx, { ...item, owner: currentUser });
       }
 
       return {};

@@ -1,7 +1,8 @@
 import { route } from "$lib/api/server";
 import { addLureItem } from "$lib/data/item/add-lure-item";
-import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
-import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
+import { addChips } from "$lib/data/query/add-chips.query";
+import { addTokens } from "$lib/data/query/add-tokens.query";
+import { getCurrentUser } from "$lib/data/query/get-current-user.query";
 import { getLureData } from "$lib/data/sheets/sheets";
 import { lures } from "$lib/shared/config/lures";
 import { error } from "@sveltejs/kit";
@@ -17,23 +18,28 @@ export const POST = route(
     const data = new Map(lureData.map((x) => [x.key, x]));
     try {
       await locals.client.transaction(async (tx) => {
+        const currentUser = await getCurrentUser(tx);
+        if (currentUser == null) error(401);
         for (const key of lures) {
           const quantity = body[key];
           if (quantity == null) continue;
           const lureData = data.get(key);
           if (lureData == null) continue;
           if (lureData.price.type === "chips") {
-            await addChipsByCurrentUser(tx, {
+            await addChips(tx, {
               chips: -lureData.price.quantity * quantity,
+              user: currentUser,
             });
           } else if (lureData.price.type === "tokens") {
-            await addTokensByCurrentUser(tx, {
+            await addTokens(tx, {
               tokens: -lureData.price.quantity * quantity,
+              user: currentUser,
             });
           }
           await addLureItem(tx, {
             key,
             quantity,
+            owner: currentUser,
           });
         }
       });

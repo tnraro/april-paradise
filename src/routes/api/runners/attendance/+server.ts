@@ -1,7 +1,9 @@
 import { route } from "$lib/api/server";
-import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
-import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
+import { addChips } from "$lib/data/query/add-chips.query";
+import { addTokens } from "$lib/data/query/add-tokens.query";
+import { getCurrentUser } from "$lib/data/query/get-current-user.query";
 import { addResource } from "$lib/data/resources/add-resource.query";
+import { getResourceByCurrentUser } from "$lib/data/resources/get-resource-by-current-user.query";
 import { getResource } from "$lib/data/resources/get-resource.query";
 import { getRewardData } from "$lib/data/sheets/sheets";
 import { error } from "@sveltejs/kit";
@@ -20,7 +22,7 @@ const getKey = () => {
 export type GET = typeof GET;
 export const GET = route("get", async ({ locals }: RequestEvent) => {
   const key = getKey();
-  const count = await getResource(locals.client, {
+  const count = await getResourceByCurrentUser(locals.client, {
     key,
   });
 
@@ -32,8 +34,11 @@ export type POST = typeof POST;
 export const POST = route("post", async ({ locals }: RequestEvent) => {
   return await locals.client.transaction(async (tx) => {
     const key = getKey();
+    const currentUser = await getCurrentUser(tx);
+    if (currentUser == null) error(401);
     const count = await getResource(tx, {
       key,
+      owner: currentUser,
     });
     if (count > 0) {
       error(400, "이미 출석 했습니다");
@@ -45,14 +50,17 @@ export const POST = route("post", async ({ locals }: RequestEvent) => {
     await addResource(tx, {
       key,
       value: 1,
+      owner: currentUser,
     });
     if (reward.type === "tokens") {
-      await addTokensByCurrentUser(tx, {
+      await addTokens(tx, {
         tokens: reward.quantity,
+        user: currentUser,
       });
     } else if (reward.type === "chips") {
-      await addChipsByCurrentUser(tx, {
+      await addChips(tx, {
         chips: reward.quantity,
+        user: currentUser,
       });
     }
     return {};

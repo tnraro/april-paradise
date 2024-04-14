@@ -61,6 +61,7 @@ export const PUT = route("put", async (e: RequestEvent) => {
           key: item.key,
           category: item.category,
           quantity: quantity,
+          owner: currentUser,
         });
       }
     }
