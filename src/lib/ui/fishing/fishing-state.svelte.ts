@@ -5,14 +5,15 @@ import { sendError } from "../error/send-error";
 
 export const enum FishingState {
   Idle,
-  Casting,
   Waiting,
   Approaching,
   Biting,
   Pulling,
+  Pending,
   Caught,
   Missing,
   Snapped,
+  Retry,
 }
 
 export type CaughtFish = Pick<
@@ -46,21 +47,21 @@ export const createFishing = (options: FishingOptions) => {
   };
   const cast = async (lure: keyof Lures) => {
     if (state !== FishingState.Idle) return;
-    state = FishingState.Casting;
     try {
-      caughtFish = await options.oncast(lure);
+      state = FishingState.Waiting;
+      await Promise.all([
+        options.oncast(lure).then((fish) => {
+          caughtFish = fish;
+        }),
+        sleep(3000 + Math.random() * 1000 + Math.random() * 1000),
+      ]);
+      approaching();
     } catch (e) {
       if (typeof e === "string") {
         throw error(e);
       }
       error("무언가 잘못되었습니다", e);
     }
-  };
-  const wait = async () => {
-    if (state !== FishingState.Casting) return;
-    state = FishingState.Waiting;
-    await sleep(3000 + Math.random() * 1000 + Math.random() * 1000);
-    approaching();
   };
   const approaching = () => {
     if (state !== FishingState.Waiting) return;
@@ -92,8 +93,11 @@ export const createFishing = (options: FishingOptions) => {
     if (state !== FishingState.Pulling) return;
     state = FishingState.Snapped;
   };
+  const pending = () => {
+    state = FishingState.Pending;
+  };
   const catchFish = () => {
-    if (state !== FishingState.Pulling) return;
+    if (state !== FishingState.Pending) return;
     if (caughtFish == null) throw error("caught fish is null", "catchFish()");
     state = FishingState.Caught;
     options.oncatch?.(caughtFish);
@@ -103,6 +107,9 @@ export const createFishing = (options: FishingOptions) => {
     options.onerror?.(message);
     sendError(message, additionalInformation);
   };
+  const retry = () => {
+    state = FishingState.Retry;
+  };
 
   return {
     get state() {
@@ -111,14 +118,18 @@ export const createFishing = (options: FishingOptions) => {
     get caughtFish() {
       return caughtFish;
     },
+    set caughtFish(v: CaughtFish | undefined) {
+      caughtFish = v;
+    },
     idle,
     cast,
-    wait,
     bite,
     pull,
     miss,
     snap,
+    pending,
     catchFish,
     error,
+    retry,
   };
 };

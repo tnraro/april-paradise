@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { invalidateAll } from "$app/navigation";
   import background from "$img/fishing/background.png?enhanced&w=1024";
   import Icon from "$img/icon.svelte";
   import { api } from "$lib/api/api.gen";
@@ -16,6 +17,7 @@
   import FishingFishPortrait from "$lib/ui/fishing/fishing-fish-portrait.svelte";
   import FishingLures from "$lib/ui/fishing/fishing-lures.svelte";
   import {
+    type CaughtFish,
     FishingState,
     createFishing,
   } from "$lib/ui/fishing/fishing-state.svelte";
@@ -25,6 +27,7 @@
   import InventoryItem from "$lib/ui/inventory/inventory-item.svelte";
   import Tab from "$lib/ui/tab/tab.svelte";
   import { useWallet } from "$routes/(main)/wallet.svelte.js";
+  import { onMount } from "svelte";
   import { useBowl } from "./bowl.svelte.js";
   import { type Lures, useLures } from "./lures.svelte.js";
   const enum TabIndex {
@@ -41,6 +44,51 @@
     e.preventDefault();
     isPulling = false;
   };
+  const approve = async (fish: CaughtFish) => {
+    S.pending();
+    let t = Date.now();
+    const res = await api().events.fishing.put({ next: fish.next });
+    if (!res.ok) {
+      if (res.status === 406) {
+        const delay = Math.max(2000, Date.now() - t);
+        setTimeout(() => {
+          S.error("잠시후에 다시 시도해주세요");
+        }, delay * 2);
+      } else {
+        S.error("무언가 잘못되었습니다", res.error);
+      }
+    } else {
+      S.caughtFish = fish;
+      S.catchFish();
+      localStorage.removeItem("fishing-next");
+      const xs = res.data.achievements.map(x => {
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        return achievementDataMap.get(x)!;
+      });
+      achievements.push(...xs);
+      newAchievements = xs.map(achievement => {
+        return ({
+          id: crypto.randomUUID(),
+          name: achievement.name,
+          condition: achievement.condition,
+          reward: achievement.reward,
+          isHidden: achievement.isHidden,
+        })
+      }
+      );
+      setTimeout(() => {
+        for (const a of newAchievements) {
+          if (a.reward.type === "tokens") {
+            wallet.tokens += a.reward.quantity;
+          } else if (a.reward.type === "chips") {
+            wallet.chips += a.reward.quantity;
+          }
+        }
+        newAchievements = []; 
+      }, 5000);
+      bowl.addFish(fish.key);
+    }
+  }
   const wallet = useWallet();
   const S = createFishing({
     async oncast(lure) {
@@ -52,7 +100,7 @@
         lure: lure as "까만 콩 지렁이" | "토깽이 떡밥" | "사우루숭 벌레 유충",
       });
       if (!res.ok) throw res.error.message;
-      setTimeout(S.wait, 0);
+      localStorage.setItem("fishing-next", JSON.stringify(res.data.result));
       return res.data.result;
     },
     async onpull(fish) {
@@ -81,38 +129,7 @@
           } else if (enRatio >= 0.3 && value.ratio >= 1) {
             S.snap();
           } else {
-            S.catchFish();
-            const res = await api().events.fishing.put({ next: fish.next });
-            if (!res.ok) {
-              S.error("무언가 잘못되었습니다", res.error);
-            } else {
-              const xs = res.data.achievements.map(x => {
-                // biome-ignore lint/style/noNonNullAssertion: <explanation>
-                return achievementDataMap.get(x)!;
-              });
-              achievements.push(...xs);
-              newAchievements = xs.map(achievement => {
-                return ({
-                  id: crypto.randomUUID(),
-                  name: achievement.name,
-                  condition: achievement.condition,
-                  reward: achievement.reward,
-                  isHidden: achievement.isHidden,
-                })
-              }
-              );
-              setTimeout(() => {
-                for (const a of newAchievements) {
-                  if (a.reward.type === "tokens") {
-                    wallet.tokens += a.reward.quantity;
-                  } else if (a.reward.type === "chips") {
-                    wallet.chips += a.reward.quantity;
-                  }
-                }
-                newAchievements = []; 
-              }, 5000);
-              bowl.addFish(fish.key);
-            }
+            approve(fish);
           }
           break;
         }
@@ -120,6 +137,7 @@
     },
     onerror(message) {
       errorMessage = message;
+      invalidateAll();
     },
   });
 
@@ -190,6 +208,13 @@
   });
 
   let pending = $state(false);
+
+  onMount(() => {
+    if (localStorage.getItem("fishing-next")) {
+      S.retry();
+    }
+  });
+  $inspect(S.state);
 </script>
 
 {#snippet fishDescription(fish: FishingData)}  
@@ -233,6 +258,19 @@
         onpointerup={release}
         ontouchstart={e => e.preventDefault()}
       >당기기</button>
+    {:else if S.state === FishingState.Pending}
+      <button class="tab__btn" disabled={true}>
+        동기화 중
+        <div class="animate-spin"><Icon as="loader-circle" /></div>
+      </button>
+    {:else if S.state === FishingState.Retry}
+      <button class="tab__btn emphasis" onclick={() => {
+        const v = localStorage.getItem("fishing-next");
+        if (v == null) S.idle();
+        else approve(JSON.parse(v));
+      }}>
+        재시도
+      </button>
     {/if}
   {:else if index === TabIndex.Bowl}
     <div>
@@ -290,13 +328,11 @@
       {#if S.state === FishingState.Waiting ||
            S.state === FishingState.Approaching ||
            S.state === FishingState.Biting}
-        {#if S.caughtFish}
-          <FishingApproach
-            s={S.state}
-            grade={S.caughtFish.grade ?? 0}
-            onbite={S.bite}
-          />
-        {/if}
+        <FishingApproach
+          s={S.state}
+          grade={S.state === FishingState.Waiting ? 0 : (S.caughtFish?.grade ?? 0)}
+          onbite={S.bite}
+        />
       {:else if S.state === FishingState.Pulling}
         {#if S.caughtFish} 
           <FishingFighting fish={S.caughtFish} {hpRatio} {enRatio} {powerRatio} />
@@ -343,7 +379,11 @@
       <button
         onclick={() => {
           errorMessage = undefined;
-          S.idle();
+          if (localStorage.getItem("fishing-next")) {
+            S.retry();
+          } else {
+            S.idle();
+          }
         }}>닫기</button
       >
     </div>

@@ -12,6 +12,7 @@ import { getCurrentUser } from "$lib/data/query/get-current-user.query";
 import { getAchievementData, getFishingData } from "$lib/data/sheets/sheets";
 import { pick } from "$lib/shared/random/pick";
 import { error } from "@sveltejs/kit";
+import { ConstraintViolationError } from "edgedb";
 import { z } from "zod";
 import type { RequestEvent } from "./$types";
 
@@ -22,19 +23,19 @@ export const POST = route(
   "post",
   async (e: RequestEvent, body) => {
     const client = e.locals.auth.session.client;
+    const data = await getFishingData();
+    const fishes = data.filter((x) => x.lure === body.lure);
+    const result = pick(fishes);
+    console.info(body.lure, result.name);
+    const id = crypto.randomUUID();
+    const key = result.key;
+    const cipher = createCipheriv("aes-128-gcm", KEY, env.IV);
+    const next =
+      cipher.update(JSON.stringify({ id, key }), "utf8", "base64url") +
+      cipher.final("base64url");
     return await client.transaction(async (tx) => {
       const currentUser = await getCurrentUser(tx);
       if (currentUser == null) error(401);
-      const data = await getFishingData();
-      const fishes = data.filter((x) => x.lure === body.lure);
-      const result = pick(fishes);
-      console.info(body.lure, result.name);
-      const id = crypto.randomUUID();
-      const key = result.key;
-      const cipher = createCipheriv("aes-128-gcm", KEY, env.IV);
-      const next =
-        cipher.update(JSON.stringify({ id, key }), "utf8", "base64url") +
-        cipher.final("base64url");
       await addLureItem(tx, {
         key: body.lure,
         quantity: -1,
@@ -60,6 +61,14 @@ export const POST = route(
     body: z.object({
       lure: z.enum(["까만 콩 지렁이", "토깽이 떡밥", "사우루숭 벌레 유충"]),
     }),
+    err(e, re, body) {
+      if (e instanceof ConstraintViolationError) {
+        if (e.message.includes("quantity")) {
+          error(400, "미끼가 모자랍니다");
+        }
+      }
+      throw e;
+    },
   },
 );
 
@@ -114,5 +123,9 @@ export const PUT = route(
     body: z.object({
       next: z.string(),
     }),
+    err(e) {
+      console.error(e);
+      error(406);
+    },
   },
 );

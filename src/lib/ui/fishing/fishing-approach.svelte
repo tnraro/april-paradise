@@ -65,7 +65,9 @@
     border-radius: 99999rem;
     overflow: hidden;
     &--is-biting {
-      animation: endurance 3s ease-out forwards, bite 0.4s linear;
+      animation:
+        endurance 3s ease-out forwards,
+        bite 0.4s linear;
     }
     animation: scale 400ms cubic-bezier(0.18, 0.89, 0.32, 1.28);
   }
