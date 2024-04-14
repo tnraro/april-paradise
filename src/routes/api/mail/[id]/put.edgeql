@@ -1,7 +1,8 @@
-with user := global currentUser
 select (
   update Mail
-  filter .id = <uuid>$id and not .isReceived and .recipient = user
+  filter .id = <uuid>$id
+    and not .isReceived
+    and .recipient.id = <uuid>$recipient
   set {
     isReceived := true,
   }

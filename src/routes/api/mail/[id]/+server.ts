@@ -1,8 +1,10 @@
 import { route } from "$lib/api/server";
 import { addItem } from "$lib/data/item/add-item.query";
-import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
-import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
+import { addChips } from "$lib/data/query/add-chips.query";
+import { addTokens } from "$lib/data/query/add-tokens.query";
+import { getCurrentUser } from "$lib/data/query/get-current-user.query";
 import { getItemData } from "$lib/data/sheets/sheets";
+import { error } from "@sveltejs/kit";
 import type { RequestEvent } from "./$types";
 import { get } from "./get.query";
 import { put } from "./put.query";
@@ -25,8 +27,13 @@ export const PUT = route("put", async (e: RequestEvent) => {
 
     const items = new Map(itemData.map((x) => [x.key, x]));
 
+    const currentUser = await getCurrentUser(tx);
+
+    if (currentUser == null) error(401);
+
     const rewards = await put(tx, {
       id: e.params.id,
+      recipient: currentUser,
     });
 
     if (rewards == null) {
@@ -38,12 +45,14 @@ export const PUT = route("put", async (e: RequestEvent) => {
       const quantity = Number(_quantity);
 
       if (key === "chip") {
-        await addChipsByCurrentUser(tx, {
+        await addChips(tx, {
           chips: quantity,
+          user: currentUser,
         });
       } else if (key === "token") {
-        await addTokensByCurrentUser(tx, {
+        await addTokens(tx, {
           tokens: quantity,
+          user: currentUser,
         });
       } else {
         const item = items.get(key);
