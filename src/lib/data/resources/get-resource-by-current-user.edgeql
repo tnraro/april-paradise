@@ -3,6 +3,6 @@ with resource := assert_single((
     value
   }
   filter .key = <str>$key
-    and .owner.id = <uuid>$owner
+    and .owner = global currentUser
 ))
 select resource.value ?? 0

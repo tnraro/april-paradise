@@ -1,7 +1,8 @@
 import { route } from "$lib/api/server";
 import { addTicketItem } from "$lib/data/item/add-ticket-item";
-import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
-import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
+import { addChips } from "$lib/data/query/add-chips.query";
+import { addTokens } from "$lib/data/query/add-tokens.query";
+import { getCurrentUser } from "$lib/data/query/get-current-user.query";
 import { getRouletteData } from "$lib/data/sheets/sheets";
 import { pick } from "$lib/shared/random/pick";
 import { error } from "@sveltejs/kit";
@@ -14,26 +15,32 @@ export const POST = route(
   async (e: RequestEvent) => {
     const client = e.locals.client;
     return await client.transaction(async (tx) => {
-      await addTokensByCurrentUser(tx, {
+      const currentUser = await getCurrentUser(client);
+      if (currentUser == null) error(401);
+      await addTokens(tx, {
         tokens: -1,
+        user: currentUser,
       });
       const data = await getRouletteData();
       const result = pick(data);
       switch (result.result.type) {
         case "chips":
-          await addChipsByCurrentUser(tx, {
+          await addChips(tx, {
             chips: result.result.quantity,
+            user: currentUser,
           });
           break;
         case "tokens":
-          await addTokensByCurrentUser(tx, {
+          await addTokens(tx, {
             tokens: result.result.quantity,
+            user: currentUser,
           });
           break;
         case "item":
           if (result.key.startsWith("losing-")) break;
           await addTicketItem(client, {
             key: result.key,
+            owner: currentUser,
           });
           break;
       }

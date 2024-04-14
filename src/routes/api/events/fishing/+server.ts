@@ -6,10 +6,12 @@ import { addAchievements } from "$lib/data/achievement/add-achievements.query";
 import { addFishItem } from "$lib/data/item/add-fish-item";
 import { addGarbageItem } from "$lib/data/item/add-garbage-item";
 import { addLureItem } from "$lib/data/item/add-lure-item";
-import { addChipsByCurrentUser } from "$lib/data/query/add-chips-by-current-user.query";
-import { addTokensByCurrentUser } from "$lib/data/query/add-tokens-by-current-user.query";
+import { addChips } from "$lib/data/query/add-chips.query";
+import { addTokens } from "$lib/data/query/add-tokens.query";
+import { getCurrentUser } from "$lib/data/query/get-current-user.query";
 import { getAchievementData, getFishingData } from "$lib/data/sheets/sheets";
 import { pick } from "$lib/shared/random/pick";
+import { error } from "@sveltejs/kit";
 import { z } from "zod";
 import type { RequestEvent } from "./$types";
 
@@ -21,6 +23,8 @@ export const POST = route(
   async (e: RequestEvent, body) => {
     const client = e.locals.auth.session.client;
     return await client.transaction(async (tx) => {
+      const currentUser = await getCurrentUser(tx);
+      if (currentUser == null) error(401);
       const data = await getFishingData();
       const fishes = data.filter((x) => x.lure === body.lure);
       const result = pick(fishes);
@@ -34,6 +38,7 @@ export const POST = route(
       await addLureItem(tx, {
         key: body.lure,
         quantity: -1,
+        owner: currentUser,
       });
 
       return {
@@ -67,13 +72,18 @@ export const PUT = route(
       decipher.update(body.next, "base64url", "utf8"),
     );
     return await locals.client.transaction(async (tx) => {
+      const currentUser = await getCurrentUser(tx);
+      if (currentUser == null) error(401);
       if (fish.key.startsWith("losing-")) {
-        await addGarbageItem(locals.client, { key: fish.key });
+        await addGarbageItem(tx, {
+          key: fish.key,
+          owner: currentUser,
+        });
       } else {
-        await addFishItem(locals.client, { key: fish.key });
+        await addFishItem(tx, { key: fish.key, owner: currentUser });
       }
       const achievements = await onCaughtFish(tx, fish.key);
-      await addAchievements(tx, { achievements });
+      await addAchievements(tx, { achievements, user: currentUser });
       const map = new Map((await getAchievementData()).map((x) => [x.key, x]));
       const money = achievements.reduce(
         (sum, x) => {
@@ -90,10 +100,10 @@ export const PUT = route(
         { tokens: 0, chips: 0 },
       );
       if (money.tokens > 0) {
-        await addTokensByCurrentUser(tx, { tokens: money.tokens });
+        await addTokens(tx, { tokens: money.tokens, user: currentUser });
       }
       if (money.chips > 0) {
-        await addChipsByCurrentUser(tx, { chips: money.chips });
+        await addChips(tx, { chips: money.chips, user: currentUser });
       }
       return {
         achievements,
