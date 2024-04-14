@@ -3,4 +3,4 @@ select Item {
   key,
   quantity,
 }
-filter .key in <str>items
+filter .owner = global currentUser and .key in <str>items
