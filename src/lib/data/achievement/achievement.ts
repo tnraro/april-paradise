@@ -19,7 +19,7 @@ export const onCaughtFish = async (client: Executor, fishKey: string) => {
       return ["achievement-11"];
     }
   } else {
-    const [fishingData] = await Promise.all([getFishingData()]);
+    const fishingData = await getFishingData();
     const fishingDataMap = new Map(fishingData.map((x) => [x.key, x]));
     const fishes = await getFishes(client, {
       category: "fish",
@@ -53,14 +53,12 @@ export const onCaughtFish = async (client: Executor, fishKey: string) => {
           // 럭키 데이
           const grade = fishingDataMap.get(fishKey)?.grade ?? 0;
           if (grade < FishingGrade.Legendary) return false;
-          const targetFishes = groupBy(
-            fishes,
-            (x) => `${fishingDataMap.get(x.key)?.grade ?? 0}`,
+          const targetFishes = fishes.filter(
+            (fish) =>
+              (fishingDataMap.get(fish.key)?.grade ?? 0) >=
+              FishingGrade.Legendary,
           );
-          return (
-            (targetFishes.get(`${FishingGrade.Legendary}`)?.length ?? 0) >= 5 &&
-            (targetFishes.get(`${FishingGrade.Mythic}`)?.length ?? 0) >= 5
-          );
+          return targetFishes.length >= 5;
         }
         case "achievement-3": {
           // 강태공
