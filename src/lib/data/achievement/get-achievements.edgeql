@@ -1,4 +1,4 @@
 select (
   select Achievement
-  filter .user = global currentUser
+  filter .user.id = <uuid>$user
 ).key

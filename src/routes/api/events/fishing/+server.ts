@@ -91,28 +91,32 @@ export const PUT = route(
       } else {
         await addFishItem(tx, { key: fish.key, owner: currentUser });
       }
-      const achievements = await onCaughtFish(tx, fish.key);
-      await addAchievements(tx, { achievements, user: currentUser });
-      const map = new Map((await getAchievementData()).map((x) => [x.key, x]));
-      const money = achievements.reduce(
-        (sum, x) => {
-          // biome-ignore lint/style/noNonNullAssertion: <explanation>
-          const _x = map.get(x)!;
-          if (_x.reward.type === "chips") {
-            sum.chips += _x.reward.quantity;
-          }
-          if (_x.reward.type === "tokens") {
-            sum.tokens += _x.reward.quantity;
-          }
-          return sum;
-        },
-        { tokens: 0, chips: 0 },
-      );
-      if (money.tokens > 0) {
-        await addTokens(tx, { tokens: money.tokens, user: currentUser });
-      }
-      if (money.chips > 0) {
-        await addChips(tx, { chips: money.chips, user: currentUser });
+      const achievements = await onCaughtFish(tx, currentUser, fish.key);
+      if (achievements.length > 0) {
+        await addAchievements(tx, { achievements, user: currentUser });
+        const map = new Map(
+          (await getAchievementData()).map((x) => [x.key, x]),
+        );
+        const money = achievements.reduce(
+          (sum, x) => {
+            // biome-ignore lint/style/noNonNullAssertion: <explanation>
+            const _x = map.get(x)!;
+            if (_x.reward.type === "chips") {
+              sum.chips += _x.reward.quantity;
+            }
+            if (_x.reward.type === "tokens") {
+              sum.tokens += _x.reward.quantity;
+            }
+            return sum;
+          },
+          { tokens: 0, chips: 0 },
+        );
+        if (money.tokens > 0) {
+          await addTokens(tx, { tokens: money.tokens, user: currentUser });
+        }
+        if (money.chips > 0) {
+          await addChips(tx, { chips: money.chips, user: currentUser });
+        }
       }
       return {
         achievements,
