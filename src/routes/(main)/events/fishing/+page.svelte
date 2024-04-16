@@ -361,14 +361,20 @@
   <Dialog>
     <div class="caught-fish-dialog">
       물고기를 놓쳤다!
-      <button onclick={S.idle}>닫기</button>
+      <button onclick={() => {
+        localStorage.removeItem("fishing-next");
+        S.idle();
+      }}>닫기</button>
     </div>
   </Dialog>
 {:else if S.state === FishingState.Snapped}
   <Dialog>
     <div class="caught-fish-dialog">
       낚시줄이 끊어졌다!
-      <button onclick={S.idle}>닫기</button>
+      <button onclick={() => {
+        localStorage.removeItem("fishing-next");
+        S.idle();
+      }}>닫기</button>
     </div>
   </Dialog>
 {/if}
