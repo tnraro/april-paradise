@@ -21,11 +21,12 @@ const group = [...Map.groupBy(log, (x) => `${x.method} ${x.path}`)].map(
   ([key, v]) => {
     const times = v.map((x) => x.time);
     const sum = times.reduce((a, b) => a + b, 0);
+    const count = times.length;
 
     return {
       key,
-      sum,
-      avg: sum / times.length,
+      count,
+      avg: sum / count,
       max: Math.max(...times),
       min: Math.min(...times),
     };

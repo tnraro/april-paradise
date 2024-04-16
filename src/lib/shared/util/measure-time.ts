@@ -12,3 +12,10 @@ export const measureTime = async <R>(
     throw error;
   }
 };
+
+export const measureFnTime = async <P extends unknown[], R>(
+  fn: (...p: P) => Promise<R> | R,
+  ...args: P
+) => {
+  return await measureTime(fn.name, () => fn(...args));
+};

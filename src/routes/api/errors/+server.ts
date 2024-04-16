@@ -1,9 +1,7 @@
-export const POST = async ({ cookies, request }) => {
+export const POST = async ({ cookies, request, locals }) => {
   console.error({
     type: "client-error",
-    cookies: {
-      "edgedb-session": cookies.get("edgedb-session"),
-    },
+    user: locals.currentUser,
     body: await request.json(),
     createdAt: new Date(),
   });

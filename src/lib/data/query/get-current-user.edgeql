@@ -1,3 +1,6 @@
-select (
-  select User filter .identity = global ext::auth::ClientTokenIdentity
-).id
+select User {
+  id,
+  isAdmin,
+  isBanned,
+}
+filter .identity = global ext::auth::ClientTokenIdentity

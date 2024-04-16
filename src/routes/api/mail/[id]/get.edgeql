@@ -7,4 +7,4 @@ select Mail {
   isReceived,
   createdAt,
 }
-filter .id = <uuid>$id 
+filter .id = <uuid>$id

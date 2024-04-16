@@ -7,7 +7,7 @@ export const load = async ({ locals }) => {
   if (!(await isScheduleActived("칵테일"))) {
     redirect(303, "/");
   }
-  if (!(await locals.auth.session.isSignedIn())) {
+  if (locals.currentUser == null || locals.currentUser.isBanned) {
     redirect(303, "/auth/sign-in");
   }
   const routeData = await getCocktailRouteData();

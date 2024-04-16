@@ -1,4 +1,3 @@
-import { groupBy } from "$lib/shared/util/group-by";
 import type { Executor } from "edgedb";
 import { FishingGrade } from "../sheets/model";
 import { getFishingData } from "../sheets/sheets";

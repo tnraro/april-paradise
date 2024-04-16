@@ -6,7 +6,7 @@ export const load = async ({ locals }) => {
   if (!(await isScheduleActived("룰렛"))) {
     redirect(303, "/");
   }
-  if (!(await locals.auth.session.isSignedIn())) {
+  if (locals.currentUser == null || locals.currentUser.isBanned) {
     redirect(303, "/auth/sign-in");
   }
 

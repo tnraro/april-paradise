@@ -2,7 +2,6 @@ import { route } from "$lib/api/server";
 import { addItem } from "$lib/data/item/add-item.query";
 import { addChips } from "$lib/data/query/add-chips.query";
 import { addTokens } from "$lib/data/query/add-tokens.query";
-import { getCurrentUser } from "$lib/data/query/get-current-user.query";
 import { getStoreData } from "$lib/data/sheets/sheets";
 import { page } from "$routes/(main)/store/page.query";
 import { error } from "@sveltejs/kit";
@@ -14,6 +13,7 @@ export type POST = typeof POST;
 export const POST = route(
   "post",
   async ({ locals }: RequestEvent, body) => {
+    if (locals.currentUser == null || locals.currentUser.isBanned) error(401);
     return await locals.client.transaction(async (tx) => {
       const storeData = await getStoreData();
       const storeMap = new Map(storeData.map((item) => [item.key, item]));
@@ -76,30 +76,25 @@ export const POST = route(
         },
       );
       console.info(config, totalTickets);
-      const currentUser = await getCurrentUser(tx);
-      if (currentUser == null) error(401);
       if (body.tickets.length > 0) {
         await addItem(tx, {
           key: "roulette-result-6",
           quantity: -body.tickets.length,
           category: "ticket",
-          owner: currentUser,
         });
       }
       if (config.chips > 0) {
         await addChips(tx, {
           chips: -config.chips + totalTickets.chips,
-          user: currentUser,
         });
       }
       if (config.tokens > 0) {
         await addTokens(tx, {
           tokens: -config.tokens + totalTickets.tokens,
-          user: currentUser,
         });
       }
       for (const item of config.items) {
-        await addItem(tx, { ...item, owner: currentUser });
+        await addItem(tx, { ...item });
       }
 
       return {};
