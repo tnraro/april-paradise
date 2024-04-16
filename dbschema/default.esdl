@@ -67,7 +67,6 @@ module default {
 
   type Achievement {
     required user: User {
-      default := global currentUser;
       on target delete delete source;
     }
     required key: str {
@@ -171,7 +170,6 @@ module default {
 
   type Item {
     required owner: User {
-      default := global currentUser;
       on target delete delete source;
     }
     required key: str;
@@ -203,7 +201,6 @@ module default {
   }
   type Resource {
     required owner: User {
-      default := global currentUser;
       on target delete delete source;
     }
     required key: str;

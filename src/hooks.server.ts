@@ -1,6 +1,8 @@
 import { options } from "$lib/data/auth";
 import { client } from "$lib/data/client";
+import { getCurrentUser } from "$lib/data/query/get-current-user.query";
 import { initData } from "$lib/data/sheets/sheets";
+import { measureFnTime } from "$lib/shared/util/measure-time";
 import serverAuth, {
   type AuthRouteHandlers,
 } from "@edgedb/auth-sveltekit/server";
@@ -26,11 +28,19 @@ const authRouteHandlers: AuthRouteHandlers = {
     redirect(303, "/");
   },
 };
+const createCurrentUser: Handle = async ({ event, resolve }) => {
+  event.locals.currentUserId = await measureFnTime(
+    getCurrentUser,
+    event.locals.client,
+  );
+  return resolve(event);
+};
 
 export const handle = sequence(
   logger,
   createServerAuthClient,
   createAuthRouteHook(authRouteHandlers),
+  createCurrentUser,
 );
 
 await initData(client);

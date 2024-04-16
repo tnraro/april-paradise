@@ -7,6 +7,7 @@ declare global {
     interface Locals {
       auth: ServerRequestAuth;
       client: Client;
+      currentUserId: string | null;
     }
     // interface PageData {}
     // interface PageState {}
