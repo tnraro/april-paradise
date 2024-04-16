@@ -1,14 +1,6 @@
 using extension auth;
 
 module default {
-  global currentUserId -> uuid;
-  global currentUser := (
-    assert_single((
-      select User
-      filter .id = global currentUserId
-    ))
-  );
-
   type User {
     identity: ext::auth::Identity {
       constraint exclusive;
@@ -40,35 +32,10 @@ module default {
     required createdAt: datetime {
       default := datetime_of_transaction();
     }
-
-    trigger log_update_chips after update for each
-    when (__old__.chips != __new__.chips)
-    do (
-      insert Log {
-        table := "User",
-        action := "update",
-        patient := "chips",
-        change := <str>__old__.chips ++ '->' ++ <str>__new__.chips
-      }
-    );
-    trigger log_update_tokens after update for each
-    when (__old__.tokens != __new__.tokens)
-    do (
-      insert Log {
-        table := "User",
-        action := "update",
-        patient := "tokens",
-        change := <str>__old__.tokens ++ '->' ++ <str>__new__.tokens
-      }
-    );
-
-    multi achievements := .<user[is Achievement];
-    multi items := .<owner[is Item];
   }
 
   type Achievement {
     required user: User {
-      default := global currentUser;
       on target delete delete source;
     }
     required key: str {
@@ -78,14 +45,6 @@ module default {
     required createdAt: datetime {
       default := datetime_of_transaction();
     }
-
-    trigger log_insert_achievement after insert for each do (
-      insert Log {
-        table := "Achievement",
-        action := "insert",
-        patient := __new__.key,
-      }
-    );
     
     constraint exclusive on ((.user, .key));
   }
@@ -112,24 +71,6 @@ module default {
     required createdAt: datetime {
       default := datetime_of_transaction();
     }
-
-    trigger log_insert_mail after insert for each do (
-      insert Log {
-        table := "Mail",
-        action := "insert",
-        patient := __new__.recipient.key ++ "::" ++ __new__.title,
-      }
-    );
-    trigger log_update_mail after update for each
-    when (__old__.isReceived != __new__.isReceived)
-    do (
-      insert Log {
-        table := "Mail",
-        action := "update",
-        patient := __old__.recipient.key ++ "::" ++ __old__.title,
-        change := <str>__old__.isReceived ++ "->" ++ <str>__new__.isReceived,
-      }
-    );
   }
 
   type InviteCode {
@@ -144,35 +85,10 @@ module default {
     required createdAt: datetime {
       default := datetime_of_transaction();
     }
-    trigger log_insert_invite_code after insert for each do (
-      insert Log {
-        table := "InviteCode",
-        action := "insert",
-        patient := __new__.user.key ++ "<-" ++ <str>__new__.code,
-      }
-    );
-    trigger log_update_invite_code after update for each
-    when (__old__.code != __new__.code)
-    do (
-      insert Log {
-        table := "InviteCode",
-        action := "update",
-        patient := __old__.user.key,
-        change := <str>__old__.code ++ "->" ++ <str>__new__.code,
-      }
-    );
-    trigger log_delete_invite_code after delete for each do (
-      insert Log {
-        table := "InviteCode",
-        action := "delete",
-        patient := __old__.user.key ++ "<-" ++ <str>__old__.code,
-      }
-    );
   }
 
   type Item {
     required owner: User {
-      default := global currentUser;
       on target delete delete source;
     }
     required key: str;
@@ -185,26 +101,10 @@ module default {
     required createdAt: datetime {
       default := datetime_of_transaction();
     }
-    trigger log_insert_item after insert for each do (
-      insert Log {
-        table := "Item::" ++ __new__.category,
-        action := "insert",
-        patient := __new__.key,
-      }
-    );
-    trigger log_update_item after update for each do (
-      insert Log {
-        table := "Item::" ++ __new__.category,
-        action := "update",
-        patient := __old__.key,
-        change := <str>__old__.quantity ++ "->" ++ <str>__new__.quantity,
-      }
-    );
     constraint exclusive on ((.owner, .key));
   }
   type Resource {
     required owner: User {
-      default := global currentUser;
       on target delete delete source;
     }
     required key: str;
@@ -215,23 +115,13 @@ module default {
     required createdAt: datetime {
       default := datetime_of_transaction();
     }
-    trigger log_update_item after update for each do (
-      insert Log {
-        table := "Resource",
-        action := "update",
-        patient := __old__.key,
-        change := <str>__old__.value ++ "->" ++ <str>__new__.value,
-      }
-    );
     constraint exclusive on ((.owner, .key));
   }
 
   type Log {
     required table: str;
     required action: str;
-    agent: str {
-      default := global currentUser.key;
-    }
+    agent: str;
     required patient: str;
     change: str;
     required createdAt: datetime {

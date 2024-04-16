@@ -1,10 +1,5 @@
-CREATE MIGRATION m1a3bob37f5kaatvttscbmbmsj4c6l6ah3eaxo4km2der4esieznya
-    ONTO m1sdt6q5jru5srnbcoer2tv7qazke7tm6boovi4remw3y633hlbmvq
+CREATE MIGRATION m15aljqgqnjnj23h7c6udv32w6ye2463fyjd4cqitniiyokxcuf3ca
+    ONTO m127aksjvczswkqtnklzfqbqav26e2sotjrhbtnjt3k3pgz6yc76na
 {
-  CREATE GLOBAL default::currentUserId -> std::uuid;
-  CREATE GLOBAL default::currentUser := (std::assert_single((SELECT
-      default::User
-  FILTER
-      (.id = GLOBAL default::currentUserId)
-  )));
+  DROP GLOBAL default::currentUser;
 };
