@@ -11,6 +11,7 @@ import type {
   IndexData,
   ItemData,
   LureData,
+  NoticeData,
   RewardData,
   RouletteData,
   RunnerData,
@@ -31,8 +32,7 @@ export const setData = (ranges: { sheet: string; data: unknown[] }[]) => {
 };
 
 export const getData = async <T>(sheet: string): Promise<T[]> => {
-  // biome-ignore lint/style/noNonNullAssertion: <explanation>
-  return m.get(sheet)! as T[];
+  return (m.get(sheet) ?? []) as T[];
 };
 
 export const getIndexData = async (): Promise<IndexData[]> => {
@@ -93,4 +93,8 @@ export const getRewardData = async (): Promise<RewardData[]> => {
 };
 export const getDemandData = async (): Promise<DemandData[]> => {
   return await getData<DemandData>("조르기");
+};
+
+export const getNoticeData = async (): Promise<NoticeData[]> => {
+  return await getData<NoticeData>("공지");
 };

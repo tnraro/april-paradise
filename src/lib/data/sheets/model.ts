@@ -133,3 +133,8 @@ export interface DemandData {
   name: string;
   reward: Money;
 }
+
+export interface NoticeData {
+  type: string;
+  text: string;
+}

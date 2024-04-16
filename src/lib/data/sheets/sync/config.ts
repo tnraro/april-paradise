@@ -9,6 +9,7 @@ import type {
   IndexData,
   ItemData,
   LureData,
+  NoticeData,
   RewardData,
   RouletteData,
   RunnerData,
@@ -142,6 +143,10 @@ export const config = {
       key: parse(row.key).string().unwrap(),
       name: parse(row.name).string().unwrap(),
       reward: parse(row.reward).money().unwrap(),
+    })),
+    c("공지", "A1:B", (row: Raw<NoticeData>) => ({
+      type: parse(row.type).string().unwrap(),
+      text: parse(row.text).string().unwrap(),
     })),
   ],
 };

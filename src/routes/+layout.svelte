@@ -19,7 +19,7 @@
     });
   });
 
-  let { children } = $props();
+  let { children, data } = $props();
 
   let t: number;
   const update = async () => {
@@ -29,6 +29,23 @@
   };
 </script>
 
+{#if data.notices.length > 0}
+  <div class="notices">
+    {#each data.notices as notice}
+      <marquee>{notice.text}</marquee>
+    {/each}
+  </div>
+{/if}
 {@render children()}
 
 <svelte:window onfocus={update} onblur={() => clearTimeout(t)} />
+
+<style>
+  .notices {
+    display: grid;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: var(--yellow-3);
+  }
+</style>
