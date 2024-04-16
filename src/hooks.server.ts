@@ -18,9 +18,15 @@ const logger: Handle = ({ event, resolve }) => {
   console.info(event.request.method, event.request.url);
   return resolve(event);
 };
-const createServerAuthClient: Handle = ({ event, resolve }) => {
+const createServerAuthClient: Handle = async ({ event, resolve }) => {
   event.locals.auth = createServerRequestAuth(event);
-  event.locals.client = event.locals.auth.session.client;
+  const client = event.locals.auth.session.client;
+
+  const currentUserId = await getCurrentUser(client);
+
+  event.locals.client = client.withGlobals({
+    currentUserId,
+  });
   return resolve(event);
 };
 const authRouteHandlers: AuthRouteHandlers = {
@@ -28,19 +34,11 @@ const authRouteHandlers: AuthRouteHandlers = {
     redirect(303, "/");
   },
 };
-const createCurrentUser: Handle = async ({ event, resolve }) => {
-  event.locals.currentUserId = await measureFnTime(
-    getCurrentUser,
-    event.locals.client,
-  );
-  return resolve(event);
-};
 
 export const handle = sequence(
   logger,
   createServerAuthClient,
   createAuthRouteHook(authRouteHandlers),
-  createCurrentUser,
 );
 
 await initData(client);

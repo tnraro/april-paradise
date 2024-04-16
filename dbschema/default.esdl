@@ -1,15 +1,16 @@
 using extension auth;
 
 module default {
+  global currentUserId -> uuid;
   global currentUser := (
     assert_single((
       select User
-      filter .identity = global ext::auth::ClientTokenIdentity
+      filter .id = global currentUserId
     ))
   );
 
   type User {
-    identity: ext::auth::Identity { 
+    identity: ext::auth::Identity {
       constraint exclusive;
       on target delete allow;
       default := global ext::auth::ClientTokenIdentity;
@@ -67,6 +68,7 @@ module default {
 
   type Achievement {
     required user: User {
+      default := global currentUser;
       on target delete delete source;
     }
     required key: str {
@@ -170,6 +172,7 @@ module default {
 
   type Item {
     required owner: User {
+      default := global currentUser;
       on target delete delete source;
     }
     required key: str;
@@ -201,6 +204,7 @@ module default {
   }
   type Resource {
     required owner: User {
+      default := global currentUser;
       on target delete delete source;
     }
     required key: str;
