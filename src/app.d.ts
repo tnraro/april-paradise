@@ -7,7 +7,11 @@ declare global {
     interface Locals {
       auth: ServerRequestAuth;
       client: Client;
-      currentUserId: string | null;
+      currentUser: {
+        id: string;
+        isAdmin: boolean;
+        isBanned: boolean;
+      } | null;
     }
     // interface PageData {}
     // interface PageState {}

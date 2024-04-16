@@ -1,4 +1,5 @@
 import { route } from "$lib/api/server";
+import { error } from "@sveltejs/kit";
 import { z } from "zod";
 import type { RequestEvent } from "./$types";
 import { post } from "./post.query";
@@ -6,8 +7,14 @@ import { post } from "./post.query";
 export type POST = typeof POST;
 export const POST = route(
   "post",
-  async (e: RequestEvent, body) => {
-    await post(e.locals.client, {
+  async ({ locals }: RequestEvent, body) => {
+    if (
+      locals.currentUser == null ||
+      locals.currentUser.isBanned ||
+      !locals.currentUser.isAdmin
+    )
+      error(401);
+    await post(locals.client, {
       data: body,
     });
     return {};

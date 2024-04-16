@@ -2,7 +2,7 @@ insert Item {
   key := <str>$key,
   category := <str>$category,
   quantity := max({ 0, <int64>$quantity }),
-  owner := (select User filter .id = <uuid>$owner)
+  owner := global currentUser
 }
 unless conflict on (.owner, .key)
 else (

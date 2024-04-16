@@ -4,22 +4,13 @@ import { getFishingData } from "../sheets/sheets";
 import { getAchievements } from "./get-achievements.query";
 import { getFishes } from "./get-fishes.query";
 
-export const onCaughtFish = async (
-  client: Executor,
-  userId: string,
-  fishKey: string,
-) => {
-  const achievementSet = new Set(
-    await getAchievements(client, {
-      user: userId,
-    }),
-  );
+export const onCaughtFish = async (client: Executor, fishKey: string) => {
+  const achievementSet = new Set(await getAchievements(client));
 
   if (fishKey.startsWith("losing-")) {
     if (achievementSet.has("achievement-11")) return [];
     const garbages = await getFishes(client, {
       category: "garbage",
-      owner: userId,
     });
     const sum = garbages.reduce((sum, garbage) => sum + garbage.quantity, 0);
     if (sum === 10) {
@@ -31,7 +22,6 @@ export const onCaughtFish = async (
     const fishingDataMap = new Map(fishingData.map((x) => [x.key, x]));
     const fishes = await getFishes(client, {
       category: "fish",
-      owner: userId,
     });
     const fishMap = new Map(fishes.map((fish) => [fish.key, fish.quantity]));
     const sum = fishes.reduce((sum, fish) => sum + fish.quantity, 0);

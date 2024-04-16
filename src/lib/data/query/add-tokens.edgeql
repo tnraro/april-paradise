@@ -1,5 +1,4 @@
-update User
-filter .id = <uuid>$user
+update global currentUser
 set {
   tokens := .tokens + <int64>$tokens
 }

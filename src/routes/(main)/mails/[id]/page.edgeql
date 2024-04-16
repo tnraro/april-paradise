@@ -1,4 +1,3 @@
-with user := global currentUser,
 select Mail {
   id,
   sender,
@@ -8,4 +7,4 @@ select Mail {
   isReceived,
   createdAt,
 }
-filter .id = <uuid>$id and .recipient = user
+filter .id = <uuid>$id and .recipient = global currentUser

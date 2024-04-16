@@ -1,5 +1,4 @@
-update User
-filter .id = <uuid>$user
+update global currentUser
 set {
   chips := .chips + <int64>$chips
 }

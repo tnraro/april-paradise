@@ -3,9 +3,7 @@ import { layout } from "./layout.query";
 
 export const load = async ({ locals, depends, params }) => {
   depends("admin:runners");
-
-  const session = locals.auth.session;
-  const users = await wrapUsers(layout(session.client));
+  const users = await wrapUsers(layout(locals.client));
 
   return {
     users: users.map((user) => ({

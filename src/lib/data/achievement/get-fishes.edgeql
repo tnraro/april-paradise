@@ -3,4 +3,4 @@ select Item {
   category,
   quantity,
 }
-filter .owner.id = <uuid>$owner and .category = <str>$category
+filter .owner = global currentUser and .category = <str>$category

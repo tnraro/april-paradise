@@ -2,7 +2,6 @@ import { options } from "$lib/data/auth";
 import { client } from "$lib/data/client";
 import { getCurrentUser } from "$lib/data/query/get-current-user.query";
 import { initData } from "$lib/data/sheets/sheets";
-import { measureFnTime } from "$lib/shared/util/measure-time";
 import serverAuth, {
   type AuthRouteHandlers,
 } from "@edgedb/auth-sveltekit/server";
@@ -22,11 +21,12 @@ const createServerAuthClient: Handle = async ({ event, resolve }) => {
   event.locals.auth = createServerRequestAuth(event);
   const client = event.locals.auth.session.client;
 
-  const currentUserId = await getCurrentUser(client);
+  const currentUser = await getCurrentUser(client);
 
   event.locals.client = client.withGlobals({
-    currentUserId,
+    currentUserId: currentUser?.id,
   });
+  event.locals.currentUser = currentUser;
   return resolve(event);
 };
 const authRouteHandlers: AuthRouteHandlers = {
