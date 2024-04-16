@@ -21,9 +21,11 @@ module default {
     required isAdmin: bool {
       default := false;
     }
+    index on (.isAdmin);
     required isBanned: bool {
       default := false;
     }
+    index on (.isBanned);
 
     required chips: int64 {
       constraint min_value(0);
@@ -105,6 +107,7 @@ module default {
     required isReceived: bool {
       default := false;
     }
+    index on (.isReceived);
     required createdAt: datetime {
       default := datetime_of_transaction();
     }
@@ -173,6 +176,7 @@ module default {
     }
     required key: str;
     required category: str;
+    index on (.category);
     required quantity: int64 {
       constraint min_value(0);
       default := 0;
