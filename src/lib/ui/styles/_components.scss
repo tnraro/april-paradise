@@ -43,7 +43,8 @@
   min-width: 10rem;
 }
 
-[data-menu-item] {
+[data-menu-item],
+[data-melt-menubar-menu-checkbox-item] {
   @include mixin.select-none;
   display: flex;
   align-items: center;
@@ -125,10 +126,12 @@
 .animate-spin {
   animation: spin 1s infinite linear;
 }
+
 @keyframes spin {
   0% {
     transform: rotate(0turn);
   }
+
   100% {
     transform: rotate(1turn);
   }

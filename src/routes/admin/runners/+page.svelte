@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { api } from "$lib/api/api.gen";
+  import Icon from "$img/icon.svelte";
+    import { api } from "$lib/api/api.gen";
   import { sendError } from "$lib/ui/error/send-error";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import { Menubar } from "bits-ui";
@@ -10,16 +11,34 @@
   let selected = $state.frozen(new Set<string>());
 
   let isEdit = $state(false);
+
+  let hideBannedUser = $state(true);
+
+  let filteredRunners = $derived(data.runners.filter(runner => {
+    if (hideBannedUser) {
+      return !runner.isBanned;
+    }
+    return true;
+  }));
+
+  $effect(() => {
+    const runners = new Set(filteredRunners.map(runner => runner.id));
+    for (const id of selected) {
+      if (!runners.has(id)) {
+        selected.delete(id);
+      }
+    }
+  });
 </script>
 
 <Menubar.Root class="runners-menu">
   <input
     type="checkbox"
-    checked={selected.size === data.runners.length}
+    checked={selected.size === filteredRunners.length}
     oninput={(e) => {
       const { checked } = e.currentTarget;
       if (checked) {
-        selected = new Set(data.runners.map((x) => x.id));
+        selected = new Set(filteredRunners.map((x) => x.id));
       } else {
         selected = new Set();
       }
@@ -39,10 +58,21 @@
       </Menubar.Item>
     </Menubar.Content>
   </Menubar.Menu>
+  <Menubar.Menu>
+    <Menubar.Trigger>보기</Menubar.Trigger>
+    <Menubar.Content align="start" sideOffset={4}>
+      <Menubar.CheckboxItem bind:checked={hideBannedUser}>
+        <Menubar.CheckboxIndicator>
+          <Icon as="check" />
+        </Menubar.CheckboxIndicator>
+        제명된 유저 숨기기
+      </Menubar.CheckboxItem>
+    </Menubar.Content>
+  </Menubar.Menu>
 </Menubar.Root>
 
 <div class="_">
-  {#each data.runners as runner (runner.id)}
+  {#each filteredRunners as runner (runner.id)}
     <div class="runner">
       <input
         type="checkbox"
