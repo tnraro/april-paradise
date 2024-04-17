@@ -1,23 +1,10 @@
+import { parseLog } from "./parse-log";
+
 const [_, __, path] = Bun.argv;
 
-const log = [
-  ...(await Bun.file(path).text())
-    .replaceAll(/(?<=\/api\/mail\/)[^/]+?(?= takes)/g, "[..]")
-    .matchAll(
-      /(?<method>[A-Z]+) .+(?=\/api\/)\/api(?<path>.+?) takes (?<time>\d+(?:\.\d+)?)/g,
-    ),
-].map((x) => {
-  // biome-ignore lint/style/noNonNullAssertion: <explanation>
-  const y = x.groups!;
+const logs = parseLog(await Bun.file(path).text());
 
-  return {
-    method: y.method,
-    path: y.path,
-    time: Number(y.time),
-  };
-});
-
-const group = [...Map.groupBy(log, (x) => `${x.method} ${x.path}`)].map(
+const group = [...Map.groupBy(logs, (x) => `${x.method} ${x.path}`)].map(
   ([key, v]) => {
     const times = v.map((x) => x.time);
     const sum = times.reduce((a, b) => a + b, 0);
