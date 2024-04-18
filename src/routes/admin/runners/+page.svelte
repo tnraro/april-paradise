@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { invalidateAll } from "$app/navigation";
   import Icon from "$img/icon.svelte";
-    import { api } from "$lib/api/api.gen";
+  import { api } from "$lib/api/api.gen";
+  import SendBan from "$lib/ui/ban/send-ban.svelte";
   import { sendError } from "$lib/ui/error/send-error";
   import Dialog from "$lib/ui/floating/dialog.svelte";
   import { Menubar } from "bits-ui";
@@ -11,15 +13,26 @@
   let selected = $state.frozen(new Set<string>());
 
   let isEdit = $state(false);
+  let isWarningBan = $state(false);
 
-  let hideBannedUser = $state(true);
+  let showBannedUser = $state(false);
 
-  let filteredRunners = $derived(data.runners.filter(runner => {
-    if (hideBannedUser) {
-      return !runner.isBanned;
+  let filteredRunners = $derived.by(() => {
+    if (showBannedUser) {
+      return data.runners.filter(runner => {
+        return runner.isBanned;
+      });
     }
-    return true;
-  }));
+    return data.runners.filter(runner => {
+      return !runner.isBanned;
+    });
+  });
+
+  let selectedUserNames = $derived.by(() => {
+    const runners = new Map(filteredRunners.map(runner => [runner.id, runner]));
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    return [...selected.values()].map(x => runners.get(x)!);
+  });
 
   $effect(() => {
     const runners = new Set(filteredRunners.map(runner => runner.id));
@@ -56,16 +69,26 @@
       >
         우편 보내기
       </Menubar.Item>
+      <Menubar.Separator />
+      <Menubar.Item
+        disabled={selected.size <= 0}
+        onclick={async (e: { currentTarget: HTMLElement }) => {
+          if (e.currentTarget.dataset.disabled != null) return;
+          isWarningBan = true;
+        }}
+      >
+        제명
+      </Menubar.Item>
     </Menubar.Content>
   </Menubar.Menu>
   <Menubar.Menu>
     <Menubar.Trigger>보기</Menubar.Trigger>
     <Menubar.Content align="start" sideOffset={4}>
-      <Menubar.CheckboxItem bind:checked={hideBannedUser}>
+      <Menubar.CheckboxItem bind:checked={showBannedUser}>
         <Menubar.CheckboxIndicator>
           <Icon as="check" />
         </Menubar.CheckboxIndicator>
-        제명된 유저 숨기기
+        제명된 유저 보이기
       </Menubar.CheckboxItem>
     </Menubar.Content>
   </Menubar.Menu>
@@ -122,6 +145,25 @@
           sendError(res.error.message);
         }
       }}
+    />
+  </Dialog>
+{/if}
+
+{#if isWarningBan}
+  <Dialog onclose={() => (isWarningBan = false)}>
+    <SendBan
+      users={selectedUserNames}
+      onclose={() => (isWarningBan = false)}
+      onsubmit={async (ban) => {
+        const res = await api().runners.banning.put({
+          ban,
+          users: [...selected.values()],
+        });
+        if (!res.ok) {
+          sendError(res.error.message);
+        }
+      }}
+      ondone={() => (invalidateAll())}
     />
   </Dialog>
 {/if}
