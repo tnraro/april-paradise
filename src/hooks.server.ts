@@ -14,7 +14,12 @@ const { createServerRequestAuth, createAuthRouteHook } = serverAuth(
 );
 
 const logger: Handle = ({ event, resolve }) => {
-  console.info(event.request.method, event.request.url);
+  console.info(
+    event.request.method,
+    event.request.url,
+    event.locals.currentUser?.key,
+    new Date().toISOString(),
+  );
   return resolve(event);
 };
 const createServerAuthClient: Handle = async ({ event, resolve }) => {
@@ -36,9 +41,9 @@ const authRouteHandlers: AuthRouteHandlers = {
 };
 
 export const handle = sequence(
-  logger,
   createServerAuthClient,
   createAuthRouteHook(authRouteHandlers),
+  logger,
 );
 
 await initData(client);

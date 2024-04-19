@@ -9,6 +9,7 @@ declare global {
       client: Client;
       currentUser: {
         id: string;
+        key: string;
         isAdmin: boolean;
         isBanned: boolean;
       } | null;

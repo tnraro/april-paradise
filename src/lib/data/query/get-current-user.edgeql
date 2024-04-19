@@ -1,5 +1,6 @@
 select User {
   id,
+  key,
   isAdmin,
   isBanned,
 }
