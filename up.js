@@ -16,11 +16,11 @@ try {
   await $`rm -r .svelte-kit/out`;
 } catch (_) {}
 
-await $`pnpm install`;
+await $`pnpm install -P false --frozen-lockfile`;
 
 await $`pnpm generate:api`;
 
-await $`pnpm generate:edgeql`;
+await $`pnpm generate:edgeql -I ${prod ? "ap_prod" : "april_paradise"}`;
 
 await $`pnpm build`;
 
