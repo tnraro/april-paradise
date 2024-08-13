@@ -1,49 +1,46 @@
 import { route } from "$lib/api/server";
+import { client } from "$lib/data/client";
 import { addLureItem } from "$lib/data/item/add-lure-item";
-import { addChips } from "$lib/data/query/add-chips.query";
-import { addTokens } from "$lib/data/query/add-tokens.query";
+import { addChips } from "$lib/data/query/add-chips";
+import { addTokens } from "$lib/data/query/add-tokens";
 import { getLureData } from "$lib/data/sheets/sheets";
 import { lures } from "$lib/shared/config/lures";
 import { error } from "@sveltejs/kit";
-import { ConstraintViolationError } from "edgedb";
+import pkg from "pg";
 import { z } from "zod";
 import type { RequestEvent } from "./$types";
+
+const { DatabaseError } = pkg;
 
 export type POST = typeof POST;
 export const POST = route(
   "post",
   async ({ locals }: RequestEvent, body) => {
-    if (locals.currentUser == null || locals.currentUser.isBanned) error(401);
+    const user = locals.user;
+    if (user == null || user.isBanned) error(401);
     const lureData = await getLureData();
     const data = new Map(lureData.map((x) => [x.key, x]));
     try {
-      await locals.client.transaction(async (tx) => {
+      await client.transaction(async (tx) => {
         for (const key of lures) {
           const quantity = body[key];
           if (quantity == null) continue;
           const lureData = data.get(key);
           if (lureData == null) continue;
           if (lureData.price.type === "chips") {
-            await addChips(tx, {
-              chips: -lureData.price.quantity * quantity,
-            });
+            await addChips(tx, user.id, -lureData.price.quantity * quantity);
           } else if (lureData.price.type === "tokens") {
-            await addTokens(tx, {
-              tokens: -lureData.price.quantity * quantity,
-            });
+            await addTokens(tx, user.id, -lureData.price.quantity * quantity);
           }
-          await addLureItem(tx, {
-            key,
-            quantity,
-          });
+          await addLureItem(tx, user.id, key, quantity);
         }
       });
     } catch (e) {
-      if (e instanceof ConstraintViolationError) {
-        if (e.message.includes("chips")) {
+      if (e instanceof DatabaseError) {
+        if (e.constraint === "chips_should_be_positive") {
           error(400, "칩이 부족합니다");
         }
-        if (e.message.includes("tokens")) {
+        if (e.constraint === "tokens_should_be_positive") {
           error(400, "토큰이 부족합니다");
         }
       }

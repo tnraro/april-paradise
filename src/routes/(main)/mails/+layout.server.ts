@@ -1,11 +1,12 @@
+import { client } from "$lib/data/client";
+import { getMails } from "$lib/data/query/get-mails";
 import { redirect } from "@sveltejs/kit";
-import { layout } from "./layout.query.js";
 
 export const load = async ({ locals }) => {
-  if (locals.currentUser == null || locals.currentUser.isBanned) {
+  if (locals.user == null || locals.user.isBanned) {
     redirect(303, "/auth/sign-in");
   }
-  const mails = await layout(locals.client);
+  const mails = await getMails(client, locals.user.id);
 
   return {
     mails,

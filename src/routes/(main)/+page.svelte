@@ -16,7 +16,7 @@
     data: PageData;
   }
   let { data }: Props = $props();
-  
+
   let schedule = $derived.by(() => {
     const now = Date.now();
     return data.scheduleData
@@ -24,10 +24,11 @@
         (event) =>
           event.pathname != null &&
           now >= (event.start?.getTime() ?? 0) &&
-          now <= (event.end?.getTime() ?? 0),
+          now <= (event.end?.getTime() ?? 0)
       )
       .sort((a, b) => a.end.getTime() - b.end.getTime());
   });
+  $inspect(schedule);
 </script>
 
 <main class="_">

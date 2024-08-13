@@ -14,12 +14,12 @@
 
 <form class="_" method="post" use:enhance>
   <h1>로그인</h1>
-  <Field {form} name="id">
+  <Field {form} name="userId">
     <Control let:attrs>
       <Label>아이디</Label>
       <input
         {...attrs}
-        bind:value={$formData.id}
+        bind:value={$formData.userId}
         autocomplete="username"
         placeholder="아이디를 입력해주세요"
         minlength="2"
@@ -45,6 +45,7 @@
     <FieldErrors />
   </Field>
   <button class="blue emphasis">로그인</button>
+  <a href="/auth/sign-up">가입하기</a>
 </form>
 
 <style lang="scss">

@@ -1,36 +1,34 @@
 import { route } from "$lib/api/server";
-import { addItem } from "$lib/data/item/add-item.query";
-import { addChips } from "$lib/data/query/add-chips.query";
-import { addTokens } from "$lib/data/query/add-tokens.query";
+import { client } from "$lib/data/client";
+import { addItem } from "$lib/data/item/add-item";
+import { addTicketItem } from "$lib/data/item/add-ticket-item";
+import { addChips } from "$lib/data/query/add-chips";
+import { addTokens } from "$lib/data/query/add-tokens";
 import { getStoreData } from "$lib/data/sheets/sheets";
-import { page } from "$routes/(main)/store/page.query";
+import { getInventory } from "$lib/ui/store/get-inventory";
 import { error } from "@sveltejs/kit";
-import { ConstraintViolationError } from "edgedb";
+import pkg from "pg";
 import { z } from "zod";
 import type { RequestEvent } from "./$types";
+
+const { DatabaseError } = pkg;
 
 export type POST = typeof POST;
 export const POST = route(
   "post",
   async ({ locals }: RequestEvent, body) => {
-    if (locals.currentUser == null || locals.currentUser.isBanned) error(401);
-    return await locals.client.transaction(async (tx) => {
+    const user = locals.user;
+    if (user == null || user.isBanned) error(401);
+    return await client.transaction(async (tx) => {
       const storeData = await getStoreData();
       const storeMap = new Map(storeData.map((item) => [item.key, item]));
 
-      const inventory = (
-        await page(tx, {
-          items: [
-            "roulette-result-6",
-            ...storeData.filter((x) => x.stock).map((x) => x.key),
-          ],
-        })
-      ).reduce(
-        (o, item) => {
-          o[item.key] = item.quantity;
-          return o;
-        },
-        {} as Record<string, number>,
+      const inventory = await getInventory(
+        user.id,
+        new Set([
+          "roulette-result-6",
+          ...storeData.filter((x) => x.stock).map((x) => x.key),
+        ]),
       );
       const tickets = inventory["roulette-result-6"] ?? 0;
       if (body.tickets.length > tickets) {
@@ -77,24 +75,21 @@ export const POST = route(
       );
       console.info(config, totalTickets);
       if (body.tickets.length > 0) {
-        await addItem(tx, {
-          key: "roulette-result-6",
-          quantity: -body.tickets.length,
-          category: "ticket",
-        });
+        await addTicketItem(
+          tx,
+          user.id,
+          "roulette-result-6",
+          -body.tickets.length,
+        );
       }
       if (config.chips > 0) {
-        await addChips(tx, {
-          chips: -config.chips + totalTickets.chips,
-        });
+        await addChips(tx, user.id, -config.chips + totalTickets.chips);
       }
       if (config.tokens > 0) {
-        await addTokens(tx, {
-          tokens: -config.tokens + totalTickets.tokens,
-        });
+        await addTokens(tx, user.id, -config.tokens + totalTickets.tokens);
       }
       for (const item of config.items) {
-        await addItem(tx, { ...item });
+        await addItem(tx, item.category, user.id, item.key, item.quantity);
       }
 
       return {};
@@ -113,11 +108,11 @@ export const POST = route(
       tickets: z.array(z.string().min(1)),
     }),
     err(e, re, body) {
-      if (e instanceof ConstraintViolationError) {
-        if (e.message.includes("chips")) {
+      if (e instanceof DatabaseError) {
+        if (e.constraint === "chips_should_be_positive") {
           error(400, "칩이 부족합니다");
         }
-        if (e.message.includes("tokens")) {
+        if (e.constraint === "tokens_should_be_positive") {
           error(400, "토큰이 부족합니다");
         }
       }

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from "$img/icon.svelte";
+  import AsyncButton from "../data/async-button.svelte";
   import { useItemData } from "../data/data.svelte";
   import { sendError } from "../error/send-error";
   import Chips from "../item/chips.svelte";
@@ -23,21 +23,19 @@
     sender: string;
     title: string;
     body: string;
-    reward: string;
+    rewards: string;
     isReceived: boolean;
     createdAt: Date;
     onclick?: () => void | Promise<void>;
-    disabled?: boolean;
   }
   let {
     sender,
     title,
     body,
-    reward,
+    rewards: reward,
     isReceived,
     createdAt,
     onclick,
-    disabled,
   }: Props = $props();
   let itemMap = $derived(new Map(itemData.data?.map((x) => [x.key, x]) ?? []));
   let rewards = $derived(
@@ -47,7 +45,7 @@
           .split(",")
           .map(
             (
-              x,
+              x
             ):
               | { type: "chips"; quantity: number }
               | { type: "tokens"; quantity: number }
@@ -83,10 +81,9 @@
                 name: item.name,
                 quantity,
               };
-            },
-          ),
+            }
+          )
   );
-  let pending = $state(false);
 </script>
 
 <div class="_">
@@ -112,26 +109,14 @@
           {/if}
         {/each}
       </div>
-      {#if isReceived}
-        <button disabled>보상 받음</button>
-      {:else}
-        <button
-          class="reward__button green emphasis"
-          onclick={async () => {
-            pending = true;
-            await onclick?.();
-            pending = false;
-          }}
-          disabled={disabled || pending}
-        >
-          보상 받기
-          {#if pending}
-            <div class="animate-spin">
-              <Icon as="loader-circle" />
-            </div>
-          {/if}
-        </button>
-      {/if}
+      <AsyncButton
+        color="green"
+        done={isReceived}
+        {onclick}
+        text="보상 받기"
+        doneText="보상 받음"
+        errorText="보상을 받을 수 없습니다"
+      />
     </section>
   {/if}
 </div>

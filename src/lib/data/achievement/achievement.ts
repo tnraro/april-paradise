@@ -1,17 +1,21 @@
-import type { Executor } from "edgedb";
+import type { Client } from "../client";
+import { getItemsByCategory } from "../item/get-items-by-category";
 import { FishingGrade } from "../sheets/model";
 import { getFishingData } from "../sheets/sheets";
-import { getAchievements } from "./get-achievements.query";
-import { getFishes } from "./get-fishes.query";
+import { getAchievements } from "./get-achievements";
 
-export const onCaughtFish = async (client: Executor, fishKey: string) => {
-  const achievementSet = new Set(await getAchievements(client));
+export const onCaughtFish = async (
+  client: Client,
+  userId: string,
+  fishKey: string,
+) => {
+  const achievementSet = new Set(
+    (await getAchievements(client, userId)).map((x) => x.key),
+  );
 
   if (fishKey.startsWith("losing-")) {
     if (achievementSet.has("achievement-11")) return [];
-    const garbages = await getFishes(client, {
-      category: "garbage",
-    });
+    const garbages = await getItemsByCategory(client, "garbage", userId);
     const sum = garbages.reduce((sum, garbage) => sum + garbage.quantity, 0);
     if (sum === 10) {
       // 이게 진짜일 리 없어
@@ -20,9 +24,7 @@ export const onCaughtFish = async (client: Executor, fishKey: string) => {
   } else {
     const fishingData = await getFishingData();
     const fishingDataMap = new Map(fishingData.map((x) => [x.key, x]));
-    const fishes = await getFishes(client, {
-      category: "fish",
-    });
+    const fishes = await getItemsByCategory(client, "fish", userId);
     const fishMap = new Map(fishes.map((fish) => [fish.key, fish.quantity]));
     const sum = fishes.reduce((sum, fish) => sum + fish.quantity, 0);
 

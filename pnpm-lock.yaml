@@ -40,9 +40,6 @@ importers:
       bits-ui:
         specifier: ^0.21.13
         version: 0.21.13(svelte@5.0.0-next.219)
-      devalue:
-        specifier: ^5.0.0
-        version: 5.0.0
       drizzle-orm:
         specifier: ^0.33.0
         version: 0.33.0(@types/pg@8.11.6)(bun-types@1.1.17)(pg@8.12.0)

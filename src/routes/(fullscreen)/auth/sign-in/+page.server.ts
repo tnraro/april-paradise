@@ -1,5 +1,4 @@
-import { ID, PASSWORD } from "$lib/shared/schema/auth.js";
-import { type Actions, fail, isRedirect, redirect } from "@sveltejs/kit";
+import { type Actions, fail, redirect } from "@sveltejs/kit";
 import { setError, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { schema } from "./schema";
@@ -18,15 +17,14 @@ export const actions = {
       return fail(400, { form });
     }
 
-    const { id, password } = form.data;
-    const email = `${id}@tnraro.com`;
+    const { userId, password } = form.data;
 
-    try {
-      await locals.auth.emailPasswordSignIn({
-        email,
+    if (
+      !(await locals.auth.signIn({
+        userId,
         password,
-      });
-    } catch (e) {
+      }))
+    ) {
       return setError(
         form,
         "password",
