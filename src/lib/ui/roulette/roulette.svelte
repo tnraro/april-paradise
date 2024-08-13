@@ -102,7 +102,7 @@
     { x: 40, y: 50 },
     { x: 40, y: 70 },
   ];
-  let bulbs = $state.frozen([
+  let bulbs = $state.raw([
     false,
     false,
     false,

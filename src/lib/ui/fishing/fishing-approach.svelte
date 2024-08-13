@@ -64,12 +64,12 @@
     height: 12rem;
     border-radius: 99999rem;
     overflow: hidden;
+    animation: scale 400ms cubic-bezier(0.18, 0.89, 0.32, 1.28);
     &--is-biting {
       animation:
         endurance 3s ease-out forwards,
         bite 0.4s linear;
     }
-    animation: scale 400ms cubic-bezier(0.18, 0.89, 0.32, 1.28);
   }
   @keyframes -global-endurance {
     0% {

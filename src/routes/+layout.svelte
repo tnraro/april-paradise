@@ -32,6 +32,7 @@
 {#if data.notices.length > 0}
   <div class="notices">
     {#each data.notices as notice}
+      <!-- svelte-ignore a11y_distracting_elements -->
       <marquee>{notice.text}</marquee>
     {/each}
   </div>

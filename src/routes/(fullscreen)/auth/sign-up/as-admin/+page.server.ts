@@ -46,6 +46,7 @@ export const actions = {
       if (error instanceof Error) {
         const e = JSON.parse(error.message);
         if (e.error.code === 50331648) {
+          console.log(e)
           return setError(form, "id", "이미 등록된 아이디입니다");
         }
       }

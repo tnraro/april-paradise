@@ -36,7 +36,7 @@
   }
   let { data } = $props();
 
-  let cart = $state.frozen(new Map<string, number>());
+  let cart = $state.raw(new Map<string, number>());
   let tickets = $state(0);
 
   let orderState = $state<OrderState>(OrderState.Idle);
@@ -106,7 +106,7 @@
   <main>
     <h1>상점</h1>
     <Tab prefix="store" n={categories.length} {tab} {tabpanel} />
-    <div class="store__footer" />
+    <div class="store__footer"></div>
   </main>
 
   {#if cart.size > 0}

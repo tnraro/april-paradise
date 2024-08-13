@@ -41,9 +41,9 @@
     width={width + 3}
     height={height + 3}
   />
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-  <!-- svelte-ignore a11y-no-static-element-interactions -->
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <g class="button" class:button--pressed={pressed} tabindex="0" {onclick}>
     <rect
       class="button_bg"
