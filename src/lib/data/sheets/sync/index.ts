@@ -1,4 +1,4 @@
-import { client } from "$lib/data/client";
+import { client } from "$lib/data/client-old";
 import { stringify } from "devalue";
 import { setData } from "../sheets";
 import { fetch } from "./fetch";

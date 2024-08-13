@@ -1,5 +1,5 @@
 import { options } from "$lib/data/auth";
-import { client } from "$lib/data/client";
+import { client } from "$lib/data/client-old";
 import { getCurrentUser } from "$lib/data/query/get-current-user.query";
 import { initData } from "$lib/data/sheets/sheets";
 import serverAuth, {
