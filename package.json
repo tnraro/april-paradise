@@ -11,13 +11,11 @@
     "test": "vitest",
     "lint": "pnpm biome lint . --apply",
     "format": "pnpm biome format . --write",
-    "generate:edgeql": "pnpm exec generate queries",
     "generate:api": "bun run scripts/api-gen/index.ts",
     "gen": "pnpm run --parallel /^generate:/"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
-    "@edgedb/generate": "^0.5.4",
     "@sveltejs/adapter-node": "^5.2.2",
     "@sveltejs/enhanced-img": "^0.3.3",
     "@sveltejs/kit": "^2.5.22",
@@ -37,7 +35,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@edgedb/auth-sveltekit": "^0.1.1",
     "@googleapis/sheets": "^5.0.5",
     "@lucia-auth/adapter-drizzle": "^1.1.0",
     "@radix-ui/colors": "^3.0.0",
@@ -45,7 +42,6 @@
     "@sentry/vite-plugin": "^2.22.0",
     "bits-ui": "^0.21.13",
     "drizzle-orm": "^0.33.0",
-    "edgedb": "^1.5.9",
     "formsnap": "^1.0.1",
     "lucia": "^3.2.0",
     "pg": "^8.12.0",
@@ -54,8 +50,6 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "@edgedb/auth-sveltekit@0.1.1": "patches/@edgedb__auth-sveltekit@0.1.1.patch",
-      "@edgedb/generate": "patches/@edgedb__generate.patch",
       "@sveltejs/enhanced-img": "patches/@sveltejs__enhanced-img.patch"
     }
   },
