@@ -18,8 +18,6 @@ import type { RequestEvent } from "./$types";
 
 const { DatabaseError } = pkg;
 
-const KEY = scryptSync(env.KEY, "안녕하세요소금입니다소금소금", 16);
-
 export type POST = typeof POST;
 export const POST = route(
   "post",
@@ -32,6 +30,7 @@ export const POST = route(
     console.info(body.lure, result.name);
     const id = crypto.randomUUID();
     const key = result.key;
+    const KEY = scryptSync(env.KEY, "안녕하세요소금입니다소금소금", 16);
     const cipher = createCipheriv("aes-128-gcm", KEY, env.IV);
     const next =
       cipher.update(JSON.stringify({ id, key }), "utf8", "base64url") +
@@ -75,6 +74,7 @@ export const PUT = route(
   async ({ locals }: RequestEvent, body) => {
     const user = locals.user;
     if (user == null || user.isBanned) error(401);
+    const KEY = scryptSync(env.KEY, "안녕하세요소금입니다소금소금", 16);
     const decipher = createDecipheriv("aes-128-gcm", KEY, env.IV);
     const fish: { key: string } = JSON.parse(
       decipher.update(body.next, "base64url", "utf8"),

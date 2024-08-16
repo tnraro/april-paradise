@@ -6,17 +6,17 @@
   import { onMount } from "svelte";
 
   onMount(() => {
-    Sentry.init({
-      dsn: env.PUBLIC_SENTRY_DSN,
-      integrations: [
-        Sentry.browserTracingIntegration(),
-      ],
-      environment: import.meta.env.PROD ? "production" : "development",
-      // Performance Monitoring
-      tracesSampleRate: 1.0, //  Capture 100% of the transactions
-      // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
-      tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
-    });
+    if (env.PUBLIC_SENTRY_DSN != null) {
+      Sentry.init({
+        dsn: env.PUBLIC_SENTRY_DSN,
+        integrations: [
+          Sentry.browserTracingIntegration(),
+        ],
+        environment: import.meta.env.PROD ? "production" : "development",
+        // Performance Monitoring
+        tracesSampleRate: 1.0, //  Capture 100% of the transactions
+      });
+    }
   });
 
   let { children, data } = $props();
