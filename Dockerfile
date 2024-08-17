@@ -19,7 +19,7 @@ COPY package.json vite.config.ts svelte.config.js tsconfig.json ./
 COPY src/ src/
 COPY static/ static/
 COPY scripts/ scripts/
-RUN bun generate:api && bun run build
+RUN bun generate:api && bun generate:item-imgs && bun run build
 
 FROM docker.io/oven/bun:1 AS install
 RUN mkdir -p /temp/prod

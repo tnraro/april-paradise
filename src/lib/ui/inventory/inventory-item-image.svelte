@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getItems } from "$img/imgs";
+  import { getItems } from "$img/items.gen";
 
   interface Props {
     key: string;
@@ -15,41 +15,21 @@
   }
   let { key, pixel = true, silhouette = false, size = 64 }: Props = $props();
 
-  const enum State {
-    Pending,
-    Success,
-    Failed,
-  }
-
-  let _state = $state<State>(State.Pending);
-
-  let src = $state<string>("");
-
-  $effect(() => {
-    const items = getItems(key);
-    if (items == null) {
-      _state = State.Failed;
-    } else {
-      items.then((x) => {
-        src = x.default;
-        _state = State.Success;
-      });
-    }
-  });
+  let src = $derived(getItems(key));
 </script>
 
-{#if _state === State.Pending}
-  <div class="skeleton" style:---size="{size}px"></div>
-{:else if _state === State.Success}
-  <enhanced:img alt=""
+{#if src != null}
+  <enhanced:img
+    alt=""
     class="img"
     class:pixel
     class:silhouette
     {src}
     style:---size="{size}px"
   />
-{:else if _state === State.Failed}
-  <enhanced:img alt=""
+{:else}
+  <enhanced:img
+    alt=""
     class="img"
     class:pixel
     class:silhouette
@@ -66,14 +46,6 @@
   }
   .silhouette {
     filter: contrast(0) brightness(0.5);
-  }
-  .skeleton {
-    width: var(---size);
-    height: var(---size);
-    border-radius: 0.5rem;
-    background: transparent;
-
-    animation: skeleton 3s infinite 0.4s;
   }
   @keyframes -global-skeleton {
     0% {

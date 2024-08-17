@@ -12,6 +12,7 @@
     "lint": "pnpm biome lint . --apply",
     "format": "pnpm biome format . --write",
     "generate:api": "bun run scripts/api-gen/index.ts",
+    "generate:item-imgs": "bun run scripts/items-gen/index.ts",
     "gen": "pnpm run --parallel /^generate:/"
   },
   "devDependencies": {

@@ -146,9 +146,6 @@
   .reward {
     display: grid;
     gap: 0.25rem;
-    &__button {
-      justify-content: space-between;
-    }
   }
   .body {
     white-space-collapse: preserve;

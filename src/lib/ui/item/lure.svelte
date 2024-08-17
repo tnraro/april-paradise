@@ -1,19 +1,14 @@
 <script lang="ts">
-  import { getItems } from "$img/imgs";
+  import { getItems } from "$img/items.gen";
 
   interface Props {
     lure: string;
   }
   let { lure }: Props = $props();
-  let src = $state<string>();
-  $effect(() => {
-    getItems(lure)?.then((x) => {
-      src = x.default;
-    });
-  });
+  let src = $derived(getItems(lure));
 </script>
 
-{#if src}
+{#if src != null}
   <enhanced:img alt="" class="lure" {src} />
 {/if}
 

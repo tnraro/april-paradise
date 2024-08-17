@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getItems } from "$img/imgs";
+  import { getItems } from "$img/items.gen";
   import type { CaughtFish } from "./fishing-state.svelte";
 
   interface Props {
@@ -7,12 +7,7 @@
     silhouette?: boolean;
   }
   let { fish, silhouette = false }: Props = $props();
-  let src = $state<string>();
-  $effect(() => {
-    getItems(fish.key)?.then((x) => {
-      src = x.default;
-    });
-  });
+  let src = $derived(getItems(fish.key));
 </script>
 
 {#if src}
