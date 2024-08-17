@@ -9,6 +9,7 @@
   const wallet = useWallet(data.user);
   $effect(() => wallet.update(data.user));
   useItemData(data.itemData);
+  $inspect(data);
   let schedule = $derived.by(() => {
     const now = Date.now();
     return data.scheduleData

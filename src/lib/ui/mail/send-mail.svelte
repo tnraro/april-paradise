@@ -18,7 +18,7 @@
   let { items, onclose, onsubmit }: Props = $props();
   let isLoading = $state(false);
 
-  let rewards = $state.frozen(new Map<string, number>());
+  let rewards = $state.raw(new Map<string, number>());
   let isNewReward = $state(false);
 
   let itemMap = $derived(new Map(items.map((x) => [x.key, x])));
@@ -61,7 +61,7 @@
   <label for="mail__title">제목</label>
   <input id="mail__title" name="title" required />
   <label for="mail__body">본문</label>
-  <textarea id="mail__body" name="body" required />
+  <textarea id="mail__body" name="body" required></textarea>
   <label for="mail__reward">보상</label>
   <input
     type="hidden"

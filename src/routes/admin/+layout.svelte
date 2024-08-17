@@ -18,7 +18,7 @@
   </nav>
   <div>
     <Menubar.Root>
-      {data.admin.key}
+      {data.admin.name}
       <Menubar.Menu>
         <Menubar.Trigger>
           <Icon as="menu" />

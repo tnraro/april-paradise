@@ -1,18 +1,22 @@
 import { client } from "$lib/data/client";
-import { stringify } from "devalue";
+import { staticData } from "$lib/data/schema";
+import { sql } from "drizzle-orm";
 import { setData } from "../sheets";
 import { fetch } from "./fetch";
-import { updateSheets } from "./update-sheets.query";
 
 export const update = async () => {
   const ranges = await fetch();
   if (ranges) {
-    await updateSheets(client, {
-      data: ranges.map((x) => ({
-        ...x,
-        data: stringify(x.data),
-      })),
-    });
+    await client
+      .insert(staticData)
+      .values(ranges)
+      .onConflictDoUpdate({
+        target: staticData.sheet,
+        set: {
+          sheet: sql`excluded.sheet`,
+          data: sql`excluded.data`,
+        },
+      });
     setData(ranges);
   }
 };

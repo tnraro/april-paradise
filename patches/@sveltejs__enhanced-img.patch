@@ -1,0 +1,17 @@
+diff --git a/types/ambient.d.ts b/types/ambient.d.ts
+index 0cba3c7958f18b94c904f0a147ca83f85245262b..def52fe23660f6907cd91e6303765ced50f4fac0 100644
+--- a/types/ambient.d.ts
++++ b/types/ambient.d.ts
+@@ -4,3 +4,12 @@ declare module '*?enhanced' {
+ 	const value: Picture;
+ 	export default value;
+ }
++
++declare module '*?enhanced&w=64' {
++	const value: string;
++	export default value;
++}
++declare module '*?enhanced&w=1024' {
++	const value: string;
++	export default value;
++}

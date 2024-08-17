@@ -1,5 +1,5 @@
-import { parse } from "devalue";
-import type { Executor } from "edgedb";
+import type { Client } from "../client";
+import { staticData } from "../schema";
 import type {
   AchievementData,
   CocktailIngredientData,
@@ -18,13 +18,12 @@ import type {
   ScheduleData,
   StoreData,
 } from "./model";
-import { queryData } from "./query-data.query";
 
 let m = new Map<string, unknown[]>();
 
-export const initData = async (client: Executor) => {
-  const data = await queryData(client);
-  m = new Map(data.map((x) => [x.sheet, parse(x.data)]));
+export const initData = async (client: Client) => {
+  const data = await getStaticData(client);
+  m = new Map(data.map((x) => [x.sheet, x.data as unknown[]]));
 };
 
 export const setData = (ranges: { sheet: string; data: unknown[] }[]) => {
@@ -40,7 +39,11 @@ export const getIndexData = async (): Promise<IndexData[]> => {
 };
 
 export const getScheduleData = async (): Promise<ScheduleData[]> => {
-  return await getData<ScheduleData>("일정");
+  return (await getData<ScheduleData>("일정")).map((x) => ({
+    ...x,
+    start: new Date(x.start),
+    end: new Date(x.end),
+  }));
 };
 
 export const getRouletteData = async (): Promise<RouletteData[]> => {
@@ -98,3 +101,12 @@ export const getDemandData = async (): Promise<DemandData[]> => {
 export const getNoticeData = async (): Promise<NoticeData[]> => {
   return await getData<NoticeData>("공지");
 };
+
+async function getStaticData(client: Client) {
+  return await client
+    .select({
+      sheet: staticData.sheet,
+      data: staticData.data,
+    })
+    .from(staticData);
+}

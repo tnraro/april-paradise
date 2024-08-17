@@ -1,15 +1,14 @@
-import { error, redirect } from "@sveltejs/kit";
-import { page } from "./page.query.js";
+import { client } from "$lib/data/client.js";
+import { getInventory } from "$lib/data/query/get-inventory";
+import { redirect } from "@sveltejs/kit";
 
 export const load = async ({ locals }) => {
-  if (locals.currentUser == null || locals.currentUser.isBanned) {
+  if (locals.user == null || locals.user.isBanned) {
     redirect(303, "/auth/sign-in");
   }
-  const user = await page(locals.client);
-  if (user == null) {
-    error(404);
-  }
   return {
-    user,
+    user: {
+      inventory: await getInventory(client, locals.user.id),
+    },
   };
 };

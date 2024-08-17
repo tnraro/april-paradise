@@ -27,6 +27,6 @@
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
-    "ignore": ["src/**/*.svelte"]
+    "ignore": ["src/**/*.svelte", "drizzle/"]
   }
 }

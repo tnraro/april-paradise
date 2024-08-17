@@ -1,17 +1,33 @@
-import { wrapRunners } from "$lib/data/sheets/utils";
+import { client } from "$lib/data/client";
+import { users } from "$lib/data/schema";
 import { error, redirect } from "@sveltejs/kit";
-import { page } from "./page.query";
+import { not, sql } from "drizzle-orm";
 
 export const load = async ({ locals, depends }) => {
   depends("admin:runners");
-  if (locals.currentUser == null || locals.currentUser.isBanned) {
+  if (locals.user == null || locals.user.isBanned) {
     redirect(303, "/auth/sign-in");
   }
-  if (!locals.currentUser.isAdmin) {
+  if (!locals.user.isAdmin) {
     error(404);
   }
-  const runners = await wrapRunners(page(locals.client));
+  const runners = await getRunners();
   return {
     runners,
   };
 };
+
+async function getRunners() {
+  return await client
+    .select({
+      id: users.id,
+      name: users.name,
+      chips: users.chips,
+      tokens: users.tokens,
+      isBanned: users.isBanned,
+      hasIdentity: sql<boolean>`true`,
+    })
+    .from(users)
+    .where(not(users.isAdmin))
+    .orderBy(users.isBanned);
+}

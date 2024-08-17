@@ -1,22 +1,17 @@
 import { route } from "$lib/api/server";
+import { client } from "$lib/data/client";
+import { mails } from "$lib/data/schema";
 import { error } from "@sveltejs/kit";
 import { z } from "zod";
 import type { RequestEvent } from "./$types";
-import { post } from "./post.query";
 
 export type POST = typeof POST;
 export const POST = route(
   "post",
   async ({ locals }: RequestEvent, body) => {
-    if (
-      locals.currentUser == null ||
-      locals.currentUser.isBanned ||
-      !locals.currentUser.isAdmin
-    )
+    if (locals.user == null || locals.user.isBanned || !locals.user.isAdmin)
       error(401);
-    await post(locals.client, {
-      data: body,
-    });
+    await sendMails(body);
     return {};
   },
   {
@@ -29,3 +24,21 @@ export const POST = route(
     }),
   },
 );
+
+async function sendMails(mail: {
+  sender: string;
+  title: string;
+  body: string;
+  rewards: string;
+  recipients: string[];
+}) {
+  await client.insert(mails).values(
+    mail.recipients.map((recipient) => ({
+      title: mail.title,
+      body: mail.body,
+      rewards: mail.rewards,
+      sender: mail.sender,
+      recipient,
+    })),
+  );
+}

@@ -1,7 +1,7 @@
-export const POST = async ({ cookies, request, locals }) => {
+export const POST = async ({ request, locals }) => {
   console.error({
     type: "client-error",
-    user: locals.currentUser,
+    user: locals.user,
     body: await request.json(),
     createdAt: new Date(),
   });

@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "vite dev",
+    "dev": "bun -b vite dev",
     "build": "vite build",
     "preview": "bun -b vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -11,46 +11,46 @@
     "test": "vitest",
     "lint": "pnpm biome lint . --apply",
     "format": "pnpm biome format . --write",
-    "generate:edgeql": "pnpm exec generate queries",
     "generate:api": "bun run scripts/api-gen/index.ts",
     "gen": "pnpm run --parallel /^generate:/"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.6.4",
-    "@edgedb/generate": "^0.5.2",
-    "@sveltejs/adapter-node": "^5.0.1",
-    "@sveltejs/enhanced-img": "^0.2.0",
-    "@sveltejs/kit": "^2.5.5",
-    "@sveltejs/vite-plugin-svelte": "3.1.0",
-    "@types/node": "^20.12.7",
-    "lefthook": "^1.6.10",
-    "sass": "^1.75.0",
-    "svelte": "5.0.0-next.100",
-    "svelte-check": "^3.6.9",
-    "tslib": "^2.6.2",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.8",
-    "vitest": "^1.5.0"
+    "@biomejs/biome": "^1.8.3",
+    "@sveltejs/enhanced-img": "^0.3.3",
+    "@sveltejs/kit": "^2.5.22",
+    "@sveltejs/vite-plugin-svelte": "3.1.1",
+    "@types/bun": "^1.1.6",
+    "@types/node": "^22.2.0",
+    "@types/pg": "^8.11.6",
+    "drizzle-kit": "^0.24.0",
+    "lefthook": "^1.7.12",
+    "sass": "^1.77.8",
+    "svelte": "5.0.0-next.219",
+    "svelte-adapter-bun": "^0.5.2",
+    "svelte-check": "^3.8.5",
+    "tslib": "^2.6.3",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0",
+    "vitest": "^2.0.5"
   },
   "type": "module",
   "dependencies": {
-    "@edgedb/auth-sveltekit": "^0.1.1",
     "@googleapis/sheets": "^5.0.5",
+    "@lucia-auth/adapter-drizzle": "^1.1.0",
     "@radix-ui/colors": "^3.0.0",
-    "@sentry/browser": "^7.110.0",
-    "@sentry/vite-plugin": "^2.16.1",
-    "bits-ui": "^0.21.3",
-    "devalue": "^4.3.2",
-    "edgedb": "^1.5.0",
-    "formsnap": "^1.0.0",
-    "sveltekit-superforms": "^2.12.4",
-    "zod": "^3.22.4"
+    "@sentry/browser": "^7.118.0",
+    "bits-ui": "^0.21.13",
+    "drizzle-orm": "^0.33.0",
+    "formsnap": "^1.0.1",
+    "lucia": "^3.2.0",
+    "pg": "^8.12.0",
+    "sveltekit-superforms": "^2.16.1",
+    "zod": "^3.23.8"
   },
   "pnpm": {
     "patchedDependencies": {
-      "@sveltejs/enhanced-img@0.2.0": "patches/@sveltejs__enhanced-img@0.2.0.patch",
-      "@edgedb/generate@0.5.2": "patches/@edgedb__generate@0.5.2.patch",
-      "@edgedb/auth-sveltekit@0.1.1": "patches/@edgedb__auth-sveltekit@0.1.1.patch"
+      "@sveltejs/enhanced-img": "patches/@sveltejs__enhanced-img.patch"
     }
-  }
+  },
+  "packageManager": "pnpm@9.7.0+sha512.dc09430156b427f5ecfc79888899e1c39d2d690f004be70e05230b72cb173d96839587545d09429b55ac3c429c801b4dc3c0e002f653830a420fa2dd4e3cf9cf"
 }

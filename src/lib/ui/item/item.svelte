@@ -19,5 +19,5 @@
     <Items name={item.id} />
   {/if}
 {:else}
-  <div />
+  <div></div>
 {/if}

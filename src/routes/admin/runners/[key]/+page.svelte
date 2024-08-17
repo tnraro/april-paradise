@@ -11,24 +11,6 @@
   import Mail from "$lib/ui/mail/mail.svelte";
   import SendMail from "$lib/ui/mail/send-mail.svelte";
 
-  const copyInviteCode = async () => {
-    const res = await api().runners.post({ key: data.user.key });
-    if (!res.ok) {
-      sendError(res.error.message);
-    } else {
-      const code = res.data.code;
-      const url = `${location.origin}/invite?code=${code}`;
-      const template = `${data.user.name}님, 카락실에 오신 걸 환영합니다^^*\n간단하게 가입을 도와드리겠습니다. 즐거운 시간 되세요~!\n\n${url}`;
-      try {
-        await navigator.clipboard.writeText(template);
-        message = "복사되었습니다!";
-      } catch (_) {
-        message = "무언가 잘못되었습니다";
-        error = template;
-      }
-    }
-  };
-
   let { data } = $props();
 
   const itemData = useItemData();
@@ -40,7 +22,7 @@
     sender: string;
     title: string;
     body: string;
-    reward: string;
+    rewards: string;
     isReceived: boolean;
     createdAt: Date;
   } | null>();
@@ -48,29 +30,12 @@
   let isMailEdit = $state(false);
 
   let message = $state<string>();
-  let error = $state<string>();
 </script>
 
 <main>
   <header class="title">
     <h1>{data.user.name}</h1>
-    {#if !data.user.isAdmin}
-      {#if data.user.twitterId}
-        <a class="x-id" href="https://twitter.com/{data.user.twitterId}"
-          >@{data.user.twitterId}</a
-        >
-      {/if}
-    {/if}
   </header>
-  {#if !data.user.isAdmin}
-    <div class="identity">
-      계정 {data.user.hasIdentity ? "" : "안 "}만듦
-      <button onclick={copyInviteCode}>초대 코드 복사</button>
-      {#if error}
-        <textarea>{error}</textarea>
-      {/if}
-    </div>
-  {/if}
   <section>
     <h2>자원</h2>
     <Tokens quantity={data.user.tokens} />
@@ -83,10 +48,10 @@
         {#each data.user.inventory as inventory}
           <h3>{inventory.category}</h3>
           <Inventory>
-            {#each inventory.items as item (item.item)}
-              {@const i = itemMap.get(item.item)}
+            {#each inventory.items as item (item.key)}
+              {@const i = itemMap.get(item.key)}
               <InventoryItem
-                key={item.item}
+                key={item.key}
                 name={i?.name}
                 quantity={item.quantity}
               >
@@ -168,14 +133,6 @@
     & h1 {
       margin-bottom: -0.5rem;
     }
-  }
-  .x-id {
-    font-size: 1rem;
-  }
-  .identity {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
   }
   .inventory {
     min-width: min(32rem, 100%);

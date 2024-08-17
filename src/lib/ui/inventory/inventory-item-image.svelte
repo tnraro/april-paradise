@@ -23,7 +23,7 @@
 
   let _state = $state<State>(State.Pending);
 
-  let src = $state<string>();
+  let src = $state<string>("");
 
   $effect(() => {
     const items = getItems(key);
@@ -39,7 +39,7 @@
 </script>
 
 {#if _state === State.Pending}
-  <div class="skeleton" style:---size="{size}px" />
+  <div class="skeleton" style:---size="{size}px"></div>
 {:else if _state === State.Success}
   <enhanced:img alt=""
     class="img"

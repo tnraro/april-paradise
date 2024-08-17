@@ -1,20 +1,32 @@
-version: "3"
-
 services:
-  edgedb:
-    image: docker.io/edgedb/edgedb
+  pg:
+    image: postgres:17beta3-alpine
+    restart: unless-stopped
+    shm_size: 128mb
+    environment:
+      TZ: ${TZ}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - ./dbschema:/dbschema
-      - ./build/edgedb:/var/lib/edgedb/data
-    env_file: .env.edgedb
+      - pg:/var/lib/postgresql/data
     ports:
-      - 5402:5656
+      - ${PG_PORT}:5432
   app:
     depends_on:
-      - edgedb
-    build:
-      context: .
-      dockerfile: ./Containerfile
-    env_file: .env.prod
+      - pg
+    image: ghcr.io/tnraro/april-paradise:main
+    restart: unless-stopped
+    environment:
+      PUBLIC_FORM_URL: ${PUBLIC_FORM_URL}
+      SHEETS_CLIENT_EMAIL: ${SHEETS_CLIENT_EMAIL}
+      SHEETS_PRIVATE_KEY: ${SHEETS_PRIVATE_KEY}
+      SHEETS_ID: ${SHEETS_ID}
+      SHEETS_URL: ${SHEETS_URL}
+      KEY: ${KEY}
+      IV: ${IV}
+      PUBLIC_SENTRY_DSN: ${PUBLIC_SENTRY_DSN}
+      PG_URL: postgres://postgres:${POSTGRES_PASSWORD}@pg:5432/postgres
     ports:
-      - 5401:3000
+      - ${PORT}:3000
+
+volumes:
+  pg:

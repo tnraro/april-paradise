@@ -10,7 +10,7 @@
 
   let { data } = $props();
 
-  let selected = $state.frozen(new Set<string>());
+  let selected = $state.raw(new Set<string>());
 
   let isEdit = $state(false);
   let isWarningBan = $state(false);

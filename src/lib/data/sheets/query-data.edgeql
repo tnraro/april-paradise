@@ -1,4 +1,0 @@
-select StaticData {
-  sheet,
-  data,
-}

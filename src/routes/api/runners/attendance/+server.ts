@@ -1,8 +1,9 @@
 import { route } from "$lib/api/server";
-import { addChips } from "$lib/data/query/add-chips.query";
-import { addTokens } from "$lib/data/query/add-tokens.query";
-import { addResource } from "$lib/data/resources/add-resource.query";
-import { getResource } from "$lib/data/resources/get-resource.query";
+import { client } from "$lib/data/client";
+import { addChips } from "$lib/data/query/add-chips";
+import { addTokens } from "$lib/data/query/add-tokens";
+import { addResource } from "$lib/data/resources/add-resource";
+import { getResource } from "$lib/data/resources/get-resource";
 import { getRewardData } from "$lib/data/sheets/sheets";
 import { error } from "@sveltejs/kit";
 import type { RequestEvent } from "./$types";
@@ -19,11 +20,9 @@ const getKey = () => {
 
 export type GET = typeof GET;
 export const GET = route("get", async ({ locals }: RequestEvent) => {
-  if (locals.currentUser == null || locals.currentUser.isBanned) error(401);
+  if (locals.user == null || locals.user.isBanned) error(401);
   const key = getKey();
-  const count = await getResource(locals.client, {
-    key,
-  });
+  const count = await getResource(client, locals.user.id, key);
 
   return {
     today: count > 0,
@@ -31,12 +30,11 @@ export const GET = route("get", async ({ locals }: RequestEvent) => {
 });
 export type POST = typeof POST;
 export const POST = route("post", async ({ locals }: RequestEvent) => {
-  if (locals.currentUser == null || locals.currentUser.isBanned) error(401);
-  return await locals.client.transaction(async (tx) => {
+  const user = locals.user;
+  if (user == null || user.isBanned) error(401);
+  return await client.transaction(async (tx) => {
     const key = getKey();
-    const count = await getResource(tx, {
-      key,
-    });
+    const count = await getResource(tx, user.id, key);
     if (count > 0) {
       error(400, "이미 출석 했습니다");
     }
@@ -44,18 +42,11 @@ export const POST = route("post", async ({ locals }: RequestEvent) => {
     // biome-ignore lint/style/noNonNullAssertion: <explanation>
     const { reward } = rewardData.find((x) => x.key === "reward-0")!;
 
-    await addResource(tx, {
-      key,
-      value: 1,
-    });
+    await addResource(tx, user.id, key, 1);
     if (reward.type === "tokens") {
-      await addTokens(tx, {
-        tokens: reward.quantity,
-      });
+      await addTokens(tx, user.id, reward.quantity);
     } else if (reward.type === "chips") {
-      await addChips(tx, {
-        chips: reward.quantity,
-      });
+      await addChips(tx, user.id, reward.quantity);
     }
     return {};
   });

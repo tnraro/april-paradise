@@ -1,1 +1,0 @@
-select global currentUser { id, key } filter .isAdmin;

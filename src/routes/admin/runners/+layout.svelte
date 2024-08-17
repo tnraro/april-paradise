@@ -1,24 +1,9 @@
 <script lang="ts">
-  import { invalidate } from '$app/navigation';
-  import { api } from '$lib/api/api.gen.js';
-  import { sendError } from '$lib/ui/error/send-error.js';
-
-  const syncRunner = async () => {
-    const res = await api().runners.put(undefined);
-    if (!res.ok) {
-      sendError("sync failed", res.error);
-    } else {
-      if (res.data.updated > 0) {
-        invalidate("admin:runners");
-      }
-    }
-  }
   let { data, children } = $props();
 </script>
 
 <div class="_">
   <div class="_left">
-    <button onclick={syncRunner}>러너 동기화</button>
     <div role="tablist" class="tablist">
       <a
         role="tab"
@@ -35,7 +20,7 @@
           class="tab user"
           aria-selected={user.selected}
           aria-controls="panel"
-          href="/admin/runners/{user.key}">
+          href="/admin/runners/{user.name}">
           <span class="user__name">{user.name}</span>
           {#if user.isAdmin}
             <span class="badge badge--admin">관리자</span>

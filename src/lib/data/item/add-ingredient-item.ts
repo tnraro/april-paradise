@@ -1,17 +1,11 @@
-import type { Executor } from "edgedb";
-import { addItem } from "./add-item.query";
+import type { Client } from "../client";
+import { addItem } from "./add-item";
 
-interface Args {
-  key: string;
-  quantity?: number;
-}
 export const addIngredientItem = async (
-  client: Executor,
-  { key, quantity = 1 }: Args,
+  client: Client,
+  owner: string,
+  key: string,
+  quantity: number,
 ) => {
-  return await addItem(client, {
-    key,
-    category: "ingredient",
-    quantity,
-  });
+  return await addItem(client, "ingredient", owner, key, quantity);
 };

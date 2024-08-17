@@ -1,13 +1,12 @@
+import { client } from "$lib/data/client";
+import { getMail } from "$lib/data/query/get-mails";
 import { error, redirect } from "@sveltejs/kit";
-import { page } from "./page.query";
 
 export const load = async ({ locals, params }) => {
-  if (locals.currentUser == null || locals.currentUser.isBanned) {
+  if (locals.user == null || locals.user.isBanned) {
     redirect(303, "/auth/sign-in");
   }
-  const mail = await page(locals.client, {
-    id: params.id,
-  });
+  const mail = await getMail(client, params.id, locals.user.id);
 
   if (mail == null) {
     error(404);
