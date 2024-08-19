@@ -1,3 +1,19 @@
+diff --git a/src/index.js b/src/index.js
+index 7e46b9570127dec191869154367539cacc7a3c13..9e21660ab85f225f7fe942f08f1325e91a2e1179 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -81,7 +81,10 @@ function imagetools_plugin() {
+ 				...(kind === 'x' && !qs.has('w') && { basePixels: widths[0].toString() })
+ 			});
+ 		},
+-		namedExports: false
++		namedExports: false,
++		cache: {
++			enabled: false,
++		},
+ 	};
+ 
+ 	// TODO: should we make formats or sizes configurable besides just letting people override defaultDirectives?
 diff --git a/types/ambient.d.ts b/types/ambient.d.ts
 index 0cba3c7958f18b94c904f0a147ca83f85245262b..def52fe23660f6907cd91e6303765ced50f4fac0 100644
 --- a/types/ambient.d.ts
