@@ -18,6 +18,9 @@ const config = {
       $routes: "./src/routes",
       $img: "./src/lib/ui/resources",
     },
+    csrf: {
+      checkOrigin: false,
+    },
   },
 };
 
